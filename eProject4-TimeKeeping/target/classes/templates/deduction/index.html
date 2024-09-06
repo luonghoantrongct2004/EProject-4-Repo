@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutAdmin/main}">
+<head>
+    <meta charset="utf-8">
+    <title th:text="${pageTitle}">ADMIM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<div class="row g-4" layout:fragment="content">
+                <div class="col-12">
+                    <div class="bg-light rounded h-100 p-4">
+                        <h6 class="mb-4">Bảng Khấu Trừ</h6>
+                        <form th:action="@{/deduction}" method="get" class="mb-3">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="type" placeholder="Tìm kiếm theo loại khấu trừ" aria-label="Search">
+                                <button class="btn btn-outline-secondary" type="submit">Tìm kiếm</button>
+                            </div>
+                        </form>
+
+                        <a href="/deduction/create" class="btn btn-success mb-3">Tạo Mới</a>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Loại Khấu Trừ</th>
+                                    <th scope="col">Mô Tả</th>
+                                    <th scope="col">Số Tiền</th>
+                                    <th scope="col">Hành Động</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="deduction, iterStat : ${deductions}">
+                                    <td th:text="${deduction.getDeductionID()}"></td>
+                                    <td th:text="${deduction.getDeductionType()}"></td>
+                                    <td th:text="${deduction.getDescription()}"></td>
+                                    <td th:text="${deduction.getAmount()}"></td>
+                                    <td>
+                                        <!-- Action Links -->
+                                        <a th:href="@{/deduction/edit/{id}(id=${deduction.getDeductionID()})}" class="btn btn-primary btn-sm">Sửa</a>
+
+                                        <a th:href="@{/deduction/delete/{id}(id=${deduction.getDeductionID()})}"
+                                           class="btn btn-danger btn-sm"
+                                           onclick="return confirm('Quản lý có chắc chắn muốn xóa khấu trừ này?');">Xóa</a>
+
+                                        <a th:href="@{/deduction/{id}(id=${deduction.getDeductionID()})}" class="btn btn-info btn-sm">Chi tiết</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+</body>
+</html>

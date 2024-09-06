@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutAdmin/main}">
+<head>
+    <meta charset="utf-8">
+    <title th:text="${pageTitle}">ADMIM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<div class="row g-4" layout:fragment="content">
+                <div class="col-12">
+                    <div class="bg-light rounded h-100 p-4">
+                        <h6 class="mb-4">Bảng Lương</h6>
+                        <form class="mb-3">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="searchInput" placeholder="Tìm kiếm theo tên nhân viên" aria-label="Search">
+                                <button class="btn btn-outline-secondary" type="button" onclick="searchPayroll()">Tìm kiếm</button>
+                            </div>
+                        </form>
+
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Tên Tài Khoản</th>
+                                    <th scope="col">Ngày khởi tạo</th>
+                                    <th scope="col">Tên Mẫu Lương</th>
+                                    <th scope="col">Ngày Trả Lương</th>
+                                    <th scope="col">Lương Gộp</th>
+                                    <th scope="col">Lương Ròng</th>
+                                    <th scope="col">Hành Động</th>
+                                </tr>
+                                </thead>
+                                <tbody id="payrollTableBody">
+                                <tr th:each="payroll, iterStat : ${payrolls}">
+                                    <td th:text="${payroll.getPayrollID()}"></td>
+                                    <td th:text="${payroll.getAccount().getFullName()}"></td>
+                                    <td th:text="${payroll.getCreatedAt()}"></td>
+                                    <td th:text="${payroll.getSalaryTemplate().getGradeName()}"></td>
+                                    <td th:text="${payroll.getPayDate()}"></td>
+                                    <td id="grossSalary" th:text="${payroll.grossSalary}"></td>
+                                    <td id="netSalary" th:text="${payroll.netSalary}"></td>
+                                    <td>
+                                        <!-- Action Links -->
+                                        <a th:href="@{/payroll/edit/{id}(id=${payroll.getPayrollID()})}" class="btn btn-primary btn-sm">Sửa</a>
+                                        <a th:href="@{/payroll/{id}(id=${payroll.getPayrollID()})}" class="btn btn-info btn-sm">Chi tiết</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <script>
+                                // Lấy giá trị lương từ thẻ HTML
+                                let grossSalary = document.getElementById("grossSalary").innerText;
+                                let netSalary = document.getElementById("netSalary").innerText;
+
+                                grossSalary = parseFloat(grossSalary);
+                                netSalary = parseFloat(netSalary);
+
+                                function formatNumber(num) {
+                                    return num.toLocaleString('vi-VN', { style: 'currency', currency: 'VND', minimumFractionDigits: 0 });
+                                }
+
+
+                                // Cập nhật lại các giá trị lương trong HTML với định dạng mới
+                                document.getElementById("grossSalary").innerText = formatNumber(grossSalary);
+                                document.getElementById("netSalary").innerText = formatNumber(netSalary);
+                            </script>
+                            <script>
+                                // Hàm tìm kiếm
+                                function searchPayroll() {
+                                    // Lấy giá trị tìm kiếm
+                                    const searchValue = document.getElementById("searchInput").value.toLowerCase();
+
+                                    // Lấy tất cả các hàng của bảng
+                                    const rows = document.querySelectorAll("#payrollTableBody tr");
+
+                                    rows.forEach(row => {
+                                        // Lấy tên tài khoản từ cột thứ hai (Tên Tài Khoản)
+                                        const fullName = row.querySelector("td:nth-child(2)").innerText.toLowerCase();
+
+                                        // Kiểm tra nếu tên tài khoản chứa giá trị tìm kiếm
+                                        if (fullName.includes(searchValue)) {
+                                            row.style.display = ""; // Hiển thị hàng
+                                        } else {
+                                            row.style.display = "none"; // Ẩn hàng nếu không khớp
+                                        }
+                                    });
+                                }
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+</body>
+</html>

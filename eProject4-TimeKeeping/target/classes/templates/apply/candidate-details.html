@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Candidate Details</title>
+  <style>
+    /* General Styles */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f7f7f7;
+      color: #333;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .details-container {
+      background-color: #fff;
+      border-radius: 12px; /* Slightly rounded corners */
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+      padding: 30px;
+      max-width: 600px; /* Wider container for better readability */
+      width: 100%;
+      margin: auto;
+    }
+
+    h2 {
+      font-size: 26px; /* Larger heading for better emphasis */
+      margin-bottom: 20px;
+      color: #4a90e2;
+      text-align: center;
+      font-weight: 600; /* Slightly bolder font */
+    }
+
+    p {
+      font-size: 18px; /* Slightly larger text */
+      margin-bottom: 15px;
+    }
+
+    p strong {
+      color: #555;
+    }
+
+    .btn {
+      display: inline-block;
+      font-weight: 500;
+      text-align: center;
+      vertical-align: middle;
+      cursor: pointer;
+      border: 1px solid transparent;
+      border-radius: 0.25rem;
+      padding: 10px 20px; /* Slightly larger padding */
+      line-height: 1.5;
+      transition: all 0.2s ease-in-out; /* Smoother transition */
+      margin-top: 20px; /* Increased margin for better spacing */
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      color: #fff;
+      background-color: #007bff;
+      border-color: #007bff;
+    }
+
+    .btn-primary:hover {
+      background-color: #0056b3;
+      border-color: #004080;
+    }
+
+    .btn-danger {
+      color: #fff;
+      background-color: #dc3545;
+      border-color: #dc3545;
+    }
+
+    .btn-danger:hover {
+      background-color: #c82333;
+      border-color: #bd2130;
+    }
+
+    .btn-secondary {
+      color: #fff;
+      background-color: #6c757d;
+      border-color: #6c757d;
+    }
+
+    .btn-secondary:hover {
+      background-color: #5a6268;
+      border-color: #545b62;
+    }
+
+    .profile-picture-container {
+      text-align: center;
+      margin: 20px auto;
+      border-radius: 50%;
+      overflow: hidden;
+      width: 350px; /* Adjust the size as needed */
+      height: 350px; /* Adjust the size as needed */
+      border: 3px solid #ddd; /* Slightly thicker border */
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.2); /* Enhanced shadow */
+    }
+
+    .profile-picture-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* Ensures the image covers the container */
+      border-radius: 50%;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 600px) {
+      .details-container {
+        padding: 20px;
+      }
+
+      p {
+        font-size: 16px;
+      }
+
+      .btn {
+        padding: 10px 15px;
+        font-size: 16px;
+      }
+    }
+
+  </style>
+</head>
+<body>
+<div class="details-container">
+  <h2>Candidate Details</h2>
+
+  <p><strong>ID:</strong> <span th:text="${candidate.candidateID}"></span></p>
+  <p><strong>First Name:</strong> <span th:text="${candidate.firstName}"></span></p>
+  <p><strong>Last Name:</strong> <span th:text="${candidate.lastName}"></span></p>
+  <p><strong>Email:</strong> <span th:text="${candidate.email}"></span></p>
+  <p><strong>Phone Number:</strong> <span th:text="${candidate.phoneNumber}"></span></p>
+  <p><strong>Date of Birth:</strong> <span th:text="${candidate.dateOfBirth}"></span></p>
+  <p><strong>Location:</strong> <span th:text="${candidate.location}"></span></p>
+  <p><strong>Candidate Date:</strong> <span th:text="${candidate.candidateDate}"></span></p>
+  <p><strong>Description:</strong> <span th:text="${candidate.description}"></span></p>
+  <p><strong>Gender:</strong> <span th:text="${candidate.gender}"></span></p>
+  <p><strong>Status:</strong> <span th:text="${candidate.status}"></span></p>
+  <p><strong>Requirements:</strong> <span th:text="${candidate.requirements}"></span></p>
+
+  <p><strong>Profile Picture:</strong>
+    <span th:if="${candidate.profilePicturePath != null}">
+    <div class="profile-picture-container">
+        <img th:src="@{{profilePicture}(profilePicture=${candidate.profilePicturePath})}" alt="Profile Picture"/>
+    </div>
+    </span>
+
+<!--    <span th:unless="${candidate.profilePicturePath != null}">No profile picture uploaded</span>-->
+  </p>
+
+  <p><strong>Resume:</strong>
+    <span th:if="${candidate.resume != null}">
+        <a th:href="@{{resume}(resume=${candidate.resume})}" th:text="'Download ' + ${candidate.resume}">Download Resume</a>
+    </span>
+<!--    <span th:unless="${candidate.resume != null}">No resume uploaded</span>-->
+  </p>
+
+  <a href="/candidates" class="btn btn-secondary">Back to List</a>
+</div>
+</body>
+</html>

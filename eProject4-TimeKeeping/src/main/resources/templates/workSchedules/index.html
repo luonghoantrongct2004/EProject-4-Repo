@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutAdmin/main}">
+
+<head>
+    <meta charset="utf-8" />
+    <title th:text="${pageTitle}">Lịch Làm Việc</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+
+<body>
+<div layout:fragment="content">
+    <div class="row g-4">
+        <div class="col-12">
+            <h1 class="text-center">
+                LỊCH LÀM VIỆC
+            </h1>
+        </div>
+    </div>
+    <form action="/workSchedules" method="get">
+        <div class="row g-4">
+            <div class="col-12">
+                <div class="input-group">
+
+                    <input type="week" class="form-control" id="week" name="week" value="">
+
+                    <input type="text" class="form-control" name="name" placeholder="Tìm kiếm theo tên nhân viên" aria-label="Search" style="flex-grow: 7;">
+                    <button class="btn btn-outline-secondary" type="submit">
+                        Tìm kiếm
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="rounded h-100 my-4">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th style="vertical-align: middle;">Nhân viên</th>
+                            <th th:each="dayName : ${dayNamesInWeek}" th:text="${dayName}"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="acc : ${accounts}">
+                                <span th:each="entry : ${scheduleMap}">
+                                    <span th:if="${entry.key == acc}">
+                                        <td th:text="${entry.key.fullName}"></td>
+                                        <td th:each="date : ${datesInWeek}">
+                                            <div th:if="${entry.value.get(date) != null}">
+                                                <!-- Hiển thị thông tin ca làm việc -->
+                                                <form
+                                                        th:action="@{/workSchedules/updateShift}"
+                                                        method="get"
+                                                >
+                                                    <input type="hidden" name="scheduleId" th:value="${entry.value.get(date).scheduleId}"/>
+                                                    <div class="input-group">
+                                                        <select
+                                                                name="shiftId"
+                                                                required
+                                                                class="form-control"
+                                                        >
+                                                            <option
+                                                                    th:each="shiftOption : ${shifts}"
+                                                                    th:value="${shiftOption.shiftId}"
+                                                                    th:text="${shiftOption.shiftName}"
+                                                                    th:selected="${shiftOption.shiftId} == ${entry.value.get(date).shift.shiftId}"
+                                                            >
+                                                                Chọn ca làm
+                                                            </option>
+                                                        </select>
+                                                        <button type="submit" class="btn btn-outline-success">
+                                                            <i class="far fa-check-square"></i>
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                                <div>Status: <span th:text="${entry.value.get(date).status.displayName}"></span></div>
+
+                                                <a th:href="@{/workSchedules/approval?id={id}&status={status}(id=${entry.value.get(date).scheduleId},status=${T(com.timekeeping.timekeeping.enums.ApprovalStatus).APPROVED})}" class="text-decoration-none text-primary">
+                                                    <span th:if="${entry.value.get(date).status == T(com.timekeeping.timekeeping.enums.ApprovalStatus).APPROVED}"><i class="fas fa-thumbs-up fs-4"></i></span>
+                                                    <span th:if="${entry.value.get(date).status != T(com.timekeeping.timekeeping.enums.ApprovalStatus).APPROVED}"><i class="far fa-thumbs-up fs-4"></i></span>
+                                                </a>
+                                                <a th:href="@{/workSchedules/approval?id={id}&status={status}(id=${entry.value.get(date).scheduleId},status=${T(com.timekeeping.timekeeping.enums.ApprovalStatus).REJECTED})}" class="text-decoration-none text-primary">
+                                                    <span th:if="${entry.value.get(date).status == T(com.timekeeping.timekeeping.enums.ApprovalStatus).REJECTED}"><i style="transform: scaleX(-1);" class="fas fa-thumbs-down mx-1 fs-4"></i></span>
+                                                    <span th:if="${entry.value.get(date).status != T(com.timekeeping.timekeeping.enums.ApprovalStatus).REJECTED}"><i style="transform: scaleX(-1);" class="far fa-thumbs-down mx-1 fs-4"></i></span>
+                                                </a>
+                                                <a th:href="@{/workSchedules/edit/{id}(id=${entry.value.get(date).scheduleId})}" class="text-decoration-none text-primary"><i class="fas fa-info-circle fs-4"></i></a>
+                                            </div>
+                                            <div th:if="${entry.value.get(date) == null}">
+                                                <!-- Hiển thị form tạo ca làm việc mới -->
+                                                <form
+                                                        th:action="@{/workSchedules/create}"
+                                                        method="post"
+                                                >
+                                                    <input type="hidden" name="scheduleId"/>
+                                                    <input type="hidden" name="date" th:value="${date}"/>
+                                                    <input type="hidden" name="accountId" th:value="${entry.key.accountID}"/>
+                                                    <div class="input-group">
+                                                        <select
+                                                                name="shiftId"
+                                                                required
+                                                                class="form-control"
+                                                        >
+                                                            <option value="" disabled selected>Chọn ca làm</option>
+                                                            <option
+                                                                    th:each="shiftOption : ${shifts}"
+                                                                    th:value="${shiftOption.shiftId}"
+                                                                    th:text="${shiftOption.shiftName}"
+                                                            >
+                                                                Chọn ca làm
+                                                            </option>
+                                                        </select>
+                                                        <button type="submit" class="btn btn-outline-success">
+                                                            <i class="far fa-plus-square"></i>
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </span>
+                                </span>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+
+</html>

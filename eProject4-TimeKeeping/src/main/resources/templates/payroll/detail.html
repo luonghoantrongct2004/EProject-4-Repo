@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutAdmin/main}">
+<head>
+    <meta charset="utf-8">
+    <title th:text="${pageTitle}">ADMIM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<div class="row g-4" layout:fragment="content">
+                <div class="col-12">
+                    <div class="bg-light rounded h-100 p-4">
+                        <h6 class="mb-4">Chi Tiết Bảng Lương Của: <span th:text="${payroll.account.fullName}"></span></h6>
+                        <div class="table-responsive">
+                            <div class="card">
+                                <div class="card-header">
+                                    Chi tiết Bảng Lương của <span th:text="${payroll.account.fullName}"></span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="bhxh">BHXH (8% Tổng lương)</label>
+                                        <p id="bhxh" th:text="${payroll.grossSalary * 0.08}" class="form-control-plaintext"></p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="bhyt">BHYT (1.5% Tổng lương)</label>
+                                        <p id="bhyt" th:text="${payroll.grossSalary * 0.015}" class="form-control-plaintext"></p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="bhtn">BHTN (1% Tổng lương)</label>
+                                        <p id="bhtn"  th:text="${payroll.grossSalary * 0.01}" class="form-control-plaintext"></p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="payDate">Ngày Trả Lương</label>
+                                        <p id="payDate" th:text="${payroll.payDate}" class="form-control-plaintext"></p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="grossSalary">Lương Tổng (Gross Salary)</label>
+                                        <p id="grossSalary" th:text="${payroll.grossSalary}" class="form-control-plaintext"></p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="netSalary">Lương Thực Nhận (Đã trừ thuế TNCN)</label>
+                                        <p id="netSalary" th:text="${payroll.netSalary}" class="form-control-plaintext"></p>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <a th:href="@{/payroll/edit/{id}(id=${payroll.payrollID})}" class="btn btn-outline-primary">Sửa</a>
+                                    <a th:href="@{/payroll}" class="btn btn-outline-info">Quay về</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <script>
+                            // Lấy giá trị lương từ thẻ HTML
+                            let grossSalary = document.getElementById("grossSalary").innerText;
+                            let netSalary = document.getElementById("netSalary").innerText;
+                            let bhxh = parseFloat(document.getElementById("bhxh").innerText);
+                            let bhyt = parseFloat(document.getElementById("bhyt").innerText);
+                            let bhtn = parseFloat(document.getElementById("bhtn").innerText);
+
+                            grossSalary = parseFloat(grossSalary);
+                            netSalary = parseFloat(netSalary);
+
+                            function formatNumber(num) {
+                                return num.toLocaleString('vi-VN', { style: 'currency', currency: 'VND', minimumFractionDigits: 0 });
+                            }
+
+
+                            // Cập nhật lại các giá trị lương trong HTML với định dạng mới
+                            document.getElementById("grossSalary").innerText = formatNumber(grossSalary);
+                            document.getElementById("netSalary").innerText = formatNumber(netSalary);
+                            document.getElementById("bhxh").innerText = formatNumber(bhxh);
+                            document.getElementById("bhyt").innerText = formatNumber(bhyt);
+                            document.getElementById("bhtn").innerText = formatNumber(bhtn);
+                        </script>
+                    </div>
+                </div>
+            </div>
+</body>
+</html>

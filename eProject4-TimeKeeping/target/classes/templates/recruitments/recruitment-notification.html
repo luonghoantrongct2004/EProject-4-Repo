@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Interview Schedule Notification</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+    <style>
+        /* Flashing Animation */
+        @keyframes flash {
+            0% { background-color: #ffdddd; }
+            50% { background-color: #ff9999; }
+            100% { background-color: #ffdddd; }
+        }
+
+        /* Bouncing Animation */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        .notification-container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 600px;
+            margin: auto;
+            animation: flash 1.5s infinite, bounce 1s infinite; /* Apply flashing and bouncing animation */
+        }
+
+        h2 {
+            color: #4a90e2;
+            text-align: center;
+        }
+
+        .notification-message {
+            font-size: 1.2em;
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .details {
+            font-size: 1.1em;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #4a90e2;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<div class="notification-container">
+    <h2>Interview Schedule Notification</h2>
+    <p class="notification-message">Your interview has been scheduled!</p>
+    <div class="details">
+        <p><strong>Recruitment ID:</strong> <span th:text="${recruitment.recruitmentID}">ID</span></p>
+        <p><strong>Job Title:</strong> <span th:text="${recruitment.jobTitle}">Title</span></p>
+        <p><strong>Interview Date:</strong> <span th:text="${#temporals.format(recruitment.interviewDate, 'yyyy-MM-dd HH:mm')}">Date</span></p>
+        <p><strong>Location:</strong> <span th:text="${recruitment.location}">Location</span></p>
+        <p><strong>Interview Type:</strong> <span th:text="${recruitment.interviewType}">Type</span></p>
+        <p><strong>Notes:</strong> <span th:text="${recruitment.notes}">Notes</span></p>
+        <p><strong>Candidate Name:</strong> <span th:text="${recruitment.candidateName}">Name</span></p>
+        <p><strong>Status:</strong> <span th:text="${recruitment.status}">Status</span></p>
+<!--        <p><strong>Additional Notes:</strong> <span th:text="${recruitment.additionalNotes}">Additional Notes</span></p>-->
+    </div>
+    <a href="/recruitments/list">Back to List</a>
+</div>
+</body>
+</html>

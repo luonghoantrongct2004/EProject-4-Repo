@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Job</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-4">
+  <h2>Edit Job</h2>
+
+  <!-- Display error messages if any -->
+  <div th:if="${error}" class="alert alert-danger" role="alert">
+    <p th:text="${error}"></p>
+  </div>
+
+  <form th:action="@{/jobs/update}" th:object="${job}" method="post" enctype="multipart/form-data">
+    <!-- Hidden field to maintain the job ID for update operation -->
+    <input type="hidden" th:field="*{jobID}">
+
+    <div class="mb-3">
+      <label for="title" class="form-label">Job Title</label>
+      <input type="text" class="form-control" id="title" th:field="*{title}" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="description" class="form-label">Description</label>
+      <textarea class="form-control" id="description" th:field="*{description}" rows="3" required></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label for="requirements" class="form-label">Requirements</label>
+      <textarea class="form-control" id="requirements" th:field="*{requirements}" rows="3" required></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label for="location" class="form-label">Location</label>
+      <input type="text" class="form-control" id="location" th:field="*{location}" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="salaryRange" class="form-label">Salary Range</label>
+      <input type="text" class="form-control" id="salaryRange" th:field="*{salaryRange}" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="postingDate" class="form-label">Posting Date</label>
+      <input type="date" class="form-control" id="postingDate" th:field="*{postingDate}" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="closingDate" class="form-label">Closing Date</label>
+      <input type="date" class="form-control" id="closingDate" th:field="*{closingDate}" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="experienceYears" class="form-label">Experience Years</label>
+      <input type="number" class="form-control" id="experienceYears" th:field="*{experienceYears}" min="0" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="image" class="form-label">Image</label>
+      <!-- Display the current image if it exists -->
+      <div th:if="${job.path}">
+        <img th:src="@{{path}(path=${job.path})}" alt="Job Image" style="margin-top: 10px; max-width: 100%; height: auto;">
+      </div>
+      <!-- File input for uploading a new image -->
+      <input type="file" class="form-control" id="image" name="image" accept="image/*">
+    </div>
+
+    <div class="mb-3">
+      <label for="status" class="form-label">Status</label>
+      <select class="form-select" id="status" th:field="*{status}" required>
+        <option value="Active" th:selected="${job.status == 'Active'}">Active</option>
+        <option value="Closed" th:selected="${job.status == 'Closed'}">Closed</option>
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Update Job</button>
+  </form>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

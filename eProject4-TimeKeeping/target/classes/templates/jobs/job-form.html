@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Job Form</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f8;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 50px;
+            max-width: 500px;
+            margin: 30px auto;
+        }
+
+        h2 {
+            font-size: 28px;
+            margin-bottom: 25px;
+            color: #4a90e2;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-control,
+        .form-control-file {
+            border-radius: 6px;
+            border: 1px solid #ced4da;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.075);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            height: 37.6px; /* Consistent height */
+            width: 100%; /* Full width for responsiveness */
+        }
+
+        .form-control:focus,
+        .form-control-file:focus {
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);
+        }
+
+        .btn-primary {
+            color: #fff;
+            background-color: #007bff;
+            border-color: #007bff;
+            border-radius: 6px;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: 500;
+            text-transform: uppercase;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004080;
+        }
+
+        .btn-primary:focus, .btn-primary.focus {
+            box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5);
+        }
+
+        /* Ensure textarea fits the defined width */
+        .form-control[rows] {
+            height: auto; /* Allow textarea to grow with content */
+            min-height: 37.6px; /* Set minimum height */
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Add New Job</h2>
+    <div th:if="${error}" class="alert alert-danger" role="alert">
+        <p th:text="${error}"></p>
+    </div>
+    <form th:action="@{/jobs/save}" th:object="${job}" method="post" enctype="multipart/form-data">
+        <div class="row mb-3">
+            <div class="col-md-12 form-group">
+                <label for="title">Title</label>
+                <input type="text" class="form-control" id="title" th:field="*{title}" placeholder="Enter job title" required>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-12 form-group">
+                <label for="image">Image</label>
+                <input type="file" class="form-control-file" id="image" name="image" accept="image/*">
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-12 form-group">
+                <label for="description">Description</label>
+                <textarea class="form-control" id="description" th:field="*{description}" placeholder="Enter job description" rows="4" required></textarea>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-12 form-group">
+                <label for="requirements">Requirements</label>
+                <textarea class="form-control" id="requirements" th:field="*{requirements}" placeholder="Enter job requirements" rows="4" required></textarea>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-12 form-group">
+                <label for="location">Location</label>
+                <input type="text" class="form-control" id="location" th:field="*{location}" placeholder="Enter job location" required>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-12 form-group">
+                <label for="salaryRange">Salary Range</label>
+                <input type="text" class="form-control" id="salaryRange" th:field="*{salaryRange}" placeholder="Enter salary range" required pattern="\d+(?:-\d+)?" title="Please enter a valid salary range (e.g., 1000-2000)">
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-12 form-group">
+                <label for="postingDate">Posting Date</label>
+                <input type="date" class="form-control" id="postingDate" th:field="*{postingDate}" required>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-12 form-group">
+                <label for="closingDate">Closing Date</label>
+                <input type="date" class="form-control" id="closingDate" th:field="*{closingDate}" required>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-12 form-group">
+                <label for="status">Status</label>
+                <select class="form-control" id="status" th:field="*{status}">
+                    <option value="">Select status</option>
+                    <option value="Open">Open</option>
+                    <option value="Closed">Closed</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-12 form-group">
+                <label for="experienceYears">Experience Years</label>
+                <input type="number" class="form-control" id="experienceYears" th:field="*{experienceYears}" placeholder="Enter required years of experience" required>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+<script>
+    document.querySelector('form').addEventListener('submit', function(event) {
+        var salaryRange = document.getElementById('salaryRange').value;
+        var regex = /^\d+(-\d+)?$/;
+
+        if (!regex.test(salaryRange)) {
+            alert('Please enter a valid salary range (e.g., 1000-2000)');
+            event.preventDefault(); // Prevent form submission
+        }
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
