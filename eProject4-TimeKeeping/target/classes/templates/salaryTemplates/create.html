@@ -27,6 +27,17 @@
                                                 <input type="number" th:field="*{baseSalary}" id="baseSalary" class="form-control" min="0" step="0.01" required />
                                             </div>
                                         </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="effectiveDate">Ngày hiệu lực</label>
+                                                <input type="date" th:field="*{effectiveDate}" id="effectiveDate" class="form-control" />
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="expiryDate">Ngày hết hạn</label>
+                                                <input type="date" th:field="*{expiryDate}" id="expiryDate" class="form-control" />
+                                            </div>
+                                        </div>
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
                                                 <label for="region">Vùng</label>

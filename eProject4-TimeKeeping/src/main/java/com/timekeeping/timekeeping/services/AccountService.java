@@ -1,10 +1,13 @@
 package com.timekeeping.timekeeping.services;
 
+import com.timekeeping.timekeeping.config.SecurityConfig;
 import com.timekeeping.timekeeping.models.Account;
 import com.timekeeping.timekeeping.models.Role;
 import com.timekeeping.timekeeping.repositories.AccountRepository;
 import jakarta.persistence.EntityManager;
+import org.springframework.context.ApplicationContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,15 +19,20 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class AccountService implements UserDetailsService {
+public class AccountService implements UserDetailsService, ApplicationContextAware {
 
     private final AccountRepository accountRepository;
+
+    private ApplicationContext applicationContext;
 
     @Autowired
     public AccountService(AccountRepository accountRepository) {
         this.accountRepository = accountRepository;
     }
-
+    @Override
+    public void setApplicationContext(ApplicationContext context) {
+        this.applicationContext = context;
+    }
     @Autowired
     private EntityManager entityManager;
     private PasswordEncoder passwordEncoder;
@@ -91,10 +99,12 @@ public class AccountService implements UserDetailsService {
 
 
     public void save(Account account, Role roleId) {
+        PasswordEncoder passwordEncoder = applicationContext.getBean(PasswordEncoder.class);
         account.setRole(roleId);
-        account.setPassword(passwordEncoder.encode(account.getPassword()));
+        account.setPassword(passwordEncoder.encode(account.getPassword())); // Mã hóa mật khẩu
         accountRepository.save(account);
     }
+
     public void update(Account account) {
         accountRepository.save(account); // Cập nhật tài khoản sau khi có đường dẫn ảnh
     }

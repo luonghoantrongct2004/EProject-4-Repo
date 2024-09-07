@@ -27,6 +27,14 @@
                                         <p id="baseSalary" th:text="${salaryTemplate.baseSalary}" class="form-control-plaintext"></p>
                                     </div>
                                     <div class="form-group">
+                                        <label for="expiryDate">Ngày hết hạn</label>
+                                        <p id="expiryDate" th:text="${salaryTemplate.expiryDate}" class="form-control-plaintext"></p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="effectiveDate">Ngày hiệu lục</label>
+                                        <p id="effectiveDate" th:text="${salaryTemplate.effectiveDate}" class="form-control-plaintext"></p>
+                                    </div>
+                                    <div class="form-group">
                                         <label for="region">Vùng</label>
                                         <p id="region" th:text="${salaryTemplate.region.regionName} + ' - ' + ${salaryTemplate.region.minimumWage}" class="form-control-plaintext"></p>
                                     </div>

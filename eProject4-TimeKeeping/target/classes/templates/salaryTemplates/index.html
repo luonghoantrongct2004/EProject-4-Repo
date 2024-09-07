@@ -30,6 +30,8 @@
                                     <th scope="col">Lương cơ bản</th>
                                     <th scope="col">Vùng</th>
                                     <th scope="col">Lương cơ bản cuối cùng</th>
+                                    <th scope="col">Ngày hết hạn</th>
+                                    <th scope="col">Ngày hiệu lực</th>
                                     <th scope="col">Hành động</th>
                                 </tr>
                                 </thead>
@@ -40,6 +42,8 @@
                                     <td th:text="${#numbers.formatDecimal(salaryTemplate.baseSalary, 1, 'COMMA', 2, 'POINT')} + ' VND'"></td>
                                     <td th:text="${salaryTemplate.region.regionName}"></td>
                                     <td th:text="${#numbers.formatDecimal(salaryTemplate.calculateFinalBaseSalary(), 1, 'COMMA', 2, 'POINT')} + ' VND'"></td>
+                                    <td th:text="${salaryTemplate.expiryDate}"></td>
+                                    <td th:text="${salaryTemplate.effectiveDate}"></td>
                                     <td>
                                         <!-- Action Links -->
                                         <a th:href="@{/salaryTemplates/edit/{id}(id=${salaryTemplate.salaryID})}" class="btn btn-primary btn-sm">Sửa</a>

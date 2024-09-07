@@ -2,6 +2,8 @@ package com.timekeeping.timekeeping.models;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+
 @Entity
 public class SalaryTemplate {
     @Id
@@ -9,7 +11,11 @@ public class SalaryTemplate {
     private int salaryID;
     private String gradeName;
     private double baseSalary;
+    // Ngày hiệu lực
+    private LocalDate effectiveDate;
 
+    // Ngày hết hạn
+    private LocalDate expiryDate;
     @ManyToOne
     @JoinColumn(name = "regionID")
     private Region region;
@@ -17,14 +23,31 @@ public class SalaryTemplate {
     public SalaryTemplate() {
     }
 
-    public SalaryTemplate(String gradeName, double baseSalary, Region region) {
+    public SalaryTemplate(int salaryID, String gradeName, double baseSalary, LocalDate effectiveDate, LocalDate expiryDate, Region region) {
+        this.salaryID = salaryID;
         this.gradeName = gradeName;
         this.baseSalary = baseSalary;
+        this.effectiveDate = effectiveDate;
+        this.expiryDate = expiryDate;
         this.region = region;
     }
 
     // Getters and Setters
+    public LocalDate getEffectiveDate() {
+        return effectiveDate;
+    }
 
+    public void setEffectiveDate(LocalDate effectiveDate) {
+        this.effectiveDate = effectiveDate;
+    }
+
+    public LocalDate getExpiryDate() {
+        return expiryDate;
+    }
+
+    public void setExpiryDate(LocalDate expiryDate) {
+        this.expiryDate = expiryDate;
+    }
     public int getSalaryID() {
         return salaryID;
     }
