@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -74,6 +75,8 @@ public class SalaryTemplateController {
     @PostMapping("/edit")
     public String editSalaryTemplate(@ModelAttribute SalaryTemplate salaryTemplate) {
         salaryTemplateService.updateSalaryTemplate(salaryTemplate);
+        salaryTemplate.setEffectiveDate(LocalDate.now());
+        salaryTemplate.setExpiryDate(LocalDate.now().plusMonths(6));
         return "redirect:/salaryTemplates";
     }
 

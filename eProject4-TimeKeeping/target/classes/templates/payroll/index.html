@@ -38,11 +38,11 @@
                                 <tr th:each="payroll, iterStat : ${payrolls}">
                                     <td th:text="${payroll.getPayrollID()}"></td>
                                     <td th:text="${payroll.getAccount().getFullName()}"></td>
-                                    <td th:text="${payroll.getCreatedAt()}"></td>
+                                    <td class="format-date"  th:text="${payroll.getCreatedAt()}"></td>
                                     <td th:text="${payroll.getSalaryTemplate().getGradeName()}"></td>
-                                    <td th:text="${payroll.getPayDate()}"></td>
-                                    <td id="grossSalary" th:text="${payroll.grossSalary}"></td>
-                                    <td id="netSalary" th:text="${payroll.netSalary}"></td>
+                                    <td class="format-date"  th:text="${payroll.getPayDate()}"></td>
+                                    <td class="grossSalary" th:text="${payroll.grossSalary}"></td>
+                                    <td class="netSalary" th:text="${payroll.netSalary}"></td>
                                     <td>
                                         <!-- Action Links -->
                                         <a th:href="@{/payroll/edit/{id}(id=${payroll.getPayrollID()})}" class="btn btn-primary btn-sm">Sửa</a>
@@ -50,46 +50,78 @@
                                     </td>
                                 </tr>
                                 </tbody>
-                            </table>
-                            <script>
-                                // Lấy giá trị lương từ thẻ HTML
-                                let grossSalary = document.getElementById("grossSalary").innerText;
-                                let netSalary = document.getElementById("netSalary").innerText;
 
-                                grossSalary = parseFloat(grossSalary);
-                                netSalary = parseFloat(netSalary);
-
-                                function formatNumber(num) {
-                                    return num.toLocaleString('vi-VN', { style: 'currency', currency: 'VND', minimumFractionDigits: 0 });
-                                }
-
-
-                                // Cập nhật lại các giá trị lương trong HTML với định dạng mới
-                                document.getElementById("grossSalary").innerText = formatNumber(grossSalary);
-                                document.getElementById("netSalary").innerText = formatNumber(netSalary);
-                            </script>
-                            <script>
-                                // Hàm tìm kiếm
-                                function searchPayroll() {
-                                    // Lấy giá trị tìm kiếm
-                                    const searchValue = document.getElementById("searchInput").value.toLowerCase();
-
-                                    // Lấy tất cả các hàng của bảng
-                                    const rows = document.querySelectorAll("#payrollTableBody tr");
-
-                                    rows.forEach(row => {
-                                        // Lấy tên tài khoản từ cột thứ hai (Tên Tài Khoản)
-                                        const fullName = row.querySelector("td:nth-child(2)").innerText.toLowerCase();
-
-                                        // Kiểm tra nếu tên tài khoản chứa giá trị tìm kiếm
-                                        if (fullName.includes(searchValue)) {
-                                            row.style.display = ""; // Hiển thị hàng
-                                        } else {
-                                            row.style.display = "none"; // Ẩn hàng nếu không khớp
+                                <script>
+                                    function formatDateString(dateString) {
+                                        if (!dateString) { // Kiểm tra nếu null hoặc undefined
+                                            return "Chưa có";
                                         }
+
+                                        const date = new Date(dateString);
+                                        if (isNaN(date.getTime())) { // Kiểm tra nếu ngày không hợp lệ
+                                            return "Chưa có";
+                                        }
+
+                                        return date.toLocaleDateString('vi-VN') + ' ' + date.toLocaleTimeString('vi-VN', {
+                                            hour: '2-digit',
+                                            minute: '2-digit'
+                                        });
+                                    }
+
+                                    // Select all elements with the class "format-date"
+                                    const dateElements = document.querySelectorAll('.format-date');
+
+                                    // Loop through each element and format the text
+                                    dateElements.forEach(function(element) {
+                                        const originalDate = element.innerText; // Get original date string
+                                        const formattedDate = formatDateString(originalDate); // Format the date or show "Chưa có"
+                                        element.innerText = formattedDate; // Replace the original text with formatted date
                                     });
-                                }
-                            </script>
+
+                                    // Hàm định dạng số
+                                    function formatNumber(num) {
+                                        return num.toLocaleString('vi-VN', { style: 'currency', currency: 'VND', minimumFractionDigits: 0 });
+                                    }
+
+                                    // Lấy tất cả các phần tử có class "grossSalary" và "netSalary"
+                                    let grossSalaries = document.querySelectorAll(".grossSalary");
+                                    let netSalaries = document.querySelectorAll(".netSalary");
+
+                                    // Định dạng từng phần tử lương gộp
+                                    grossSalaries.forEach(function(item) {
+                                        let value = parseFloat(item.innerText);
+                                        item.innerText = formatNumber(value);
+                                    });
+
+                                    // Định dạng từng phần tử lương ròng
+                                    netSalaries.forEach(function(item) {
+                                        let value = parseFloat(item.innerText);
+                                        item.innerText = formatNumber(value);
+                                    });
+                                </script>
+                                <script>
+                                    // Hàm tìm kiếm
+                                    function searchPayroll() {
+                                        // Lấy giá trị tìm kiếm
+                                        const searchValue = document.getElementById("searchInput").value.toLowerCase();
+
+                                        // Lấy tất cả các hàng của bảng
+                                        const rows = document.querySelectorAll("#payrollTableBody tr");
+
+                                        rows.forEach(row => {
+                                            // Lấy tên tài khoản từ cột thứ hai (Tên Tài Khoản)
+                                            const fullName = row.querySelector("td:nth-child(2)").innerText.toLowerCase();
+
+                                            // Kiểm tra nếu tên tài khoản chứa giá trị tìm kiếm
+                                            if (fullName.includes(searchValue)) {
+                                                row.style.display = ""; // Hiển thị hàng
+                                            } else {
+                                                row.style.display = "none"; // Ẩn hàng nếu không khớp
+                                            }
+                                        });
+                                    }
+                                </script>
+                            </table>
                         </div>
                     </div>
                 </div>

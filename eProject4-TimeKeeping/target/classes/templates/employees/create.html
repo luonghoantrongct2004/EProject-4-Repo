@@ -99,6 +99,7 @@
                                                     <option th:each="role : ${roles}" th:value="${role.roleID}" th:text="${role.name}"></option>
                                                 </select>
                                             </div>
+
                                             <div class="col-md-6 mb-3">
                                                 <label for="status">Trạng Thái</label>
                                                 <select th:field="*{status}" id="status" class="form-control">
@@ -113,6 +114,13 @@
                                             <div class="col-md-6 mb-3">
                                                 <label for="password">Mật Khẩu</label>
                                                 <input type="password" th:field="*{password}" id="password" class="form-control" placeholder="Nhập mật khẩu"/>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="salaryTemplate">Bậc lương</label>
+                                                <select th:field="*{salaryTemplate}" id="salaryTemplate" class="form-control">
+                                                    <option th:each="salary : ${salaries}" th:value="${salary.salaryID}"
+                                                            th:text="${salary.gradeName} + '-' + ${salary.baseSalary}"></option>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>

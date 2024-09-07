@@ -25,9 +25,9 @@ public class PayrollService {
         entityManager.persist(payroll);
         return payroll;
     }
-    //@Scheduled(cron = "0 0 0 1/30 * ?")
+    //@Scheduled(cron = "0 0 0 1/30 * ?") @Scheduled(cron = "0 0 0 1/30 * ?")
     @Transactional
-//    @Scheduled(cron = "*/30 * * * * *") // Run every 30 seconds
+    //@Scheduled(cron = "*/5 * * * * *") // Run every 30 seconds
     @Scheduled(cron = "0 0 0 1/30 * ?")
     public void scheduledGeneratePayroll() {
         List<Account> accounts = getAllAccounts();

@@ -109,12 +109,16 @@ public class Payroll {
     }
 
     public void calculateNetSalary() {
-        if (salaryTemplate.getEffectiveDate().isAfter(payDate)) {
-            throw new IllegalStateException("Mẫu lương chưa có hiệu lực vào ngày thanh toán.");
+        SalaryTemplate salaryTemplate = account.getSalaryTemplate();
+
+        // Kiểm tra xem mẫu lương có hiệu lực hay không
+        LocalDate today = LocalDate.now();
+        if (salaryTemplate.getEffectiveDate() != null && salaryTemplate.getEffectiveDate().isAfter(today)) {
+            throw new IllegalStateException("Mẫu lương chưa có hiệu lực.");
         }
 
-        if (salaryTemplate.getExpiryDate() != null && salaryTemplate.getExpiryDate().isBefore(payDate)) {
-            throw new IllegalStateException("Mẫu lương đã hết hạn vào ngày thanh toán.");
+        if (salaryTemplate.getExpiryDate() != null && salaryTemplate.getExpiryDate().isBefore(today)) {
+            throw new IllegalStateException("Mẫu lương đã hết hạn.");
         }
         double bhxh = grossSalary * 0.08;
         double bhyt = grossSalary * 0.015;

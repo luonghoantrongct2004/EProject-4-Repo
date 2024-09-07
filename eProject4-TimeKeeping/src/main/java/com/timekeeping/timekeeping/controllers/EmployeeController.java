@@ -44,6 +44,8 @@ public class EmployeeController {
     private DepartmentService departmentService;
     @Autowired
     private PayrollService payrollService;
+    @Autowired
+    private SalaryTemplateService salaryTemplateService;
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
@@ -175,6 +177,10 @@ public class EmployeeController {
         model.addAttribute("positions", positions);
         List<Department> departments = departmentService.findAll();
         model.addAttribute("departments", departments);
+        List<SalaryTemplate> salaryTemplates = salaryTemplateService.findAllSalaryTemplates();
+        System.out.println("Salary Templates: " + salaryTemplates);
+        model.addAttribute("salaries", salaryTemplates);
+
         return "employees/create";
     }
 
