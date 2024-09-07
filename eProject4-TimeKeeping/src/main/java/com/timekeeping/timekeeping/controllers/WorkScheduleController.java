@@ -55,7 +55,7 @@ public class WorkScheduleController {
             startOfWeek = LocalDate.parse(week + "-1", formatter);  // Assumes week format yyyy-Www
         } else {
             WeekFields weekFields = WeekFields.of(Locale.getDefault());
-            startOfWeek = LocalDate.now().with(weekFields.dayOfWeek(), 2);
+            startOfWeek = LocalDate.now().with(TemporalAdjusters.next(DayOfWeek.MONDAY));
         }
         LocalDate endOfWeek = startOfWeek.plusDays(6);
 
@@ -151,59 +151,7 @@ public class WorkScheduleController {
         }
 
         model.addAttribute("scheduleMap", scheduleMap);
-        return "workSchedules/view";
-    }
-
-    @GetMapping("/register")
-    public String registerSchedule(@CookieValue(value = "ACCOUNT-ID", defaultValue = "0") int accountID
-            ,@RequestParam(value = "week", required = false) String week,
-                                   Model model) {
-        LocalDate startOfWeek;
-        Account account = accountService.findById(accountID).orElseThrow();
-
-
-        if (week != null && !week.isEmpty()) {
-            DateTimeFormatter formatter = DateTimeFormatter.ISO_WEEK_DATE;
-            startOfWeek = LocalDate.parse(week + "-1", formatter);  // Assumes week format yyyy-Www
-        } else {
-            WeekFields weekFields = WeekFields.of(Locale.getDefault());
-            startOfWeek = LocalDate.now().with(TemporalAdjusters.next(DayOfWeek.MONDAY));
-        }
-        LocalDate endOfWeek = startOfWeek.plusDays(6);
-
-        List<WorkSchedule> weeklySchedules = workScheduleService.getSchedulesForWeek(startOfWeek, endOfWeek);
-
-        List<String> dayNamesInWeek = startOfWeek.datesUntil(endOfWeek.plusDays(1))
-                .map(date -> date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.forLanguageTag("vi"))
-                        + "   \n   " + date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
-                .collect(Collectors.toList());
-
-        List<LocalDate> datesInWeek = startOfWeek.datesUntil(endOfWeek.plusDays(1)).collect(Collectors.toList());
-
-        Map<String, String> dateWithDayName = new LinkedHashMap<>();
-        for (LocalDate date : datesInWeek) {
-            dateWithDayName.put(date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.forLanguageTag("vi")) , date.format(DateTimeFormatter.ofPattern("dd-MM")));
-        }
-
-        model.addAttribute("dateWithDayName", dateWithDayName);
-        model.addAttribute("dayNamesInWeek", dayNamesInWeek);
-        model.addAttribute("datesInWeek", datesInWeek);
-        model.addAttribute("weeklySchedules", weeklySchedules);
-        model.addAttribute("shifts", shiftService.getAllShifts());
-        model.addAttribute("shift", new Shift());
-        model.addAttribute("workSchedule", new WorkSchedule());
-
-        Map<LocalDate, WorkSchedule> scheduleMap = new LinkedHashMap<>();
-
-        for (LocalDate date : datesInWeek) {
-            // Lọc schedule tương ứng với account và ngày cụ thể
-            WorkSchedule schedule = workScheduleService.findScheduleForAccountAndDate(account, date, weeklySchedules);
-            scheduleMap.put(date, schedule);
-        }
-
-        model.addAttribute("scheduleMap", scheduleMap);
-        model.addAttribute("acc", account);
-        return "workSchedules/register";
+        return "workSchedules/viewAdmin";
     }
 
     @PostMapping("/create")
@@ -226,7 +174,7 @@ public class WorkScheduleController {
         workScheduleService.saveSchedule(newSchedule);
 
         if (register != null && !register.isEmpty()) {
-            return "redirect:/workSchedules/register";
+            return "redirect:/registerWorkSchedules";
         }
         return "redirect:/workSchedules";
     }
@@ -249,7 +197,7 @@ public class WorkScheduleController {
     public String saveSchedule(@ModelAttribute("workSchedule") WorkSchedule schedule, @RequestParam(value = "register", required = false) String register) {
         workScheduleService.saveSchedule(schedule);
         if (register != null && !register.isEmpty()) {
-            return "redirect:/workSchedules/register";
+            return "redirect:/register";
         }
         return "redirect:/workSchedules";
     }
@@ -264,7 +212,7 @@ public class WorkScheduleController {
     public String updateShiftSchedule(@RequestParam("scheduleId") int scheduleId, @RequestParam("shiftId") int shiftId, @RequestParam(value = "register", required = false) String register) {
         workScheduleService.updateShiftSchedule(scheduleId, shiftId);
         if (register != null && !register.isEmpty()) {
-            return "redirect:/workSchedules/register";
+            return "redirect:/workSchedules/registerWorkSchedules";
         }
         return "redirect:/workSchedules";
     }

@@ -1,16 +1,47 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Activity Notifications</title>
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-</head>
-<body>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
 
-<div class="container mt-5">
-  <h2 class="text-center mb-4">Activity Notifications</h2>
+<head>
+  <meta charset="utf-8" />
+  <title th:text="${pageTitle}">Lịch Làm Việc</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    th {
+        background-color: #4fba69 !important;
+        color: #fff;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .templateux-navbar {
+        position: relative !important;
+        padding: 0 !important;
+        background-color: #f8f9fa !important;
+    }
+
+    .templateux-navbar .templateux-menu a {
+        text-decoration: none;
+        color: #333 !important;
+    }
+
+    .templateux-navbar .templateux-menu>li.active>a {
+        color: #3d3d3d !important;
+    }
+
+    .templateux-navbar .templateux-logo {
+        margin-top: 0 !important;
+    }
+    .templateux-navbar .templateux-menu a:active, .templateux-navbar .templateux-menu a:focus, .templateux-navbar .templateux-menu a:hover {
+        color: #333;
+        background-color: #f1f1f1 !important;
+    }
+  </style>
+</head>
+
+<body>
+<div layout:fragment="content" class="container">
+  <h2 class="text-center my-4">Activity Notifications</h2>
 
   <div class="list-group">
     <!-- Lặp qua danh sách thông báo -->
@@ -20,15 +51,14 @@
           <h5 class="mb-1" th:text="${notification.activityName}">Activity Title</h5>
           <small th:text="${notification.date}">Date</small>
         </a>
+        <span th:if="${notification.mandatory}" class="rounded-pill bg-danger text-white" style="height: 37px;padding: 6px;">Bắt Buộc</span>
       </div>
       <p class="mb-1" th:text="${notification.description}">Activity description goes here.</p>
     </div>
   </div>
 </div>
 
-<!-- Bootstrap JS và các phụ thuộc khác -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </body>
+
 </html>

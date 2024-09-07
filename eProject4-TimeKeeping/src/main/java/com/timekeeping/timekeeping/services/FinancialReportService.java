@@ -1,13 +1,7 @@
 package com.timekeeping.timekeeping.services;
 
-import com.timekeeping.timekeeping.models.Account;
-import com.timekeeping.timekeeping.models.Activity;
 import com.timekeeping.timekeeping.models.FinancialReport;
-import com.timekeeping.timekeeping.models.Recruitment;
-import com.timekeeping.timekeeping.repositories.AccountRepository;
-import com.timekeeping.timekeeping.repositories.ActivityRepository;
 import com.timekeeping.timekeeping.repositories.FinancialReportRepository;
-import com.timekeeping.timekeeping.repositories.RecruitmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

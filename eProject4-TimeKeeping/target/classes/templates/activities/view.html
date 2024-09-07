@@ -25,8 +25,11 @@
     <label for="reason">Lý do (không tham gia):</label>
     <textarea id="reason" name="reason" required class="form-control"></textarea>
   </div>
-  <a th:href="@{/activities/participate(activityId=${activity.activityId}, accountID=${accountID})}" role="button" class="btn btn-outline-success">Tham gia</a>
-  <button type="submit" class="btn btn-outline-danger">Không Tham Gia</button>
+<!--  <a th:href="@{/activities/participate(activityId=${activity.activityId}, accountID=${accountID})}" role="button" class="btn btn-outline-success">Tham gia</a>-->
+  <a th:href="@{/activities/notifications}" role="button" class="btn btn-outline-success">Tham gia</a>
+<!--  <button type="submit" class="btn btn-outline-danger">Không Tham Gia</button>-->
+  <a th:href="@{/activities/notifications}" role="button" class="btn btn-outline-danger">Không Tham gia</a>
+
 </form>
 </body>
 </html>

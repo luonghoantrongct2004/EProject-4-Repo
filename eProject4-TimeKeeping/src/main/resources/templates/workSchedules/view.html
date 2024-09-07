@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layoutAdmin/main}">
+      layout:decorate="~{layout/main}">
 
 <head>
     <meta charset="utf-8" />
@@ -13,24 +13,46 @@
             text-align: center;
             vertical-align: middle;
         }
+
+        .templateux-navbar {
+            position: relative !important;
+            padding: 0 !important;
+            background-color: #f8f9fa !important;
+        }
+
+        .templateux-navbar .templateux-menu a {
+            text-decoration: none;
+            color: #333 !important;
+        }
+
+        .templateux-navbar .templateux-menu>li.active>a {
+            color: #3d3d3d !important;
+        }
+
+        .templateux-navbar .templateux-logo {
+            margin-top: 0 !important;
+        }
+        .templateux-navbar .templateux-menu a:active, .templateux-navbar .templateux-menu a:focus, .templateux-navbar .templateux-menu a:hover {
+            color: #333;
+            background-color: #f1f1f1 !important;
+        }
     </style>
 </head>
 
 <body>
 <div layout:fragment="content">
-    <div class="row g-4">
+    <div class="row g-4 my-3">
         <div class="col-12">
             <h1 class="text-center">
                 LỊCH LÀM VIỆC
             </h1>
         </div>
     </div>
-    <form action="/workSchedules/view" method="get">
+    <form action="/viewWorkSchedules" method="get">
         <div class="row g-4">
             <div class="col-8"></div>
             <div class="col-4">
                 <div class="input-group">
-
                     <input type="week" class="form-control" id="week" name="week" value="">
 
                     <button class="btn btn-outline-secondary" type="submit">

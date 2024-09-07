@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Financial Report Detail</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h2 class="text-center">BÁO CÁO TÀI CHÍNH</h2>
+    <p><strong>Thời gian báo cáo:</strong> Tháng 8/2024</p>
+    <p><strong>Người lập báo cáo:</strong> <span th:text="${report.account.fullName}">Nguyễn Văn A</span></p>
+    <p><strong>Ngày lập:</strong> <span th:text="${report.createdAt}">07/09/2024</span></p>
+
+    <h4>1. BÁO CÁO LƯƠNG NHÂN VIÊN</h4>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>STT</th>
+            <th>Mã nhân viên</th>
+            <th>Tên nhân viên</th>
+            <th>Vị trí</th>
+            <th>Lương cơ bản (VND)</th>
+            <th>Phụ cấp (VND)</th>
+            <th>Tổng lương (VND)</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="account, iterStat : ${accounts}">
+            <td th:text="${iterStat.index + 1}">1</td>
+            <td th:text="${account.accountID}">NV001</td>
+            <td th:text="${account.fullName}">Trần Thị B</td>
+<!--            <td th:text="${account.position}">Nhân viên kinh doanh</td>-->
+<!--            <td th:text="${#numbers.formatDecimal(account.baseSalary, 1, 0)}">15,000,000</td>-->
+<!--            <td th:text="${#numbers.formatDecimal(account.allowance, 1, 0)}">2,000,000</td>-->
+<!--            <td th:text="${#numbers.formatDecimal(account.totalSalary, 1, 0)}">17,000,000</td>-->
+        </tr>
+<!--        <tr>-->
+<!--            <td colspan="4" class="text-end"><strong>Tổng cộng</strong></td>-->
+<!--            <td th:text="${#numbers.formatDecimal(report.totalBaseSalary, 1, 0)}">59,000,000</td>-->
+<!--            <td th:text="${#numbers.formatDecimal(report.totalAllowance, 1, 0)}">7,800,000</td>-->
+<!--            <td th:text="${#numbers.formatDecimal(report.totalSalaries, 1, 0)}">66,800,000</td>-->
+<!--        </tr>-->
+        </tbody>
+    </table>
+    <p><strong>Tổng lương nhân viên:</strong> <span th:text="${#numbers.formatDecimal(report.totalSalaries, 1, 0)}">66,800,000</span> VND</p>
+
+<!--    <h4>2. BÁO CÁO CHI PHÍ HOẠT ĐỘNG NỘI BỘ</h4>-->
+<!--    <table class="table table-bordered">-->
+<!--        <thead>-->
+<!--        <tr>-->
+<!--            <th>STT</th>-->
+<!--            <th>Mã hoạt động</th>-->
+<!--            <th>Tên hoạt động</th>-->
+<!--            <th>Mục đích</th>-->
+<!--            <th>Ngày tổ chức</th>-->
+<!--            <th>Chi phí (VND)</th>-->
+<!--        </tr>-->
+<!--        </thead>-->
+<!--        <tbody>-->
+<!--        <tr th:each="activity, iterStat : ${report.activities}">-->
+<!--            <td th:text="${iterStat.index + 1}">1</td>-->
+<!--            <td th:text="${activity.activityCode}">HD001</td>-->
+<!--            <td th:text="${activity.name}">Buổi họp chiến lược</td>-->
+<!--            <td th:text="${activity.purpose}">Thảo luận chiến lược công ty</td>-->
+<!--            <td th:text="${#dates.format(activity.date, 'dd/MM/yyyy')}">05/08/2024</td>-->
+<!--            <td th:text="${#numbers.formatDecimal(activity.cost, 1, 0)}">5,000,000</td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--            <td colspan="5" class="text-end"><strong>Tổng cộng</strong></td>-->
+<!--            <td th:text="${#numbers.formatDecimal(report.totalActivityCost, 1, 0)}">18,000,000</td>-->
+<!--        </tr>-->
+<!--        </tbody>-->
+<!--    </table>-->
+<!--    <p><strong>Tổng chi phí hoạt động nội bộ:</strong> <span th:text="${#numbers.formatDecimal(report.totalActivityCost, 1, 0)}">18,000,000</span> VND</p>-->
+</div>
+</body>
+</html>
