@@ -56,42 +56,41 @@
         dots: true,
         loop: true,
         nav : false
-    });
-// Biểu đồ lương (sử dụng dữ liệu thật từ API)
+    });// Salary Chart (using real data from API)
     $.ajax({
         url: "/api/salary/monthlyYearly",
         method: "GET",
         success: function (data) {
             var currentYear = new Date().getFullYear();
             var labels = [];
-            var salaryData = new Array(12).fill(0); // Khởi tạo mảng với 12 phần tử bằng 0
+            var salaryData = new Array(12).fill(0); // Initialize array with 12 elements as 0
 
-            // Tạo nhãn cho 12 tháng của năm hiện tại
+            // Create labels for 12 months of the current year
             for (var i = 1; i <= 12; i++) {
-                labels.push("Tháng " + i + " - " + currentYear);
+                labels.push("Month " + i + " - " + currentYear);
             }
 
-            // Duyệt qua dữ liệu trả về từ API và điền vào mảng salaryData
+            // Loop through the data returned from the API and fill the salaryData array
             data.forEach(function (item) {
                 var year = item[0];
                 var month = item[1];
                 var salary = item[2];
 
-                // Nếu năm từ API trùng với năm hiện tại thì cập nhật dữ liệu lương
+                // If the year from the API matches the current year, update the salary data
                 if (year === currentYear) {
-                    salaryData[month - 1] = salary; // Cập nhật lương vào đúng tháng (chỉ số bắt đầu từ 0)
+                    salaryData[month - 1] = salary; // Update the correct month (index starts at 0)
                 }
             });
 
-            // Khởi tạo biểu đồ với 12 tháng
+            // Initialize the chart with 12 months
             var ctxSalary = $("#salary-chart").get(0).getContext("2d");
             var salaryChart = new Chart(ctxSalary, {
                 type: "bar",
                 data: {
-                    labels: labels,  // Nhãn các tháng
+                    labels: labels,  // Month labels
                     datasets: [{
-                        label: "Tổng lương",
-                        data: salaryData,  // Dữ liệu lương từ API
+                        label: "Total Salary",
+                        data: salaryData,  // Salary data from API
                         backgroundColor: "rgba(0, 156, 255, .7)"
                     }]
                 },
@@ -102,13 +101,13 @@
                             beginAtZero: true,
                             title: {
                                 display: true,
-                                text: 'Số tiền (VND)'
+                                text: 'Amount (VND)'
                             }
                         },
                         x: {
                             title: {
                                 display: true,
-                                text: 'Tháng'
+                                text: 'Month'
                             }
                         }
                     }
@@ -123,7 +122,7 @@
         years.push(i);
     }
 
-// Biểu đồ nhân sự (sử dụng dữ liệu thật từ API)
+// Employee Growth Chart (using real data from API)
     $.ajax({
         url: "/api/employees/yearly",
         method: "GET",
@@ -132,10 +131,10 @@
             var employeeChart = new Chart(ctxEmployee, {
                 type: "line",
                 data: {
-                    labels: years, // Các năm từ năm hiện tại tới 2030
+                    labels: years, // Years from the current year to 2030
                     datasets: [{
-                        label: "Số lượng nhân sự",
-                        data: data, // Dữ liệu số lượng nhân sự từ API
+                        label: "Employee Count",
+                        data: data, // Employee count data from API
                         backgroundColor: "rgba(0, 156, 255, .5)",
                         borderColor: "rgba(0, 156, 255, 1)",
                         fill: true
@@ -148,13 +147,13 @@
                             beginAtZero: true,
                             title: {
                                 display: true,
-                                text: 'Số lượng nhân sự'
+                                text: 'Employee Count'
                             }
                         },
                         x: {
                             title: {
                                 display: true,
-                                text: 'Năm'
+                                text: 'Year'
                             }
                         }
                     }
@@ -163,9 +162,4 @@
         }
     });
 
-
-
-
-
 })(jQuery);
-

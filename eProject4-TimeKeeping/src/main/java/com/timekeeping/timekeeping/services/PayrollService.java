@@ -3,12 +3,14 @@ package com.timekeeping.timekeeping.services;
 import com.timekeeping.timekeeping.models.Payroll;
 import com.timekeeping.timekeeping.models.Account;
 import com.timekeeping.timekeeping.models.AttendanceRecord;
+import com.timekeeping.timekeeping.models.SalaryTemplate;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,16 +21,18 @@ public class PayrollService {
     @PersistenceContext
     private EntityManager entityManager;
 
-    @Transactional
-    public Payroll createPayroll(Payroll payroll) {
-        payroll.calculateNetSalary();
-        entityManager.persist(payroll);
-        return payroll;
-    }
+//    @Transactional
+//    public Payroll createPayroll(Payroll payroll) {
+//        payroll.calculateNetSalary();
+//        entityManager.persist(payroll);
+//        return payroll;
+//    }
     //@Scheduled(cron = "0 0 0 1/30 * ?") @Scheduled(cron = "0 0 0 1/30 * ?")
     @Transactional
-    //@Scheduled(cron = "*/5 * * * * *") // Run every 30 seconds
+//    @Scheduled(cron = "*/15 * * * * *") // Run every 30 seconds
     @Scheduled(cron = "0 0 0 1/30 * ?")
+
+
     public void scheduledGeneratePayroll() {
         List<Account> accounts = getAllAccounts();
         LocalDate today = LocalDate.now();  // Ngày hiện tại
@@ -43,7 +47,107 @@ public class PayrollService {
             }
         }
     }
+    @Transactional
+    public void generatePayroll(Account account, List<AttendanceRecord> attendances) {
+        if (attendances.isEmpty()) {
+            throw new RuntimeException("No attendance records found for the account on the specified date.");
+        }
 
+        // Tổng số giờ làm việc của nhân viên
+        double totalWorkHours = attendances.stream()
+                .mapToDouble(AttendanceRecord::calculateWorkHours)
+                .sum();
+
+        // Tính lương gộp (gross salary) dựa trên số giờ làm việc và lương cơ bản
+        double grossSalary = account.getSalaryTemplate().getBaseSalary() * totalWorkHours;
+
+        // Tạo đối tượng Payroll mới
+        Payroll payroll = new Payroll();
+        payroll.setAccount(account);
+        payroll.setSalaryTemplate(account.getSalaryTemplate());
+        payroll.setGrossSalary(grossSalary);
+
+        // Tính lương thực nhận (net salary), truyền các tham số cần thiết
+        payroll.calculateNetSalary(payroll, attendances, account.getSalaryTemplate());
+
+        System.out.println("Generated Payroll for account: " + account.getFullName() + " with grossSalary: " + grossSalary);
+
+
+        entityManager.persist(payroll);
+    }
+
+
+
+    public void calculateNetSalary(Payroll payroll, List<AttendanceRecord> attendanceRecords, SalaryTemplate salaryTemplate) {
+        double baseSalary = salaryTemplate.getBaseSalary(); // Lương cơ bản theo tháng
+        double standardWorkingDays = 22; // Giả sử 22 ngày làm việc trong tháng
+        double standardWorkingHours = 8; // Số giờ làm việc tiêu chuẩn mỗi ngày
+
+        // Tính lương theo giờ
+        double hourlyRate = baseSalary / (standardWorkingDays * standardWorkingHours);
+
+        // Tổng số giờ làm việc của nhân viên, tính từ clockInTime và clockOutTime
+        double totalWorkingHours = attendanceRecords.stream()
+                .mapToDouble(this::calculateWorkingHours) // Tính số giờ làm việc từ mỗi bản ghi chấm công
+                .sum();
+
+        // Tính lương dựa trên số giờ làm việc thực tế
+        double grossSalary = hourlyRate * totalWorkingHours;
+
+        // Tính bảo hiểm xã hội, bảo hiểm y tế, bảo hiểm thất nghiệp
+        double bhxh = grossSalary * 0.08;
+        double bhyt = grossSalary * 0.015;
+        double bhtn = grossSalary * 0.01;
+        double totalInsurance = bhxh + bhyt + bhtn;
+
+        // Thu nhập chịu thuế
+        double taxableIncome = grossSalary - totalInsurance;
+
+        // Tính thuế thu nhập cá nhân (PIT)
+        double pit = calculatePIT(taxableIncome);
+
+        // Tính lương thực nhận (Net Salary)
+        double netSalary = grossSalary - totalInsurance - pit;
+
+        // Lưu lương thực nhận vào payroll
+        payroll.setNetSalary(netSalary);
+    }
+
+    private double calculateWorkingHours(AttendanceRecord attendanceRecord) {
+        LocalDateTime clockInTime = attendanceRecord.getClockInTime();
+        LocalDateTime clockOutTime = attendanceRecord.getClockOutTime();
+
+        if (clockInTime == null || clockOutTime == null) {
+            // Nếu không có thời gian chấm công hợp lệ, giả sử không có giờ làm việc
+            return 0.0;
+        }
+
+        // Tính số giờ giữa thời gian vào làm và thời gian ra về
+        Duration duration = Duration.between(clockInTime, clockOutTime);
+        double workingHours = duration.toHours() + (duration.toMinutesPart() / 60.0);
+
+        return workingHours;
+    }
+
+    private double calculatePIT(double taxableIncome) {
+        double pit = 0;
+        if (taxableIncome <= 5000000) {
+            pit = taxableIncome * 0.05;
+        } else if (taxableIncome <= 10000000) {
+            pit = 5000000 * 0.05 + (taxableIncome - 5000000) * 0.1;
+        } else if (taxableIncome <= 18000000) {
+            pit = 5000000 * 0.05 + 5000000 * 0.1 + (taxableIncome - 10000000) * 0.15;
+        } else if (taxableIncome <= 32000000) {
+            pit = 5000000 * 0.05 + 5000000 * 0.1 + 8000000 * 0.15 + (taxableIncome - 18000000) * 0.2;
+        } else if (taxableIncome <= 52000000) {
+            pit = 5000000 * 0.05 + 5000000 * 0.1 + 8000000 * 0.15 + 14000000 * 0.2 + (taxableIncome - 32000000) * 0.25;
+        } else if (taxableIncome <= 80000000) {
+            pit = 5000000 * 0.05 + 5000000 * 0.1 + 8000000 * 0.15 + 14000000 * 0.2 + 20000000 * 0.25 + (taxableIncome - 52000000) * 0.3;
+        } else {
+            pit = 5000000 * 0.05 + 5000000 * 0.1 + 8000000 * 0.15 + 14000000 * 0.2 + 20000000 * 0.25 + 28000000 * 0.3 + (taxableIncome - 80000000) * 0.35;
+        }
+        return pit;
+    }
 
 
     public List<Payroll> findPayrollsByCreationDate(LocalDate date) {
@@ -86,7 +190,6 @@ public class PayrollService {
 
     @Transactional
     public Payroll updatePayroll(Payroll payroll) {
-        payroll.calculateNetSalary();
         entityManager.merge(payroll);
         return payroll;
     }
@@ -110,73 +213,17 @@ public class PayrollService {
         return entityManager.createQuery("SELECT a FROM Account a", Account.class).getResultList();
     }
 
-    @Transactional
-    public void generatePayroll(Account account, List<AttendanceRecord> attendances) {
-        if (attendances.isEmpty()) {
-            throw new RuntimeException("No attendance records found for the account on the specified date.");
-        }
 
-        double totalWorkHours = attendances.stream()
-                .mapToDouble(AttendanceRecord::calculateWorkHours)
-                .sum();
-
-        double grossSalary = account.getSalaryTemplate().getBaseSalary() * totalWorkHours;
-
-        Payroll payroll = new Payroll();
-        payroll.setAccount(account);
-        payroll.setSalaryTemplate(account.getSalaryTemplate());
-        payroll.setGrossSalary(grossSalary);
-
-        payroll.calculateNetSalary();
-
-        System.out.println("Generated Payroll for account: " + account.getFullName() + " with grossSalary: " + grossSalary);
-
-        entityManager.persist(payroll);
-    }
-
-
-    public void calculateNetSalary(Payroll payroll) {
-        double grossSalary = payroll.getGrossSalary();
-        double bhxh = grossSalary * 0.08;
-        double bhyt = grossSalary * 0.015;
-        double bhtn = grossSalary * 0.01;
-        double totalInsurance = bhxh + bhyt + bhtn;
-
-        double taxableIncome = grossSalary - totalInsurance;
-        double pit = calculatePIT(taxableIncome);
-
-        payroll.setNetSalary(grossSalary - totalInsurance - pit);
-    }
-
-    private double calculatePIT(double taxableIncome) {
-        double pit = 0;
-        if (taxableIncome <= 5000000) {
-            pit = taxableIncome * 0.05;
-        } else if (taxableIncome <= 10000000) {
-            pit = 5000000 * 0.05 + (taxableIncome - 5000000) * 0.1;
-        } else if (taxableIncome <= 18000000) {
-            pit = 5000000 * 0.05 + 5000000 * 0.1 + (taxableIncome - 10000000) * 0.15;
-        } else if (taxableIncome <= 32000000) {
-            pit = 5000000 * 0.05 + 5000000 * 0.1 + 8000000 * 0.15 + (taxableIncome - 18000000) * 0.2;
-        } else if (taxableIncome <= 52000000) {
-            pit = 5000000 * 0.05 + 5000000 * 0.1 + 8000000 * 0.15 + 14000000 * 0.2 + (taxableIncome - 32000000) * 0.25;
-        } else if (taxableIncome <= 80000000) {
-            pit = 5000000 * 0.05 + 5000000 * 0.1 + 8000000 * 0.15 + 14000000 * 0.2 + 20000000 * 0.25 + (taxableIncome - 52000000) * 0.3;
-        } else {
-            pit = 5000000 * 0.05 + 5000000 * 0.1 + 8000000 * 0.15 + 14000000 * 0.2 + 20000000 * 0.25 + 28000000 * 0.3 + (taxableIncome - 80000000) * 0.35;
-        }
-        return pit;
-    }
-    @Transactional
-    public void updateStaticPayrollData() {
-        List<Payroll> payrolls = findAllPayrolls(); // Lấy tất cả payroll từ database
-
-        for (Payroll payroll : payrolls) {
-            // Gọi hàm tính toán lương
-            calculateNetSalary(payroll);
-
-            // Cập nhật lại payroll với lương mới
-            entityManager.merge(payroll);
-        }
-    }
+//    @Transactional
+//    public void updateStaticPayrollData() {
+//        List<Payroll> payrolls = findAllPayrolls(); // Lấy tất cả payroll từ database
+//
+//        for (Payroll payroll : payrolls) {
+//            // Gọi hàm tính toán lương
+//            calculateNetSalary(payroll);
+//
+//            // Cập nhật lại payroll với lương mới
+//            entityManager.merge(payroll);
+//        }
+//    }
 }

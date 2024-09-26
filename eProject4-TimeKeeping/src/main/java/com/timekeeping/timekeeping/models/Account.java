@@ -49,8 +49,9 @@ public class Account {
     @JsonIgnore
     private Role role;
     @ManyToOne
-    @JoinColumn(name = "salaryID", referencedColumnName = "salaryID")
+    @JoinColumn(name = "salary_template_id")
     private SalaryTemplate salaryTemplate;
+
     @Column(name = "image_paths", columnDefinition = "TEXT")
     private String imagePaths;
     public Account() {

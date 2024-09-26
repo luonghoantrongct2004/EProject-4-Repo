@@ -178,7 +178,6 @@ public class EmployeeController {
         List<Department> departments = departmentService.findAll();
         model.addAttribute("departments", departments);
         List<SalaryTemplate> salaryTemplates = salaryTemplateService.findAllSalaryTemplates();
-        System.out.println("Salary Templates: " + salaryTemplates);
         model.addAttribute("salaries", salaryTemplates);
 
         return "employees/create";
@@ -186,11 +185,12 @@ public class EmployeeController {
 
     @PostMapping("/create")
     public String createEmployee(@ModelAttribute Account account,
+                                 @RequestParam("salaryTemplate") SalaryTemplate salaryTemplate,
                                  @RequestParam("images") MultipartFile[] images,
                                  RedirectAttributes redirectAttributes) {
+        account.setSalaryTemplate(salaryTemplate);
         // Lưu thông tin tài khoản lần đầu tiên để lấy account_id
         accountService.save(account, account.getRole());
-
         String processedFullName = removeAccentAndSpaces(account.getFullName());
         List<String> imagePaths = new ArrayList<>();
 

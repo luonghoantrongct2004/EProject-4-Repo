@@ -25,7 +25,10 @@ public class SalaryTemplateService {
     public SalaryTemplate updateSalaryTemplate(SalaryTemplate salaryTemplate) {
         return entityManager.merge(salaryTemplate);
     }
-
+    public SalaryTemplate findById(Long id) {
+        SalaryTemplate salaryTemplate = entityManager.find(SalaryTemplate.class, id);
+        return salaryTemplate;
+    }
     public Optional<SalaryTemplate> findSalaryTemplateById(int salaryID) {
         SalaryTemplate salaryTemplate = entityManager.find(SalaryTemplate.class, salaryID);
         return Optional.ofNullable(salaryTemplate);

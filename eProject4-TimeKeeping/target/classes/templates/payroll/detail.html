@@ -36,6 +36,26 @@
                                         <p id="payDate" th:text="${payroll.payDate}" class="form-control-plaintext"></p>
                                     </div>
                                     <div class="form-group">
+                                        <label for="bonuses">Tiền thưởng</label>
+                                        <ul id="bonuses" class="form-control-plaintext">
+                                            <li th:each="bonus : ${payroll.bonuses}">
+                                                <span th:text="${bonus.bonusType}"></span>:
+                                                <span th:text="${#numbers.formatDecimal(bonus.amount, 1, 'POINT')}"></span> VND
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="deductions">Tiền khấu trừ</label>
+                                        <ul id="deductions" class="form-control-plaintext">
+                                            <li th:each="deduction : ${payroll.deductions}">
+                                                <span th:text="${deduction.deductionType}"></span>:
+                                                <span th:text="${#numbers.formatDecimal(deduction.amount, 1, 'POINT')}"></span> VND
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="form-group">
                                         <label for="grossSalary">Lương Tổng (Gross Salary)</label>
                                         <p id="grossSalary" th:text="${payroll.grossSalary}" class="form-control-plaintext"></p>
                                     </div>

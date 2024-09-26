@@ -1,8 +1,10 @@
 package com.timekeeping.timekeeping.controllers;
 
 import com.timekeeping.timekeeping.models.Account;
+import com.timekeeping.timekeeping.models.Payroll;
 import com.timekeeping.timekeeping.models.Role;
 import com.timekeeping.timekeeping.services.AccountService;
+import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,17 +18,36 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
 @RequestMapping("/auth")
 public class AuthController {
     private final AuthenticationManager authenticationManager;
-    public AuthController(AuthenticationManager authenticationManager) {
+    public AuthController(AuthenticationManager authenticationManager, EntityManager entityManager) {
         this.authenticationManager = authenticationManager;
+        this.entityManager = entityManager;
     }
     @Autowired
     private AccountService accountService;
+
+    private EntityManager entityManager;
+    @GetMapping("/payrollEmployee")
+    public String payrollEmployee(@RequestParam("accountID") int accountID, Model model) {
+        List<Payroll> payrolls = entityManager.createQuery(
+                        "SELECT p FROM Payroll p WHERE p.account.accountID = :accountID", Payroll.class)
+                .setParameter("accountID", accountID)
+                .getResultList();
+        Optional<Account> accountOptional = accountService.findById(accountID);
+
+            Account account = accountOptional.get();
+            model.addAttribute("account", account);
+        model.addAttribute("payrolls", payrolls);
+
+        return "auth/payrollView";
+    }
+
 
     @GetMapping("/login")
     public String login(Model model) {

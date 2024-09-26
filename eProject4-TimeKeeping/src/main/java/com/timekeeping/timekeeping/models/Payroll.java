@@ -1,7 +1,9 @@
 package com.timekeeping.timekeeping.models;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -29,10 +31,10 @@ public class Payroll {
     private double netSalary;
 
     @OneToMany(mappedBy = "payroll", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Deduction> deductions;
+    private List<Deduction> deductions = new ArrayList<>();
 
     @OneToMany(mappedBy = "payroll", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Bonus> bonuses;
+    private List<Bonus> bonuses = new ArrayList<>();
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -108,45 +110,64 @@ public class Payroll {
         this.bonuses = bonuses;
     }
 
-    public void calculateNetSalary() {
-        SalaryTemplate salaryTemplate = account.getSalaryTemplate();
 
-        // Kiểm tra xem mẫu lương có hiệu lực hay không
-        LocalDate today = LocalDate.now();
-        if (salaryTemplate.getEffectiveDate() != null && salaryTemplate.getEffectiveDate().isAfter(today)) {
-            throw new IllegalStateException("Mẫu lương chưa có hiệu lực.");
-        }
+    public void calculateNetSalary(Payroll payroll, List<AttendanceRecord> attendanceRecords, SalaryTemplate salaryTemplate) {
+        double baseSalary = salaryTemplate.getBaseSalary(); // Lương cơ bản theo tháng
+        double standardWorkingDays = 22; // Giả sử 22 ngày làm việc trong tháng
+        double standardWorkingHours = 8; // Số giờ làm việc tiêu chuẩn mỗi ngày
 
-        if (salaryTemplate.getExpiryDate() != null && salaryTemplate.getExpiryDate().isBefore(today)) {
-            throw new IllegalStateException("Mẫu lương đã hết hạn.");
-        }
+        // Tính tổng số giờ làm việc tiêu chuẩn trong tháng
+        double totalStandardHoursInMonth = standardWorkingDays * standardWorkingHours;
+
+        // Tổng số giờ làm việc thực tế từ các bản ghi chấm công
+        double totalWorkingHours = attendanceRecords.stream()
+                .mapToDouble(this::calculateWorkingHours)
+                .sum();
+
+        // Tính lương theo giờ
+        double hourlyRate = baseSalary / totalStandardHoursInMonth;
+
+        // Tính lương gộp dựa trên số giờ làm việc thực tế
+        double grossSalary = hourlyRate * totalWorkingHours;
+
+        // Tính bảo hiểm xã hội, bảo hiểm y tế, bảo hiểm thất nghiệp
         double bhxh = grossSalary * 0.08;
         double bhyt = grossSalary * 0.015;
         double bhtn = grossSalary * 0.01;
         double totalInsurance = bhxh + bhyt + bhtn;
 
+        // Thu nhập chịu thuế
         double taxableIncome = grossSalary - totalInsurance;
+
+        // Tính thuế thu nhập cá nhân (PIT)
         double pit = calculatePIT(taxableIncome);
 
-        this.netSalary = grossSalary - totalInsurance - pit;
+        // Tính lương thực nhận (Net Salary)
+        double netSalary = grossSalary - totalInsurance - pit;
+
+        grossSalary = grossSalary + baseSalary;
+        // Lưu lương thực nhận vào payroll
+        payroll.setNetSalary(netSalary);
+        payroll.setGrossSalary(grossSalary);
     }
-//    TNCN được tính dựa trên thu nhập chịu thuế theo biểu thuế lũy tiến từng phần:
-//
-//    Thu nhập chịu thuế hàng tháng (VND)	Thuế suất TNCN
-//    Đến 5 triệu	5%
-//            5 - 10 triệu	10%
-//            10 - 18 triệu	15%
-//            18 - 32 triệu	20%
-//            32 - 52 triệu	25%
-//            52 - 80 triệu	30%
-//    Trên 80 triệu	35%
-//Bảo hiểm xã hội (BHXH):
-//    Phần người lao động đóng = 8% lương Gross.
-//    Bảo hiểm y tế (BHYT):
-//    Phần người lao động đóng = 1,5% lương Gross.
-//    Bảo hiểm thất nghiệp (BHTN):
-//    Phần người lao động đóng = 1% lương Gross.
-    // Phương thức tính thuế TNCN theo biểu thuế lũy tiến của Việt Nam
+
+
+
+    private double calculateWorkingHours(AttendanceRecord attendanceRecord) {
+        LocalDateTime clockInTime = attendanceRecord.getClockInTime();
+        LocalDateTime clockOutTime = attendanceRecord.getClockOutTime();
+
+        if (clockInTime == null || clockOutTime == null) {
+            return 0.0;  // Không có giờ làm việc nếu thời gian vào/ra không hợp lệ
+        }
+
+        // Tính số giờ làm việc
+        Duration duration = Duration.between(clockInTime, clockOutTime);
+        double workingHours = duration.toHours() + (duration.toMinutesPart() / 60.0);
+        return workingHours;
+    }
+
+
     private double calculatePIT(double taxableIncome) {
         double pit = 0;
         if (taxableIncome <= 5000000) {
