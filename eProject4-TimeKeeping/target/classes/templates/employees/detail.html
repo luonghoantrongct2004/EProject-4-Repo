@@ -12,39 +12,39 @@
 <div class="row g-4" layout:fragment="content">
                 <div class="col-12">
                     <div class="bg-light rounded h-100 p-4">
-                        <div class="table-responsive">
-                            <div class="card mb-3">
-                                <div class="card-header">
-                                    Thông tin Tài Khoản <span th:text="${account.getFullName()}"></span>
-                                </div>
-                                <div class="card-body">
-                                    <h5 class="card-title">Họ Tên: <span th:text="${account.getFullName()}"></span></h5>
-                                    <p class="card-text">Email: <span th:text="${account.getEmail()}"></span></p>
-                                    <p class="card-text">Số Điện Thoại: <span th:text="${account.getPhoneNumber()}"></span></p>
-                                    <p class="card-text">Giới Tính: <span th:text="${account.getGender()}"></span></p>
-                                    <p class="card-text">Địa Chỉ: <span th:text="${account.getAddress()}"></span></p>
-                                    <p class="card-text">Ngày Thuê: <span th:text="${#dates.format(account.getHireDate(),'yyyy-MM-dd')}"></span></p>
-                                    <p class="card-text">Vị Trí: <span th:text="${account.position != null ? account.position.name : 'N/A'}"></span></p>
-                                    <p class="card-text">Phòng Ban: <span th:text="${account.department != null ? account.department.name : 'N/A'}"></span></p>
-                                    <p class="card-text">Quyền: <span th:text="${account.role != null ? account.role.name : 'N/A'}"></span></p>
-                                    <p class="card-text">Trạng Thái: <span th:text="${account.getStatus()}"></span></p>
-                                    <p class="card-text">Mã Ngân Hàng: <span th:text="${account.getCodeBank()}"></span></p>
-                                </div>
-                                <div class="card-footer">
-                                    <a th:if="${account.getStatus() == 'Active'}"
-                                       th:href="@{/employee/delete/{id}(id=${account.getAccountID()})}"
-                                       class="btn btn-outline-danger"
-                                       onclick="return confirm('Quản lý có chắc chắn muốn tắt tài khoản này?');">Tắt</a>
-                                    <a th:if="${account.getStatus() == 'InActive'}"
-                                       th:href="@{/employee/activate/{id}(id=${account.getAccountID()})}"
-                                       class="btn btn-outline-success"
-                                       onclick="return confirm('Quản lý có chắc chắn muốn bật tài khoản này?');">Bật</a>
-
-                                    <a th:href="@{/employee/edit/{id}(id=${account.getAccountID()})}"
-                                       class="btn btn-outline-primary">Sửa</a>
-                                    <a th:href="@{/employee}" class="btn btn-outline-info">Quay về</a>
-                                </div>
+                        <div class="table-responsive"><div class="card mb-3">
+                            <div class="card-header">
+                                Account Information <span th:text="${account.getFullName()}"></span>
                             </div>
+                            <div class="card-body">
+                                <h5 class="card-title">Full Name: <span th:text="${account.getFullName()}"></span></h5>
+                                <p class="card-text">Email: <span th:text="${account.getEmail()}"></span></p>
+                                <p class="card-text">Phone Number: <span th:text="${account.getPhoneNumber()}"></span></p>
+                                <p class="card-text">Gender: <span th:text="${account.getGender()}"></span></p>
+                                <p class="card-text">Address: <span th:text="${account.getAddress()}"></span></p>
+                                <p class="card-text">Hire Date: <span th:text="${#dates.format(account.getHireDate(),'yyyy-MM-dd')}"></span></p>
+                                <p class="card-text">Position: <span th:text="${account.position != null ? account.position.name : 'N/A'}"></span></p>
+                                <p class="card-text">Department: <span th:text="${account.department != null ? account.department.name : 'N/A'}"></span></p>
+                                <p class="card-text">Role: <span th:text="${account.role != null ? account.role.name : 'N/A'}"></span></p>
+                                <p class="card-text">Status: <span th:text="${account.getStatus()}"></span></p>
+                                <p class="card-text">Bank Code: <span th:text="${account.getCodeBank()}"></span></p>
+                            </div>
+                            <div class="card-footer">
+                                <a th:if="${account.getStatus() == 'Active'}"
+                                   th:href="@{/employee/delete/{id}(id=${account.getAccountID()})}"
+                                   class="btn btn-outline-danger"
+                                   onclick="return confirm('Are you sure you want to deactivate this account?');">Deactivate</a>
+                                <a th:if="${account.getStatus() == 'InActive'}"
+                                   th:href="@{/employee/activate/{id}(id=${account.getAccountID()})}"
+                                   class="btn btn-outline-success"
+                                   onclick="return confirm('Are you sure you want to activate this account?');">Activate</a>
+
+                                <a th:href="@{/employee/edit/{id}(id=${account.getAccountID()})}"
+                                   class="btn btn-outline-primary">Edit</a>
+                                <a th:href="@{/employee}" class="btn btn-outline-info">Back</a>
+                            </div>
+                        </div>
+
 
                         </div>
                     </div>

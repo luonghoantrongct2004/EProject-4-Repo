@@ -13,32 +13,32 @@
 <div class="row g-4" layout:fragment="content">
     <div class="col-12">
         <div class="bg-light rounded h-100 p-4">
-            <h6 class="mb-4">Ca Làm Việc</h6>
+            <h6 class="mb-4">Work Shifts</h6>
             <form th:action="@{/shifts/find}" method="get" class="mb-3">
                 <div class="input-group">
                     <input
                             type="text"
                             class="form-control"
                             name="shiftName"
-                            placeholder="Tìm kiếm theo tên ca làm"
+                            placeholder="Search by shift name"
                             aria-label="Search"
                     />
                     <button class="btn btn-outline-secondary" type="submit">
-                        Tìm kiếm
+                        Search
                     </button>
                 </div>
             </form>
 
-            <a href="/shifts/create" class="btn btn-success mb-3">Tạo Mới</a>
+            <a href="/shifts/create" class="btn btn-success mb-3">Create New</a>
             <div class="table-responsive">
                 <table class="table">
                     <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Tên Ca Làm</th>
-                        <th scope="col">Giờ Vào</th>
-                        <th scope="col">Giờ Ra</th>
-                        <th scope="col">Hành Động</th>
+                        <th scope="col">Shift Name</th>
+                        <th scope="col">Start Time</th>
+                        <th scope="col">End Time</th>
+                        <th scope="col">Actions</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -52,21 +52,20 @@
                             <a
                                     th:href="@{/shifts/edit/{id}(id=${shift.shiftId})}"
                                     class="btn btn-primary btn-sm"
-                            >Sửa</a
-                            >
+                            >Edit</a>
 
                             <a
                                     th:href="@{/shifts/delete/{id}(id=${shift.shiftId})}"
                                     class="btn btn-danger btn-sm"
-                                    onclick="return confirm('Quản lý có chắc chắn muốn xóa ca làm này?');"
-                            >Xóa</a
-                            >
+                                    onclick="return confirm('Are you sure you want to delete this shift?');"
+                            >Delete</a>
                         </td>
                     </tr>
                     </tbody>
                 </table>
             </div>
         </div>
+
     </div>
 </div>
 </body>

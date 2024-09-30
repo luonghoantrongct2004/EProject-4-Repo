@@ -4,16 +4,15 @@
 
 <head>
     <meta charset="utf-8" />
-    <title th:text="${pageTitle}">Lịch Làm Việc</title>
+    <title th:text="${pageTitle}">Work Schedule</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 
-<body>
-<div layout:fragment="content">
+<body><div layout:fragment="content">
     <div class="row g-4">
         <div class="col-12">
             <h1 class="text-center">
-                ĐĂNG KÝ LỊCH LÀM VIỆC
+                WORK SCHEDULE REGISTRATION
             </h1>
         </div>
     </div>
@@ -22,11 +21,9 @@
             <div class="col-8"></div>
             <div class="col-4">
                 <div class="input-group">
-
                     <input type="week" class="form-control" id="week" name="week" value="">
-
                     <button class="btn btn-outline-secondary" type="submit">
-                        Lọc
+                        Filter
                     </button>
                 </div>
             </div>
@@ -39,7 +36,7 @@
                     <table class="table table-bordered">
                         <thead>
                         <tr>
-                            <th style="vertical-align: middle;">Tên</th>
+                            <th style="vertical-align: middle;">Name</th>
                             <th th:each="date : ${dateWithDayName}" style="font-weight: bolder">
                                 <div th:text="${date.key}"></div>
                                 <div th:text="${date.value}"></div>
@@ -52,27 +49,13 @@
                             <td th:each="entry : ${scheduleMap}" style="text-align: center; vertical-align: middle;">
                                 <div th:if="${entry.value != null && (entry.value.status == T(com.timekeeping.timekeeping.enums.ApprovalStatus).APPROVED || entry.value.status == T(com.timekeeping.timekeeping.enums.ApprovalStatus).REJECTED)}" th:text="${entry.value.shift.shiftName}"></div>
                                 <div th:if="${entry.value != null && (entry.value.status != T(com.timekeeping.timekeeping.enums.ApprovalStatus).APPROVED && entry.value.status != T(com.timekeeping.timekeeping.enums.ApprovalStatus).REJECTED)}">
-                                    <!-- Hiển thị thông tin ca làm việc -->
-                                    <form
-                                            th:action="@{/workSchedules/updateShift}"
-                                            method="get"
-                                    >
+                                    <!-- Display work shift information -->
+                                    <form th:action="@{/workSchedules/updateShift}" method="get">
                                         <input type="hidden" name="register" th:value="yes"/>
                                         <input type="hidden" name="scheduleId" th:value="${entry.value.scheduleId}"/>
                                         <div class="input-group">
-                                            <select
-                                                    name="shiftId"
-                                                    required
-                                                    class="form-control"
-                                            >
-                                                <option
-                                                        th:each="shiftOption : ${shifts}"
-                                                        th:value="${shiftOption.shiftId}"
-                                                        th:text="${shiftOption.shiftName}"
-                                                        th:selected="${shiftOption.shiftId} == ${entry.value.shift.shiftId}"
-                                                >
-                                                    Chọn ca làm
-                                                </option>
+                                            <select name="shiftId" required class="form-control">
+                                                <option th:each="shiftOption : ${shifts}" th:value="${shiftOption.shiftId}" th:text="${shiftOption.shiftName}" th:selected="${shiftOption.shiftId} == ${entry.value.shift.shiftId}">Select Shift</option>
                                             </select>
                                             <button type="submit" class="btn btn-outline-success">
                                                 <i class="far fa-check-square"></i>
@@ -82,29 +65,16 @@
                                     <div>Status: <span th:text="${entry.value.status.displayName}"></span></div>
                                 </div>
                                 <div th:if="${entry.value == null}">
-                                    <!-- Hiển thị form tạo ca làm việc mới -->
-                                    <form
-                                            th:action="@{/workSchedules/create}"
-                                            method="post"
-                                    >
+                                    <!-- Display form to create a new work shift -->
+                                    <form th:action="@{/workSchedules/create}" method="post">
                                         <input type="hidden" name="register" th:value="yes"/>
                                         <input type="hidden" name="scheduleId"/>
                                         <input type="hidden" name="date" th:value="${entry.key}"/>
                                         <input type="hidden" name="accountId" th:value="${acc.accountID}"/>
                                         <div class="input-group">
-                                            <select
-                                                    name="shiftId"
-                                                    required
-                                                    class="form-control"
-                                            >
-                                                <option value="" disabled selected>Chọn ca làm</option>
-                                                <option
-                                                        th:each="shiftOption : ${shifts}"
-                                                        th:value="${shiftOption.shiftId}"
-                                                        th:text="${shiftOption.shiftName}"
-                                                >
-                                                    Chọn ca làm
-                                                </option>
+                                            <select name="shiftId" required class="form-control">
+                                                <option value="" disabled selected>Select Shift</option>
+                                                <option th:each="shiftOption : ${shifts}" th:value="${shiftOption.shiftId}" th:text="${shiftOption.shiftName}">Select Shift</option>
                                             </select>
                                             <button type="submit" class="btn btn-outline-success">
                                                 <i class="far fa-plus-square"></i>
@@ -121,6 +91,7 @@
         </div>
     </div>
 </div>
+
 
 
 </body>

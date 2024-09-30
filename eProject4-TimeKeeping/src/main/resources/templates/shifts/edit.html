@@ -16,35 +16,36 @@
                 <form th:object="${shift}" th:action="@{/shifts}" method="post">
                     <div class="card">
                         <div class="card-header">
-                            Thêm Ca Làm
+                            Add Shift
                         </div>
                         <div class="card-body">
                             <input type="hidden" th:field="*{shiftId}" />
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="shiftName">Tên ca làm</label>
+                                    <label for="shiftName">Shift Name</label>
                                     <input type="text" th:field="*{shiftName}" id="shiftName" class="form-control"
-                                           placeholder="Nhập tên ca làm việc" required />
+                                           placeholder="Enter shift name" required />
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="startTime">Thời gian bắt đầu</label>
+                                    <label for="startTime">Start Time</label>
                                     <input type="time" th:field="*{startTime}" id="startTime" class="form-control"
-                                           placeholder="Nhập thời gian bắt đầu" required />
+                                           placeholder="Enter start time" required />
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="endTime">Thời gian kết thúc</label>
+                                    <label for="endTime">End Time</label>
                                     <input type="time" th:field="*{endTime}" id="endTime" class="form-control"
-                                           placeholder="Nhập thời gian kết thúc" />
+                                           placeholder="Enter end time" />
                                 </div>
                             </div>
                         </div>
                         <div class="card-footer text-right">
                             <button type="submit" class="btn btn-outline-success">
-                                Lưu
+                                Save
                             </button>
-                            <a th:href="@{/shifts}" class="btn btn-outline-danger">Quay về</a>
+                            <a th:href="@{/shifts}" class="btn btn-outline-danger">Back</a>
                         </div>
                     </div>
+
                 </form>
             </div>
         </div>

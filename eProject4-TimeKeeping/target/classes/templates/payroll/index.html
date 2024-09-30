@@ -10,120 +10,120 @@
 <body>
 
 <div class="row g-4" layout:fragment="content">
-                <div class="col-12">
-                    <div class="bg-light rounded h-100 p-4">
-                        <h6 class="mb-4">Bảng Lương</h6>
-                        <form class="mb-3">
-                            <div class="input-group">
-                                <input type="text" class="form-control" id="searchInput" placeholder="Tìm kiếm theo tên nhân viên" aria-label="Search">
-                                <button class="btn btn-outline-secondary" type="button" onclick="searchPayroll()">Tìm kiếm</button>
-                            </div>
-                        </form>
-
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Tên Tài Khoản</th>
-                                    <th scope="col">Ngày khởi tạo</th>
-                                    <th scope="col">Tên Mẫu Lương</th>
-                                    <th scope="col">Ngày Trả Lương</th>
-                                    <th scope="col">Lương Gộp</th>
-                                    <th scope="col">Lương Ròng</th>
-                                    <th scope="col">Hành Động</th>
-                                </tr>
-                                </thead>
-                                <tbody id="payrollTableBody">
-                                <tr th:each="payroll, iterStat : ${payrolls}">
-                                    <td th:text="${payroll.getPayrollID()}"></td>
-                                    <td th:text="${payroll.getAccount().getFullName()}"></td>
-                                    <td class="format-date"  th:text="${payroll.getCreatedAt()}"></td>
-                                    <td th:text="${payroll.getSalaryTemplate().getGradeName()}"></td>
-                                    <td class="format-date"  th:text="${payroll.getPayDate()}"></td>
-                                    <td class="grossSalary" th:text="${payroll.grossSalary}"></td>
-                                    <td class="netSalary" th:text="${payroll.netSalary}"></td>
-                                    <td>
-                                        <!-- Action Links -->
-                                        <a th:href="@{/payroll/edit/{id}(id=${payroll.getPayrollID()})}" class="btn btn-primary btn-sm">Sửa</a>
-                                        <a th:href="@{/payroll/{id}(id=${payroll.getPayrollID()})}" class="btn btn-info btn-sm">Chi tiết</a>
-                                    </td>
-                                </tr>
-                                </tbody>
-
-                                <script>
-                                    function formatDateString(dateString) {
-                                        if (!dateString) { // Kiểm tra nếu null hoặc undefined
-                                            return "Chưa có";
-                                        }
-
-                                        const date = new Date(dateString);
-                                        if (isNaN(date.getTime())) { // Kiểm tra nếu ngày không hợp lệ
-                                            return "Chưa có";
-                                        }
-
-                                        return date.toLocaleDateString('vi-VN') + ' ' + date.toLocaleTimeString('vi-VN', {
-                                            hour: '2-digit',
-                                            minute: '2-digit'
-                                        });
-                                    }
-
-                                    // Select all elements with the class "format-date"
-                                    const dateElements = document.querySelectorAll('.format-date');
-
-                                    // Loop through each element and format the text
-                                    dateElements.forEach(function(element) {
-                                        const originalDate = element.innerText; // Get original date string
-                                        const formattedDate = formatDateString(originalDate); // Format the date or show "Chưa có"
-                                        element.innerText = formattedDate; // Replace the original text with formatted date
-                                    });
-
-                                    // Hàm định dạng số
-                                    function formatNumber(num) {
-                                        return num.toLocaleString('vi-VN', { style: 'currency', currency: 'VND', minimumFractionDigits: 0 });
-                                    }
-
-                                    // Lấy tất cả các phần tử có class "grossSalary" và "netSalary"
-                                    let grossSalaries = document.querySelectorAll(".grossSalary");
-                                    let netSalaries = document.querySelectorAll(".netSalary");
-
-                                    // Định dạng từng phần tử lương gộp
-                                    grossSalaries.forEach(function(item) {
-                                        let value = parseFloat(item.innerText);
-                                        item.innerText = formatNumber(value);
-                                    });
-
-                                    // Định dạng từng phần tử lương ròng
-                                    netSalaries.forEach(function(item) {
-                                        let value = parseFloat(item.innerText);
-                                        item.innerText = formatNumber(value);
-                                    });
-                                </script>
-                                <script>
-                                    // Hàm tìm kiếm
-                                    function searchPayroll() {
-                                        // Lấy giá trị tìm kiếm
-                                        const searchValue = document.getElementById("searchInput").value.toLowerCase();
-
-                                        // Lấy tất cả các hàng của bảng
-                                        const rows = document.querySelectorAll("#payrollTableBody tr");
-
-                                        rows.forEach(row => {
-                                            // Lấy tên tài khoản từ cột thứ hai (Tên Tài Khoản)
-                                            const fullName = row.querySelector("td:nth-child(2)").innerText.toLowerCase();
-
-                                            // Kiểm tra nếu tên tài khoản chứa giá trị tìm kiếm
-                                            if (fullName.includes(searchValue)) {
-                                                row.style.display = ""; // Hiển thị hàng
-                                            } else {
-                                                row.style.display = "none"; // Ẩn hàng nếu không khớp
-                                            }
-                                        });
-                                    }
-                                </script>
-                            </table>
+                <div class="col-12"><div class="bg-light rounded h-100 p-4">
+                    <h6 class="mb-4">Payroll</h6>
+                    <form class="mb-3">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="searchInput" placeholder="Search by employee name" aria-label="Search">
+                            <button class="btn btn-outline-secondary" type="button" onclick="searchPayroll()">Search</button>
                         </div>
+                    </form>
+
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Account Name</th>
+                                <th scope="col">Creation Date</th>
+                                <th scope="col">Salary Template Name</th>
+                                <th scope="col">Payment Date</th>
+                                <th scope="col">Gross Salary</th>
+                                <th scope="col">Net Salary</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody id="payrollTableBody">
+                            <tr th:each="payroll, iterStat : ${payrolls}">
+                                <td th:text="${payroll.getPayrollID()}"></td>
+                                <td th:text="${payroll.getAccount().getFullName()}"></td>
+                                <td class="format-date" th:text="${payroll.getCreatedAt()}"></td>
+                                <td th:text="${payroll.getSalaryTemplate().getGradeName()}"></td>
+                                <td class="format-date" th:text="${payroll.getPayDate()}"></td>
+                                <td class="grossSalary" th:text="${payroll.grossSalary}"></td>
+                                <td class="netSalary" th:text="${payroll.netSalary}"></td>
+                                <td>
+                                    <!-- Action Links -->
+                                    <a th:href="@{/payroll/edit/{id}(id=${payroll.getPayrollID()})}" class="btn btn-primary btn-sm">Edit</a>
+                                    <a th:href="@{/payroll/{id}(id=${payroll.getPayrollID()})}" class="btn btn-info btn-sm">Details</a>
+                                </td>
+                            </tr>
+                            </tbody>
+
+                            <script>
+                                function formatDateString(dateString) {
+                                    if (!dateString) { // Check if null or undefined
+                                        return "N/A";
+                                    }
+
+                                    const date = new Date(dateString);
+                                    if (isNaN(date.getTime())) { // Check if the date is invalid
+                                        return "N/A";
+                                    }
+
+                                    return date.toLocaleDateString('vi-VN') + ' ' + date.toLocaleTimeString('vi-VN', {
+                                        hour: '2-digit',
+                                        minute: '2-digit'
+                                    });
+                                }
+
+                                // Select all elements with the class "format-date"
+                                const dateElements = document.querySelectorAll('.format-date');
+
+                                // Loop through each element and format the text
+                                dateElements.forEach(function(element) {
+                                    const originalDate = element.innerText; // Get original date string
+                                    const formattedDate = formatDateString(originalDate); // Format the date or show "N/A"
+                                    element.innerText = formattedDate; // Replace the original text with formatted date
+                                });
+
+                                // Number formatting function
+                                function formatNumber(num) {
+                                    return num.toLocaleString('vi-VN', { style: 'currency', currency: 'VND', minimumFractionDigits: 0 });
+                                }
+
+                                // Get all elements with class "grossSalary" and "netSalary"
+                                let grossSalaries = document.querySelectorAll(".grossSalary");
+                                let netSalaries = document.querySelectorAll(".netSalary");
+
+                                // Format each gross salary element
+                                grossSalaries.forEach(function(item) {
+                                    let value = parseFloat(item.innerText);
+                                    item.innerText = formatNumber(value);
+                                });
+
+                                // Format each net salary element
+                                netSalaries.forEach(function(item) {
+                                    let value = parseFloat(item.innerText);
+                                    item.innerText = formatNumber(value);
+                                });
+                            </script>
+                            <script>
+                                // Search function
+                                function searchPayroll() {
+                                    // Get the search value
+                                    const searchValue = document.getElementById("searchInput").value.toLowerCase();
+
+                                    // Get all rows in the table
+                                    const rows = document.querySelectorAll("#payrollTableBody tr");
+
+                                    rows.forEach(row => {
+                                        // Get the account name from the second column (Account Name)
+                                        const fullName = row.querySelector("td:nth-child(2)").innerText.toLowerCase();
+
+                                        // Check if the account name contains the search value
+                                        if (fullName.includes(searchValue)) {
+                                            row.style.display = ""; // Show the row
+                                        } else {
+                                            row.style.display = "none"; // Hide the row if not matching
+                                        }
+                                    });
+                                }
+                            </script>
+                        </table>
                     </div>
+                </div>
+
                 </div>
             </div>
 </body>
