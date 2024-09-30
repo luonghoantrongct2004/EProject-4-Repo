@@ -56,16 +56,19 @@ public class AuthController {
     }
 
     @PostMapping("/loginSubmit")
-    public String login(@ModelAttribute Account account, Model model, HttpServletResponse response,RedirectAttributes redirectAttributes) {
+    public String login(@ModelAttribute Account account, Model model, HttpServletResponse response, RedirectAttributes redirectAttributes) {
         try {
             if (account.getEmail() == null || account.getEmail().isEmpty() ||
                     account.getPassword() == null || account.getPassword().isEmpty()) {
-                redirectAttributes.addFlashAttribute("error", "Tên đăng nhập và mật khẩu không được để trống!");
+                redirectAttributes.addFlashAttribute("error", "Username and password cannot be empty!");
                 return "redirect:/auth/login";
             }
+
+            // Create authentication token
             UsernamePasswordAuthenticationToken authToken =
                     new UsernamePasswordAuthenticationToken(account.getEmail(), account.getPassword());
 
+            // Authenticate user
             Authentication authentication = authenticationManager.authenticate(authToken);
 
             if (authentication.isAuthenticated()) {
@@ -73,14 +76,21 @@ public class AuthController {
 
                 if (authenticatedAccountOptional.isPresent()) {
                     Account authenticatedAccount = authenticatedAccountOptional.get();
+
+                    // Check if the account is active
+                    if (authenticatedAccount.getStatus() == "InActive") {
+                        redirectAttributes.addFlashAttribute("error", "Your account is not active!");
+                        return "redirect:/auth/login";
+                    }
+
                     Role role = authenticatedAccount.getRole();
 
-                    // Tạo cookie AUTH-TOKEN
+                    // Create AUTH-TOKEN cookie
                     Cookie authCookie = new Cookie("AUTH-TOKEN", authentication.getName());
-                    authCookie.setHttpOnly(false); // Đặt là false để JavaScript có thể truy cập
-                    authCookie.setSecure(false);   // Đặt là false cho môi trường phát triển (HTTPS mới cần true)
-                    authCookie.setMaxAge(7 * 24 * 60 * 60); // Đặt thời gian hết hạn
-                    authCookie.setPath("/"); // Đảm bảo đường dẫn cookie phù hợp
+                    authCookie.setHttpOnly(false);
+                    authCookie.setSecure(false);
+                    authCookie.setMaxAge(7 * 24 * 60 * 60);
+                    authCookie.setPath("/");
 
                     Cookie accountIdCookie = new Cookie("ACCOUNT-ID", String.valueOf(authenticatedAccount.getAccountID()));
                     accountIdCookie.setHttpOnly(false);
@@ -94,33 +104,35 @@ public class AuthController {
                     roleIdCookie.setMaxAge(7 * 24 * 60 * 60);
                     roleIdCookie.setPath("/");
 
+                    // Add cookies to response
                     response.addCookie(authCookie);
                     response.addCookie(accountIdCookie);
                     response.addCookie(roleIdCookie);
 
-
-                    // Kiểm tra ID của vai trò và chuyển hướng tương ứng
+                    // Check role ID and redirect accordingly
                     if (role.getRoleID() >= 1 && role.getRoleID() <= 3) {
-                        redirectAttributes.addFlashAttribute("success", "Xin chào" + role.getName() + "đến với trang quản trị!");
+                        redirectAttributes.addFlashAttribute("success", "Welcome " + role.getName() + " to the admin panel!");
                         return "redirect:/dashboard";
                     } else {
-                        redirectAttributes.addFlashAttribute("success", "Xin chào" + account.getFullName() + "đến với TimeKeeping!");
+                        redirectAttributes.addFlashAttribute("success", "Welcome " + account.getFullName() + " to TimeKeeping!");
                         return "redirect:/home";
                     }
                 } else {
-                    redirectAttributes.addFlashAttribute("error", "Không tìm thấy người dùng!!");
-                    return "auth/login";
+                    redirectAttributes.addFlashAttribute("error", "User not found!");
+                    return "redirect:/auth/login";
                 }
             } else {
-                redirectAttributes.addFlashAttribute("error", "Sai tài khoản hoặc mật khẩu!!");
+                redirectAttributes.addFlashAttribute("error", "Incorrect username or password!");
                 return "redirect:/auth/login";
             }
-        }catch (AuthenticationException e) {
+        } catch (AuthenticationException e) {
             e.printStackTrace();
-            redirectAttributes.addFlashAttribute("error", "Sai email hoặc mật khẩu!!");
+            redirectAttributes.addFlashAttribute("error", "Incorrect email or password!");
             return "redirect:/auth/login";
         }
     }
+
+
     @GetMapping("/profile")
     public String profile(Model model, @RequestParam("AccountId") int accountId) {
         Optional<Account> accountOptional = accountService.findById(accountId);
@@ -130,7 +142,7 @@ public class AuthController {
             model.addAttribute("account", account);
             return "auth/profile";
         } else {
-            return "auth/login";
+            return "redirect:/auth/login";
         }
     }
 
@@ -144,21 +156,22 @@ public class AuthController {
         if (foundAccountOptional.isPresent()) {
             Account foundAccount = foundAccountOptional.get();
 
-            // Kiểm tra mật khẩu hiện tại có đúng không
+            // Check if current password is correct
             if (accountService.checkPassword(currentPassword, foundAccount.getPassword())) {
                 foundAccount.setPassword(newPassword);
                 accountService.save(foundAccount, foundAccount.getRole());
-                redirectAttributes.addFlashAttribute("success", "Đã đổi mật khẩu thành công!!");
+                redirectAttributes.addFlashAttribute("success", "Password changed successfully!");
                 return "redirect:/auth/profile?AccountId=" + accountId;
             } else {
-                redirectAttributes.addFlashAttribute("error", "Mật khẩu hiện tại không đúng!!");
+                redirectAttributes.addFlashAttribute("error", "Current password is incorrect!");
                 return "redirect:/auth/profile?AccountId=" + accountId;
             }
         } else {
-            redirectAttributes.addFlashAttribute("error", "Tài khoản không tồn tại!!");
+            redirectAttributes.addFlashAttribute("error", "Account does not exist!");
             return "redirect:/auth/profile?AccountId=" + accountId;
         }
     }
+
 
 
 }

@@ -10,86 +10,86 @@
 <div class="container-fluid" style="padding-top: 220px; padding-bottom: 50px;">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-        <div class="row">
-            <!-- Cột trái chứa ảnh và liên kết điều hướng -->
-            <div class="col-md-4">
-                <div class="card shadow-sm">
-                    <div class="card-body text-center">
-                        <!-- Ảnh đại diện -->
-                        <p><strong>Ảnh đại diện</strong></p>
-                        <img th:src="@{${account.imagePaths}}" alt="Ảnh đại diện" class="rounded-circle mb-3" width="150px" height="150px" />
-                        <!-- Thông tin cá nhân ngắn gọn -->
-                        <p><strong>Email:</strong> <span th:text="${account.email}">user@example.com</span></p>
-                        <p><strong>Tên:</strong> <span th:text="${account.fullName}">Tên</span></p>
-                    </div>
-                </div>
-
-                <!-- Liên kết điều hướng -->
-                <div class="list-group mt-4">
-                    <a href="/profile?AccountId=${account.accountID}" class="list-group-item list-group-item-action active">
-                        <i class="fas fa-user mr-3 text-primary"></i>Thông tin cá nhân</a>
-                    <a th:href="@{/attendance/show(accountID=${account.accountID})}" class="list-group-item list-group-item-action">
-                        <i class="fas fa-calendar-check mr-3 text-success"></i>Bảng chấm công</a>
-                    <a th:href="@{/auth/payrollEmployee(accountID=${account.accountID})}" class="list-group-item list-group-item-action">
-                        <i class="fas fa-money-bill-alt mr-3 text-warning"></i>Bảng lương</a>
+    <div class="row">
+        <!-- Left column containing image and navigation links -->
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <!-- Profile picture -->
+                    <p><strong>Profile Picture</strong></p>
+                    <img th:src="@{${account.imagePaths}}" alt="Profile Picture" class="rounded-circle mb-3" width="150px" height="150px" />
+                    <!-- Brief personal information -->
+                    <p><strong>Email:</strong> <span th:text="${account.email}">user@example.com</span></p>
+                    <p><strong>Name:</strong> <span th:text="${account.fullName}">Name</span></p>
                 </div>
             </div>
 
-            <!-- Cột phải chứa thông tin chi tiết và form đổi mật khẩu -->
-            <div class="col-md-8">
-                <!-- Thông báo thành công hoặc lỗi -->
-                <div id="successAlert" class="alert alert-success alert-dismissible fade show" th:if="${success}" th:text="${success}" role="alert"></div>
-                <div id="errorAlert" class="alert alert-danger alert-dismissible fade show" th:if="${error}" th:text="${error}" role="alert"></div>
+            <!-- Navigation links -->
+            <div class="list-group mt-4">
+                <a href="/profile?AccountId=${account.accountID}" class="list-group-item list-group-item-action active">
+                    <i class="fas fa-user mr-3 text-primary"></i>Personal Information</a>
+                <a th:href="@{/attendance/show(accountID=${account.accountID})}" class="list-group-item list-group-item-action">
+                    <i class="fas fa-calendar-check mr-3 text-success"></i>Attendance Record</a>
+                <a th:href="@{/auth/payrollEmployee(accountID=${account.accountID})}" class="list-group-item list-group-item-action">
+                    <i class="fas fa-money-bill-alt mr-3 text-warning"></i>Payroll</a>
+            </div>
+        </div>
 
-                <!-- Thông tin chi tiết tài khoản -->
-                <div class="card shadow-sm">
-                    <div class="card-header bg-primary text-white">
-                        <h4 class="mb-0">Thông tin chi tiết</h4>
-                    </div>
-                    <div class="card-body">
-                        <p><strong>Vai trò:</strong> <span th:text="${account.role.name}">Người dùng</span></p>
-                        <p><strong>Địa chỉ:</strong> <span th:text="${account.address}">Địa chỉ</span></p>
-                        <p><strong>Ngày thuê:</strong> <span th:text="${#dates.format(account.hireDate, 'yyyy-MM-dd')}">2022-01-01</span></p>
-                        <p><strong>Phòng ban:</strong>
-                            <span th:text="${account.department != null ? account.department.name : 'Không có'}">Phòng ban</span>
-                        </p>
-                        <p><strong>Vị trí:</strong>
-                            <span th:text="${account.position != null ? account.position.name : 'Không có'}">Vị trí</span>
-                        </p>
-                        <p><strong>Số điện thoại:</strong> <span th:text="${account.phoneNumber}">0123456789</span></p>
-                        <p><strong>Ngày sinh:</strong> <span th:text="${#dates.format(account.birthDate, 'yyyy-MM-dd')}">1990-01-01</span></p>
-                        <p><strong>Giới tính:</strong> <span th:text="${account.gender}">Nam</span></p>
-                        <p><strong>Mã ngân hàng:</strong> <span th:text="${account.codeBank}">123456</span></p>
-                    </div>
+        <!-- Right column containing detailed information and password change form -->
+        <div class="col-md-8">
+            <!-- Success or error alerts -->
+            <div id="successAlert" class="alert alert-success alert-dismissible fade show" th:if="${success}" th:text="${success}" role="alert"></div>
+            <div id="errorAlert" class="alert alert-danger alert-dismissible fade show" th:if="${error}" th:text="${error}" role="alert"></div>
+
+            <!-- Account detail information -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Detailed Information</h4>
                 </div>
+                <div class="card-body">
+                    <p><strong>Role:</strong> <span th:text="${account.role.name}">User</span></p>
+                    <p><strong>Address:</strong> <span th:text="${account.address}">Address</span></p>
+                    <p><strong>Hire Date:</strong> <span th:text="${#dates.format(account.hireDate, 'yyyy-MM-dd')}">2022-01-01</span></p>
+                    <p><strong>Department:</strong>
+                        <span th:text="${account.department != null ? account.department.name : 'N/A'}">Department</span>
+                    </p>
+                    <p><strong>Position:</strong>
+                        <span th:text="${account.position != null ? account.position.name : 'N/A'}">Position</span>
+                    </p>
+                    <p><strong>Phone Number:</strong> <span th:text="${account.phoneNumber}">0123456789</span></p>
+                    <p><strong>Date of Birth:</strong> <span th:text="${#dates.format(account.birthDate, 'yyyy-MM-dd')}">1990-01-01</span></p>
+                    <p><strong>Gender:</strong> <span th:text="${account.gender}">Male</span></p>
+                    <p><strong>Bank Code:</strong> <span th:text="${account.codeBank}">123456</span></p>
+                </div>
+            </div>
 
-                <!-- Form đổi mật khẩu -->
-                <div class="card shadow-sm mt-4">
-                    <div class="card-header bg-secondary text-white">
-                        <h4 class="mb-0">Đổi mật khẩu</h4>
-                    </div>
-                    <div class="card-body">
-                        <form action="/auth/change-password" method="post" id="form-change" onsubmit="return validatePassword()">
-                            <input type="hidden" name="accountID" th:value="${account.accountID}" />
-                            <div class="mb-3">
-                                <label for="currentPassword" class="form-label">Mật khẩu hiện tại</label>
-                                <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="newPassword" class="form-label">Mật khẩu mới</label>
-                                <input type="password" class="form-control" id="newPassword" name="newPassword" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="confirmPassword" class="form-label">Xác nhận mật khẩu mới</label>
-                                <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
-                                <small id="passwordError" class="text-danger" style="display:none;">Mật khẩu không khớp!</small>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Đổi mật khẩu</button>
-                        </form>
-                    </div>
+            <!-- Password change form -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-secondary text-white">
+                    <h4 class="mb-0">Change Password</h4>
+                </div>
+                <div class="card-body">
+                    <form action="/auth/change-password" method="post" id="form-change" onsubmit="return validatePassword()">
+                        <input type="hidden" name="accountID" th:value="${account.accountID}" />
+                        <div class="mb-3">
+                            <label for="currentPassword" class="form-label">Current Password</label>
+                            <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newPassword" class="form-label">New Password</label>
+                            <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                            <small id="passwordError" class="text-danger" style="display:none;">Passwords do not match!</small>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Change Password</button>
+                    </form>
                 </div>
             </div>
         </div>
+    </div>
 
     <script>
         // Thời gian tự động tắt thông báo (5 giây = 5000ms)

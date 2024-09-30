@@ -10,36 +10,36 @@
 <body>
 
 <div class="row g-4" layout:fragment="content">
-                <div class="col-12">
-                    <div class="bg-light rounded h-100 p-4">
-                        <h6 class="mb-4">Chỉnh sửa vùng</h6>
-                        <div class="table-responsive">
-                            <form th:object="${region}" th:action="@{/region/edit}" method="post">
-                                <div class="card">
-                                    <div class="card-header">
-                                        Chỉnh Sửa Thông Tin Vùng <span th:text="${region.regionName}"></span>
-                                    </div>
-                                    <div class="card-body">
-                                        <input type="hidden" th:field="*{regionID}" />
-                                        <div class="row">
-                                            <div class="col-md-6 mb-3">
-                                                <label for="regionName">Tên vùng</label>
-                                                <input type="text" th:field="*{regionName}" id="regionName" class="form-control" placeholder="Nhập tên vùng" />
-                                            </div>
-                                            <div class="col-md-6 mb-3">
-                                                <label for="minimumWage">Mức lương tối thiểu</label>
-                                                <input type="number" th:field="*{minimumWage}" id="minimumWage" class="form-control" placeholder="Nhập mức lương tối thiểu" step="0.01" />
-                                            </div>
+                <div class="col-12"><div class="bg-light rounded h-100 p-4">
+                    <h6 class="mb-4">Edit Region</h6>
+                    <div class="table-responsive">
+                        <form th:object="${region}" th:action="@{/region/edit}" method="post">
+                            <div class="card">
+                                <div class="card-header">
+                                    Edit Information for Region <span th:text="${region.regionName}"></span>
+                                </div>
+                                <div class="card-body">
+                                    <input type="hidden" th:field="*{regionID}" />
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="regionName">Region Name</label>
+                                            <input type="text" th:field="*{regionName}" id="regionName" class="form-control" placeholder="Enter region name" />
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="minimumWage">Minimum Wage</label>
+                                            <input type="number" th:field="*{minimumWage}" id="minimumWage" class="form-control" placeholder="Enter minimum wage" step="0.01" />
                                         </div>
                                     </div>
-                                    <div class="card-footer text-right">
-                                        <button type="submit" class="btn btn-outline-success">Lưu</button>
-                                        <a th:href="@{/region}" class="btn btn-outline-danger">Quay về</a>
-                                    </div>
                                 </div>
-                            </form>
-                        </div>
+                                <div class="card-footer text-right">
+                                    <button type="submit" class="btn btn-outline-success">Save</button>
+                                    <a th:href="@{/region}" class="btn btn-outline-danger">Back</a>
+                                </div>
+                            </div>
+                        </form>
                     </div>
+                </div>
+
 
                 </div>
             </div>

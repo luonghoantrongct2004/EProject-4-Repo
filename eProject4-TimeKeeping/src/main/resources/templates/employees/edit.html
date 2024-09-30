@@ -50,148 +50,147 @@
             }
         }, 3000);
     </script>
-                <div class="col-12">
-                    <div class="bg-light rounded h-100 p-4">
-                        <h6 class="mb-4">Chỉnh sửa nhân viên</h6>
-                        <div class="table-responsive">
-                            <form th:object="${account}" th:action="@{/employee/edit}" method="post" enctype="multipart/form-data">
-                                <div class="card">
-                                    <div class="card-header">
-                                        Chỉnh Sửa Thông Tin Tài Khoản
-                                    </div>
-                                    <div class="card-body">
-                                        <input type="hidden" th:field="*{accountID}" />
-                                        <div class="row">
-                                            <div class="col-md-6 mb-3">
-                                                <label for="fullName">Họ và Tên</label>
-                                                <input type="text" th:field="*{fullName}" id="fullName" class="form-control"/>
-                                            </div>
-                                            <div class="col-md-6 mb-3">
-                                                <label for="username">Tên Đăng Nhập</label>
-                                                <input type="text" th:field="*{username}" id="username" class="form-control"/>
-                                            </div>
-                                            <div class="col-md-6 mb-3">
-                                                <label for="email">Email</label>
-                                                <input type="email" th:field="*{email}" id="email" class="form-control"/>
-                                            </div>
-                                            <!-- Hiển thị các ảnh hiện tại -->
-                                            <div class="col-md-12 mb-3">
-                                                <label for="imagePaths">Ảnh Hiện Tại</label>
-                                                <div id="imagePaths" class="d-flex">
-                                                    <div th:each="imagePath : ${account.getImagePaths()}">
-                                                        <img th:src="@{${imagePath}}" alt="Account Image" style="max-width: 150px; max-height: 150px; margin-right: 10px;" />
-                                                    </div>
+                <div class="col-12"><div class="bg-light rounded h-100 p-4">
+                    <h6 class="mb-4">Edit Employee</h6>
+                    <div class="table-responsive">
+                        <form th:object="${account}" th:action="@{/employee/edit}" method="post" enctype="multipart/form-data">
+                            <div class="card">
+                                <div class="card-header">
+                                    Edit Account Information
+                                </div>
+                                <div class="card-body">
+                                    <input type="hidden" th:field="*{accountID}" />
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="fullName">Full Name</label>
+                                            <input type="text" th:field="*{fullName}" id="fullName" class="form-control"/>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="username">Username</label>
+                                            <input type="text" th:field="*{username}" id="username" class="form-control"/>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="email">Email</label>
+                                            <input type="email" th:field="*{email}" id="email" class="form-control"/>
+                                        </div>
+                                        <!-- Display current images -->
+                                        <div class="col-md-12 mb-3">
+                                            <label for="imagePaths">Current Images</label>
+                                            <div id="imagePaths" class="d-flex">
+                                                <div th:each="imagePath : ${account.getImagePaths()}">
+                                                    <img th:src="@{${imagePath}}" alt="Account Image" style="max-width: 150px; max-height: 150px; margin-right: 10px;" />
                                                 </div>
                                             </div>
+                                        </div>
 
-                                            <!-- Thêm input để chọn ảnh mới -->
-                                            <div class="col-md-12 mb-3">
-                                                <label for="newImages">Tải Lên Ảnh Mới</label>
-                                                <input type="file" id="newImages" name="newImages" class="form-control" multiple accept="image/*" onchange="previewImages(event)">
-                                            </div>
+                                        <!-- Input to select new images -->
+                                        <div class="col-md-12 mb-3">
+                                            <label for="newImages">Upload New Images</label>
+                                            <input type="file" id="newImages" name="newImages" class="form-control" multiple accept="image/*" onchange="previewImages(event)">
+                                        </div>
 
-                                            <!-- Hiển thị ảnh mới được chọn trước khi lưu -->
-                                            <div class="col-md-12 mb-3" id="newImagePreviews">
-                                                <label>Ảnh Mới</label>
-                                                <div id="previewContainer"></div>
-                                            </div>
+                                        <!-- Display new selected images before saving -->
+                                        <div class="col-md-12 mb-3" id="newImagePreviews">
+                                            <label>New Images</label>
+                                            <div id="previewContainer"></div>
+                                        </div>
 
-                                            <script>
-                                                function previewImages(event) {
-                                                    var files = event.target.files;
-                                                    var previewContainer = document.getElementById('previewContainer');
-                                                    previewContainer.innerHTML = "";  // Xóa ảnh preview cũ
+                                        <script>
+                                            function previewImages(event) {
+                                                var files = event.target.files;
+                                                var previewContainer = document.getElementById('previewContainer');
+                                                previewContainer.innerHTML = "";  // Clear old preview images
 
-                                                    for (var i = 0; i < files.length; i++) {
-                                                        var file = files[i];
-                                                        var reader = new FileReader();
+                                                for (var i = 0; i < files.length; i++) {
+                                                    var file = files[i];
+                                                    var reader = new FileReader();
 
-                                                        reader.onload = function(e) {
-                                                            var img = document.createElement('img');
-                                                            img.src = e.target.result;
-                                                            img.style.maxWidth = '150px';
-                                                            img.style.maxHeight = '150px';
-                                                            img.style.marginRight = '10px';
-                                                            previewContainer.appendChild(img);
-                                                        };
+                                                    reader.onload = function(e) {
+                                                        var img = document.createElement('img');
+                                                        img.src = e.target.result;
+                                                        img.style.maxWidth = '150px';
+                                                        img.style.maxHeight = '150px';
+                                                        img.style.marginRight = '10px';
+                                                        previewContainer.appendChild(img);
+                                                    };
 
-                                                        reader.readAsDataURL(file);
-                                                    }
+                                                    reader.readAsDataURL(file);
                                                 }
-                                            </script>
+                                            }
+                                        </script>
 
-                                            <div class="col-md-6 mb-3">
-                                                <label for="phoneNumber">Số Điện Thoại</label>
-                                                <input type="text" th:field="*{phoneNumber}" id="phoneNumber" class="form-control"/>
-                                            </div>
-                                            <div class="col-md-6 mb-3">
-                                                <label for="gender">Giới Tính</label>
-                                                <select th:field="*{gender}" id="gender" class="form-control">
-                                                    <option th:value="Male" th:selected="${account.gender == 'Male'}">Nam</option>
-                                                    <option th:value="Female" th:selected="${account.gender == 'Female'}">Nữ</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-6 mb-3">
-                                                <label for="birthDate">Ngày Sinh</label>
-                                                <input type="date" th:field="*{birthDate}" id="birthDate" class="form-control"/>
-                                            </div>
-                                            <div class="col-md-6 mb-3">
-                                                <label for="address">Địa Chỉ</label>
-                                                <input type="text" th:field="*{address}" id="address" class="form-control"/>
-                                            </div>
-                                            <div class="col-md-6 mb-3">
-                                                <label for="hireDate">Ngày Thuê</label>
-                                                <input type="date" th:field="*{hireDate}" id="hireDate" class="form-control"/>
-                                            </div>
-                                            <div class="col-md-6 mb-3">
-                                                <label for="position">Chức Vụ</label>
-                                                <select th:field="*{position}" id="position" class="form-control">
-                                                    <option th:each="position : ${positions}" th:value="${position.id}" th:text="${position.name}"
-                                                            th:selected="${position.id == account.position?.id}"></option>
-                                                </select>
-                                            </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="phoneNumber">Phone Number</label>
+                                            <input type="text" th:field="*{phoneNumber}" id="phoneNumber" class="form-control"/>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="gender">Gender</label>
+                                            <select th:field="*{gender}" id="gender" class="form-control">
+                                                <option th:value="Male" th:selected="${account.gender == 'Male'}">Male</option>
+                                                <option th:value="Female" th:selected="${account.gender == 'Female'}">Female</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="birthDate">Date of Birth</label>
+                                            <input type="date" th:field="*{birthDate}" id="birthDate" class="form-control"/>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="address">Address</label>
+                                            <input type="text" th:field="*{address}" id="address" class="form-control"/>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="hireDate">Hire Date</label>
+                                            <input type="date" th:field="*{hireDate}" id="hireDate" class="form-control"/>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="position">Position</label>
+                                            <select th:field="*{position}" id="position" class="form-control">
+                                                <option th:each="position : ${positions}" th:value="${position.id}" th:text="${position.name}"
+                                                        th:selected="${position.id == account.position?.id}"></option>
+                                            </select>
+                                        </div>
 
-                                            <div class="col-md-6 mb-3">
-                                                <label for="department">Phòng Ban</label>
-                                                <select th:field="*{department}" id="department" class="form-control">
-                                                    <option th:each="department : ${departments}" th:value="${department.id}" th:text="${department.name}"
-                                                            th:selected="${department.id == account.department?.id}"></option>
-                                                </select>
-                                            </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="department">Department</label>
+                                            <select th:field="*{department}" id="department" class="form-control">
+                                                <option th:each="department : ${departments}" th:value="${department.id}" th:text="${department.name}"
+                                                        th:selected="${department.id == account.department?.id}"></option>
+                                            </select>
+                                        </div>
 
-                                            <div class="col-md-6 mb-3">
-                                                <label for="role">Vai Trò</label>
-                                                <select th:field="*{role}" id="role" class="form-control">
-                                                    <option th:each="role : ${roles}" th:value="${role.roleID}" th:text="${role.name}"
-                                                            th:selected="${role.roleID == account.role?.roleID}"></option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-6 mb-3">
-                                                <label for="status">Trạng Thái</label>
-                                                <select th:field="*{status}" id="status" class="form-control">
-                                                    <option th:value="Active" th:selected="${account.status == 'Active'}">Hoạt Động</option>
-                                                    <option th:value="Inactive" th:selected="${account.status == 'Inactive'}">Không Hoạt Động</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-6 mb-3">
-                                                <label for="codeBank">Mã Ngân Hàng</label>
-                                                <input type="number" th:field="*{codeBank}" id="codeBank" class="form-control"/>
-                                            </div>
-                                            <div class="col-md-6 mb-3">
-                                                <label for="password">Mật Khẩu</label>
-                                                <input type="password" th:field="*{password}" id="password" class="form-control"/>
-                                            </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="role">Role</label>
+                                            <select th:field="*{role}" id="role" class="form-control">
+                                                <option th:each="role : ${roles}" th:value="${role.roleID}" th:text="${role.name}"
+                                                        th:selected="${role.roleID == account.role?.roleID}"></option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="status">Status</label>
+                                            <select th:field="*{status}" id="status" class="form-control">
+                                                <option th:value="Active" th:selected="${account.status == 'Active'}">Active</option>
+                                                <option th:value="Inactive" th:selected="${account.status == 'Inactive'}">Inactive</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="codeBank">Bank Code</label>
+                                            <input type="number" th:field="*{codeBank}" id="codeBank" class="form-control"/>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="password">Password</label>
+                                            <input type="password" th:field="*{password}" id="password" class="form-control"/>
                                         </div>
                                     </div>
-                                    <div class="card-footer text-right">
-                                        <button type="submit" class="btn btn-outline-success">Lưu</button>
-                                        <a th:href="@{/employee}" class="btn btn-outline-danger">Quay về</a>
-                                    </div>
                                 </div>
-                            </form>
-
-                        </div>
+                                <div class="card-footer text-right">
+                                    <button type="submit" class="btn btn-outline-success">Save</button>
+                                    <a th:href="@{/employee}" class="btn btn-outline-danger">Back</a>
+                                </div>
+                            </div>
+                        </form>
                     </div>
+                </div>
+
                 </div>
             </div>
 </body>

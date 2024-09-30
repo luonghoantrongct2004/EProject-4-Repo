@@ -90,18 +90,19 @@ public class EmployeeController {
         // Create a header row
         Row headerRow = sheet.createRow(0);
         headerRow.createCell(0).setCellValue("#");
-        headerRow.createCell(1).setCellValue("Họ Tên");
+        headerRow.createCell(1).setCellValue("Full Name");
         headerRow.createCell(2).setCellValue("Email");
-        headerRow.createCell(3).setCellValue("Giới Tính");
-        headerRow.createCell(4).setCellValue("Vị Trí");
-        headerRow.createCell(5).setCellValue("Phòng Ban");
-        headerRow.createCell(6).setCellValue("Quyền");
-        headerRow.createCell(7).setCellValue("Trạng Thái");
-        headerRow.createCell(8).setCellValue("Ngày Thanh Toán");
-        headerRow.createCell(9).setCellValue("Lương Gộp");
-        headerRow.createCell(10).setCellValue("Lương Thực Nhận");
-        headerRow.createCell(11).setCellValue("Khấu Trừ");
-        headerRow.createCell(12).setCellValue("Thưởng");
+        headerRow.createCell(3).setCellValue("Gender");
+        headerRow.createCell(4).setCellValue("Position");
+        headerRow.createCell(5).setCellValue("Department");
+        headerRow.createCell(6).setCellValue("Role");
+        headerRow.createCell(7).setCellValue("Status");
+        headerRow.createCell(8).setCellValue("Payment Date");
+        headerRow.createCell(9).setCellValue("Gross Salary");
+        headerRow.createCell(10).setCellValue("Net Salary");
+        headerRow.createCell(11).setCellValue("Deductions");
+        headerRow.createCell(12).setCellValue("Bonuses");
+
 
         // Fill the Excel sheet with account and payroll data
         int rowCount = 1;
@@ -196,7 +197,7 @@ public class EmployeeController {
 
         // Kiểm tra số lượng ảnh không vượt quá 5
         if (images.length > 5) {
-            redirectAttributes.addFlashAttribute("error", "Tối đa chỉ được upload 5 ảnh!!");
+            redirectAttributes.addFlashAttribute("error", "Upload maximun 5 image!!");
             return "redirect:/employee/create";
         }
 
@@ -222,7 +223,7 @@ public class EmployeeController {
                 imagePaths.add(relativePath);
 
             } catch (IOException e) {
-                redirectAttributes.addFlashAttribute("error", "Lỗi khi lưu ảnh!!");
+                redirectAttributes.addFlashAttribute("error", "Error upload image!!");
                 return "redirect:/employee/create";
             }
         }
@@ -234,7 +235,7 @@ public class EmployeeController {
         accountService.update(account);
 
         // Thông báo thành công
-        redirectAttributes.addFlashAttribute("success", "Đã tạo tài khoản thành công!");
+        redirectAttributes.addFlashAttribute("success", "Create employee successfully!");
         return "redirect:/employee";
     }
 
@@ -256,7 +257,7 @@ public class EmployeeController {
         Optional<Account> account = accountService.findById(id);
         if (account.isPresent()) {
             model.addAttribute("account", account.get());
-            List<Role> roles = roleService.findAll();
+            List<Role> roles = roleService.findByActive();
             model.addAttribute("roles", roles);
             List<Position> positions = positionService.findAll();
             model.addAttribute("positions", positions);
@@ -271,88 +272,88 @@ public class EmployeeController {
     public String editEmployee(@ModelAttribute Account account,
                                @RequestParam(value = "newImages", required = false) MultipartFile[] newImages,
                                RedirectAttributes redirectAttributes) {
-        // Lấy tài khoản hiện tại từ cơ sở dữ liệu
+        // Fetch the current account from the database
         Optional<Account> currentAccountOpt = accountService.findById(account.getAccountID());
         if (currentAccountOpt.isPresent()) {
             Account currentAccount = currentAccountOpt.get();
 
-            // Nếu mật khẩu không được nhập, giữ nguyên mật khẩu cũ
+            // Preserve the old password if the new one isn't provided
             if (account.getPassword() == null || account.getPassword().isEmpty()) {
                 account.setPassword(currentAccount.getPassword());
             } else {
-                // Nếu mật khẩu mới được nhập, mã hóa mật khẩu
+                // Encode the new password
                 account.setPassword(passwordEncoder.encode(account.getPassword()));
             }
 
-            // Giữ lại danh sách ảnh cũ từ tài khoản
+            // Keep the existing image paths
             List<String> imagePaths = currentAccount.getImagePaths() != null ? currentAccount.getImagePaths() : new ArrayList<>();
             String processedFullName = removeAccentAndSpaces(account.getFullName());
 
-            // Tạo thư mục lưu ảnh nếu chưa có
+            // Create upload directory if it doesn't exist
             String uploadDir = "src/main/resources/static/Data/" + processedFullName;
             File directory = new File(uploadDir);
             if (!directory.exists()) {
                 directory.mkdirs();
             }
 
-            // Kiểm tra xem có bao nhiêu file đã tồn tại trong thư mục
+            // Count existing files in the directory
             File[] existingFiles = directory.listFiles((dir, name) -> name.endsWith(".jpeg"));
             int currentFileCount = existingFiles != null ? existingFiles.length : 0;
 
-            // Kiểm tra nếu có ảnh mới được tải lên và không vượt quá 5 ảnh
+            // Check if new images exceed the limit of 5
             if (newImages != null && newImages.length > 0) {
                 if (currentFileCount + newImages.length > 5) {
-                    redirectAttributes.addFlashAttribute("error", "Tối đa chỉ được lưu 5 ảnh!!");
+                    redirectAttributes.addFlashAttribute("error", "You can only save a maximum of 5 images!");
                     return "redirect:/employee/edit/" + account.getAccountID();
                 }
 
-                // Lưu từng ảnh mới và thêm vào danh sách
+                // Save each new image
                 for (int i = 0; i < newImages.length; i++) {
                     MultipartFile file = newImages[i];
-                    String fileName = (currentFileCount + i + 1) + ".jpeg";  // Đặt tên file từ 1 đến 5
+                    String fileName = (currentFileCount + i + 1) + ".jpeg";  // Naming files from 1 to 5
 
                     try {
                         Path filePath = Paths.get(uploadDir, fileName);
                         Files.write(filePath, file.getBytes());
 
                         String relativePath = "/Data/" + processedFullName + "/" + fileName;
-                        imagePaths.add(relativePath); // Thêm ảnh mới vào danh sách ảnh cũ
+                        imagePaths.add(relativePath); // Add the new image path to the existing list
 
                     } catch (IOException e) {
-                        redirectAttributes.addFlashAttribute("error", "Lỗi khi lưu ảnh!!");
+                        redirectAttributes.addFlashAttribute("error", "Error saving the image!");
                         return "redirect:/employee/edit/" + account.getAccountID();
                     }
                 }
             }
 
-            // Cập nhật lại danh sách ảnh trong tài khoản (giữ lại ảnh cũ nếu không có ảnh mới)
+            // Update the account with the new list of images
             account.setImagePaths(imagePaths);
 
-            // Lưu lại các thay đổi
+            // Save changes to the account
             accountService.update(account);
 
-            redirectAttributes.addFlashAttribute("success", "Đã cập nhật tài khoản thành công!");
+            redirectAttributes.addFlashAttribute("success", "Account updated successfully!");
             return "redirect:/employee";
         } else {
-            redirectAttributes.addFlashAttribute("error", "Tài khoản không tồn tại!");
+            redirectAttributes.addFlashAttribute("error", "Account does not exist!");
             return "redirect:/employee";
         }
     }
 
-
-
     @GetMapping("/delete/{id}")
     public String deleteEmployee(@PathVariable int id, RedirectAttributes redirectAttributes) {
         accountService.delete(id);
-        redirectAttributes.addFlashAttribute("success", "Đã tắt thành công");
+        redirectAttributes.addFlashAttribute("success", "Successfully deactivated.");
         return "redirect:/employee";
     }
+
     @GetMapping("/activate/{id}")
     public String activateEmployee(@PathVariable int id, RedirectAttributes redirectAttributes) {
         accountService.turnOn(id);
-        redirectAttributes.addFlashAttribute("success", "Đã bật thành công");
+        redirectAttributes.addFlashAttribute("success", "Successfully activated.");
         return "redirect:/employee";
     }
+
 
 }
 
