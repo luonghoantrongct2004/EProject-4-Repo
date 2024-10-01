@@ -42,7 +42,14 @@ public class ActivityController {
 
     @PostMapping
     public String saveActivity(@ModelAttribute("activity") Activity activity) {
-        activityService.saveActivity(activity);
+        Optional<Activity> existingActivity = activityService.getActivityById(activity.getActivityId());
+
+        if (existingActivity.isPresent()) {
+            activityService.saveActivity(activity);
+        } else {
+            Activity activityCreate = activityService.saveActivity(activity);
+            activityService.sendEmail(activityCreate);
+        }
         return "redirect:/activities";
     }
 

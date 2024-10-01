@@ -44,10 +44,10 @@ public class WorkScheduleController {
 
         if (name != null && !name.isEmpty()) {
             accounts = accountService.findByNameEmployee(name);
-            model.addAttribute("accounts", accountService.findByNameEmployee(name));
+            model.addAttribute("accounts", accountService.findByName(name));
         } else {
             accounts = accountService.findAll();
-            model.addAttribute("accounts", accountService.findAllEmployees());
+            model.addAttribute("accounts", accountService.findAll());
         }
 
         if (week != null && !week.isEmpty()) {
@@ -55,7 +55,7 @@ public class WorkScheduleController {
             startOfWeek = LocalDate.parse(week + "-1", formatter);  // Assumes week format yyyy-Www
         } else {
             WeekFields weekFields = WeekFields.of(Locale.getDefault());
-            startOfWeek = LocalDate.now().with(weekFields.dayOfWeek(), 2);
+            startOfWeek = LocalDate.now().with(TemporalAdjusters.next(DayOfWeek.MONDAY));
         }
         LocalDate endOfWeek = startOfWeek.plusDays(6);
 
