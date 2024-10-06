@@ -2,6 +2,7 @@ package com.timekeeping.timekeeping.models;
 
 import jakarta.persistence.*;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Entity
@@ -16,11 +17,11 @@ public class ActivityNotification {
 
     @ManyToOne
     @JoinColumn(name = "account_id")
-    private Account account;  // Người nhận thông báo
+    private Account account;
 
     @ManyToOne
     @JoinColumn(name = "activityId")
-    private Activity activity;  // Sự kiện liên quan đến thông báo
+    private Activity activity;
 
     public ActivityNotification() {
     }
@@ -80,5 +81,32 @@ public class ActivityNotification {
 
     public void setActivity(Activity activity) {
         this.activity = activity;
+    }
+
+    public String getTimeAgo() {
+        LocalDateTime now = LocalDateTime.now();
+        Duration duration = Duration.between(notificationTime, now);
+
+        long seconds = duration.getSeconds();
+        if (seconds < 0) {
+            return "Pending";
+        }
+        if (seconds < 60) {
+            return seconds + " seconds ago";
+        }
+        long minutes = duration.toMinutes();
+        if (minutes < 60) {
+            return minutes + " minutes ago";
+        }
+        long hours = duration.toHours();
+        if (hours < 24) {
+            return hours + " hours ago";
+        }
+        long days = duration.toDays();
+        if (days < 30) {
+            return days + " days ago";
+        }
+
+        return "More than a month ago";
     }
 }

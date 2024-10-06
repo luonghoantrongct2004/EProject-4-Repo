@@ -1,11 +1,14 @@
 package com.timekeeping.timekeeping.controllers;
 
+import com.timekeeping.timekeeping.models.Activity;
 import com.timekeeping.timekeeping.models.Shift;
 import com.timekeeping.timekeeping.services.ShiftService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.Optional;
@@ -40,14 +43,22 @@ public class ShiftController {
     }
 
     @PostMapping
-    public String saveShift(@ModelAttribute("shift") Shift shift) {
+    public String saveShift(@ModelAttribute("shift") Shift shift, RedirectAttributes redirectAttributes) {
         shiftService.saveShift(shift);
+        redirectAttributes.addFlashAttribute("successMessage", "Shift saved successfully!");
         return "redirect:/shifts";
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteShift(@PathVariable int id) {
-        shiftService.deleteShift(id);
+    public String deleteShift(@PathVariable int id, Model model) {
+        try {
+            shiftService.deleteShift(id);
+        } catch (DataIntegrityViolationException e) {
+            model.addAttribute("errorMessage", "This shift is being referenced by records in the Work Schedules table. Please delete relevant data before deleting this Shift! (Delete Work Schedule -> Shift)");
+            model.addAttribute("shifts", shiftService.getAllShifts());
+            model.addAttribute("shift", new Shift());
+            return "shifts/index";
+        }
         return "redirect:/shifts";
     }
 

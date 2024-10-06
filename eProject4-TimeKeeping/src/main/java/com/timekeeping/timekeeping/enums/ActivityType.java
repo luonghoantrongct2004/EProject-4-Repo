@@ -1,6 +1,6 @@
 package com.timekeeping.timekeeping.enums;
 
-public enum EventType {
+public enum ActivityType {
     MANDATORY,
     OPTIONAL
 }

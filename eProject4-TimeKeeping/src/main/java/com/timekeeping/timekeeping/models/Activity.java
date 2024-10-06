@@ -1,6 +1,6 @@
 package com.timekeeping.timekeeping.models;
 
-import com.timekeeping.timekeeping.enums.EventType;
+import com.timekeeping.timekeeping.enums.ActivityType;
 import jakarta.persistence.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -21,19 +21,19 @@ public class Activity {
     private String location;
 
     @Enumerated(EnumType.STRING)
-    private EventType eventType;
+    private ActivityType type;
 
     public Activity() {
     }
 
-    public Activity(int activityId, String activityName, String description, LocalDateTime startTime, double budget, String location, EventType eventType) {
+    public Activity(int activityId, String activityName, String description, LocalDateTime startTime, double budget, String location, ActivityType type) {
         this.activityId = activityId;
         this.activityName = activityName;
         this.description = description;
         this.startTime = startTime;
         this.budget = budget;
         this.location = location;
-        this.eventType = eventType;
+        this.type = type;
     }
 
     public int getActivityId() {
@@ -84,12 +84,12 @@ public class Activity {
         this.location = location;
     }
 
-    public EventType getEventType() {
-        return eventType;
+    public ActivityType getType() {
+        return type;
     }
 
-    public void setEventType(EventType eventType) {
-        this.eventType = eventType;
+    public void setType(ActivityType type) {
+        this.type = type;
     }
 }
 
