@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${title}">About Us</title>
+</head>
+<body>
+<div layout:fragment="content">
+  <div class="templateux-cover" style="background-image: url(/home_assets/images/hero_1.jpg);">
+    <div class="container">
+      <div class="row align-items-lg-center">
+        <div class="col-lg-6 order-lg-1 text-center mx-auto">
+          <h1 class="heading mb-3 text-white" data-aos="fade-up">About Us</h1>
+          <p class="lead mb-5 text-white" data-aos="fade-up" data-aos-delay="100">Precise moments,
+            tracked beyond limits, shaping the future through each second.</p>
+          <p data-aos="fade-up" data-aos-delay="200"><a href="" class="btn btn-primary py-3 px-4 mr-3">Get
+            Started</a> <a href="" class="text-white">Learn More</a></p>
+        </div>
+      </div>
+    </div>
+  </div> <!-- .templateux-cover -->
+
+
+  <div class="templateux-section">
+    <div class="container" data-aos="fade-up">
+      <div class="row">
+        <div class="col-lg-7">
+          <h2 class="mb-5">Our Agency</h2>
+          <div class="owl-carousel wide-slider">
+            <div class="item">
+              <img th:src="@{/home_assets/images/slider-1.jpg}" alt="slide1" class="img-fluid">
+            </div>
+            <div class="item">
+              <img th:src="@{/home_assets/images/slider-2.jpg}" alt="slide2" class="img-fluid">
+            </div>
+            <div class="item">
+              <img th:src="@{/home_assets/images/slider-3.jpg}" alt="slide3" class="img-fluid">
+            </div>
+          </div> <!-- .owl-carousel -->
+        </div>
+        <div class="col-lg-5 pl-lg-5">
+          <h2 class="mb-5">Why Choose Us?</h2>
+          <div class="accordion" id="accordionExample">
+            <div class="accordion-item">
+              <h2 class="mb-0 rounded mb-2">
+                <a href="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"
+                   aria-controls="collapseOne">
+                  Accurate and Reliable</a>
+              </h2>
+              <div id="collapseOne" class="collapse show" aria-labelledby="headingOne"
+                   data-parent="#accordionExample">
+                <div class="accordion-body">
+                  <p>Our time management system ensures absolute accuracy, helping you track working hours efficiently without missing any details.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="mb-0 rounded mb-2">
+                <a href="#" class="collapsed" data-toggle="collapse" data-target="#collapseTwo"
+                   aria-expanded="false" aria-controls="collapseTwo">
+                  Smart Automation
+                </a>
+              </h2>
+              <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"
+                   data-parent="#accordionExample">
+                <div class="accordion-body">
+                  <p>With advanced automation features, our system helps reduce manual work, saving time and increasing productivity for your business.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="mb-0 rounded mb-2">
+                <a href="#" class="collapsed" data-toggle="collapse" data-target="#collapseThree"
+                   aria-expanded="false" aria-controls="collapseThree">
+                  Transparent Reporting
+                </a>
+              </h2>
+              <div id="collapseThree" class="collapse" aria-labelledby="headingThree"
+                   data-parent="#accordionExample">
+                <div class="accordion-body">
+                  <p>We provide detailed and easy-to-understand reports, helping you control and analyze working time data clearly and transparently.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="mb-0 rounded mb-2">
+                <a href="#" class="collapsed" data-toggle="collapse" data-target="#collapseFour"
+                   aria-expanded="false" aria-controls="collapseFour">
+                  Easy Integration
+                </a>
+              </h2>
+              <div id="collapseFour" class="collapse" aria-labelledby="headingFour"
+                   data-parent="#accordionExample">
+                <div class="accordion-body">
+                  <p>Our system is compatible and easily integrates with many platforms, helping you manage time conveniently without technical obstacles.</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> <!-- .templateux-section -->
+
+  <div class="templateux-section">
+    <div class="container">
+      <div class="row text-center mb-5">
+        <div class="col-12">
+          <h2>Customer Satisfaction</h2>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-md-8 testimonial-wrap">
+          <div class="quote">&ldquo;</div>
+          <div class="owl-carousel wide-slider-testimonial">
+            <div class="item">
+              <blockquote class="block-testomonial">
+                <p>"Far away from the complex rules of time, our customers have found the accuracy and simplicity they need. They are no longer tied down by minor errors in time management."</p>
+              </blockquote>
+            </div>
+
+            <div class="item">
+              <blockquote class="block-testomonial">
+                <p>&ldquo;When they started using our system, all time tracking issues became clear and transparent. Productivity increased as detailed reports were provided, helping them easily manage their work."</p>
+              </blockquote>
+            </div>
+
+            <div class="item">
+              <blockquote class="block-testomonial">
+                <p>&ldquo;Our Timekeeping system flows smoothly, automating and eliminating manual tasks. Customers can rest assured that every working moment is accurately recorded."</p>
+              </blockquote>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> <!-- .container -->
+  </div> <!-- .templateux-section -->
+
+</div>
+</body>
+</html>

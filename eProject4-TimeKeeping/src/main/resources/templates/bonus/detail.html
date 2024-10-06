@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutAdmin/main}">
+<head>
+    <meta charset="utf-8">
+    <title th:text="${pageTitle}">ADMIM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<div class="row g-4" layout:fragment="content">
+    <div class="col-12">
+        <div class="bg-light rounded h-100 p-4">
+            <div class="table-responsive">
+                <div class="card mb-3">
+                    <div class="card-header">
+                        Bonus Information <span th:text="${bonus.getBonusType()}"></span>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Bonus ID: <span th:text="${bonus.getBonusID()}"></span></h5>
+                        <p class="card-text">Bonus Type: <span th:text="${bonus.getBonusType()}"></span></p>
+                        <p class="card-text">Amount: <span th:text="${bonus.getAmount()}"></span></p>
+                        <div class="card-footer">
+                            <a th:href="@{/bonus/edit/{id}(id=${bonus.getBonusID()})}" class="btn btn-outline-primary">Edit</a>
+                            <a th:href="@{/bonus}" class="btn btn-outline-info">Go back</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

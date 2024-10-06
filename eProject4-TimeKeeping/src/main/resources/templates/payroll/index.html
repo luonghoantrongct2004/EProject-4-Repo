@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutAdmin/main}">
+<head>
+    <meta charset="utf-8">
+    <title th:text="${pageTitle}">ADMIM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<div class="row g-4" layout:fragment="content">
+                <div class="col-12"><div class="bg-light rounded h-100 p-4">
+                    <h6 class="mb-4">Payroll</h6>
+                    <form class="mb-3">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="searchInput" placeholder="Search by employee name" aria-label="Search">
+                        </div>
+                    </form>
+
+                    <div class="table-responsive">
+                        <table class="table" >
+                            <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">FullName</th>
+                                <th scope="col">Creation Date</th>
+                                <th scope="col">Salary Template Name</th>
+                                <th scope="col">Payment Date</th>
+                                <th scope="col">Gross Salary</th>
+                                <th scope="col">Net Salary</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody id="payrollTableBody">
+                            <tr th:each="payroll, iterStat : ${payrolls}">
+                                <td th:text="${payroll.getPayrollID()}"></td>
+                                <td th:text="${payroll.getAccount().getFullName()}"></td>
+                                <td class="format-date" th:text="${payroll.getCreatedAt()}"></td>
+                                <td th:text="${payroll.getSalaryTemplate().getGradeName()}"></td>
+                                <td class="format-date" th:text="${payroll.getPayDate()}"></td>
+                                <td class="grossSalary" th:text="${payroll.grossSalary}"></td>
+                                <td class="netSalary" th:text="${payroll.netSalary}"></td>
+                                <td>
+                                    <!-- Action Links -->
+                                    <a th:href="@{/payroll/edit/{id}(id=${payroll.getPayrollID()})}" class="btn btn-primary btn-sm">Edit</a>
+                                    <a th:href="@{/payroll/{id}(id=${payroll.getPayrollID()})}" class="btn btn-info btn-sm">Details</a>
+                                </td>
+                            </tr>
+                            </tbody>
+
+                            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                            <script>
+                                $(document).ready(function() {
+                                    // Number formatting function
+                                    function formatNumber(num) {
+                                        return num.toLocaleString('vi-VN', { style: 'currency', currency: 'VND', minimumFractionDigits: 0 });
+                                    }
+
+                                    // Get all elements with class "grossSalary" and "netSalary"
+                                    let grossSalaries = document.querySelectorAll(".grossSalary");
+                                    let netSalaries = document.querySelectorAll(".netSalary");
+
+                                    // Format each gross salary element
+                                    grossSalaries.forEach(function(item) {
+                                        let value = parseFloat(item.innerText);
+                                        item.innerText = formatNumber(value);
+                                    });
+
+                                    // Format each net salary element
+                                    netSalaries.forEach(function(item) {
+                                        let value = parseFloat(item.innerText);
+                                        item.innerText = formatNumber(value);
+                                    });
+
+                                    // Search function that filters rows as user types
+                                    $('#searchInput').on('input', function() {
+                                        // Get the search value and trim any extra spaces
+                                        const searchValue = $.trim($(this).val()).toLowerCase();
+
+                                        // Get all rows in the table
+                                        $("#payrollTableBody tr").each(function() {
+                                            // Get the full name from the second column (FullName) and trim it to avoid whitespace issues
+                                            const fullName = $.trim($(this).find("td:nth-child(2)").text()).toLowerCase();
+
+                                            // Check if the full name contains the search value
+                                            if (fullName.includes(searchValue)) {
+                                                $(this).show(); // Show the row
+                                            } else {
+                                                $(this).hide(); // Hide the row if it doesn't match
+                                            }
+                                        });
+                                    });
+                                });
+                            </script>
+                        </table>
+                    </div>
+                </div>
+
+                </div>
+            </div>
+</body>
+</html>

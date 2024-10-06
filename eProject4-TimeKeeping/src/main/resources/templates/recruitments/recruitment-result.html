@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Interview Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        h2 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .details {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+
+        .details p {
+            margin: 5px 0;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        select, textarea {
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 16px;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .accepted-candidates {
+            display: none; /* Hidden by default */
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #4caf50;
+            border-radius: 4px;
+            background-color: #e8f5e9;
+        }
+
+        .accepted-candidates ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .accepted-candidates li {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Send Interview Results Notification</h2>
+
+    <!-- Display Candidate and Interview Details -->
+    <div class="details">
+        <p><strong>Candidate Name:</strong> <span th:text="${interview.candidateName}">Candidate Name</span></p>
+        <p><strong>Interview Date:</strong> <span th:text="${#temporals.format(interview.interviewDate, 'yyyy-MM-dd HH:mm')}">Interview Date</span></p>
+        <p><strong>Location:</strong> <span th:text="${interview.location}">Location</span></p>
+        <p><strong>Interview Type:</strong> <span th:text="${interview.interviewType}">Interview Type</span></p>
+        <p><strong>Notes:</strong> <span th:text="${interview.notes}">Notes</span></p>
+    </div>
+
+    <!-- Form to Send Interview Results -->
+    <form th:action="@{/interviews/result/{id}(id=${interview.id})}" method="post">
+        <input type="hidden" th:field="*{id}"/>
+
+        <label for="result">Result:</label>
+        <select id="result" name="result" onchange="showAcceptedCandidates()">
+            <option value="Accepted">Accepted</option>
+            <option value="Rejected">Rejected</option>
+        </select>
+
+        <!-- Commented out for simplicity, you can include if needed -->
+        <!--
+        <label for="notes">Notes:</label>
+        <textarea id="notes" name="notes"></textarea>
+        -->
+
+        <button type="submit">Send Notification</button>
+    </form>
+
+    <a href="/interviews">Back to Interview List</a>
+
+    <!-- Container for Accepted Candidates -->
+    <div id="accepted-candidates" class="accepted-candidates">
+        <h3>Accepted Candidates</h3>
+        <ul th:each="candidate : ${acceptedCandidates}">
+            <li th:text="${candidate.name}">Candidate Name</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    function showAcceptedCandidates() {
+        var result = document.getElementById('result').value;
+        var container = document.getElementById('accepted-candidates');
+
+        if (result === 'Accepted') {
+            container.style.display = 'block';
+        } else {
+            container.style.display = 'none';
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layoutAdmin/main}"
+>
+<head>
+    <meta charset="utf-8" />
+    <title th:text="${pageTitle}">ADMIM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+
+<body>
+<div class="row g-4" layout:fragment="content">
+    <div class="col-12"><div class="bg-light rounded h-100 p-4">
+        <h6 class="mb-4">Add Work Schedule</h6>
+        <div class="table-responsive">
+            <form th:object="${workSchedule}" th:action="@{/workSchedules}" method="post">
+                <div class="card">
+                    <div class="card-body">
+                        <input type="hidden" th:field="*{scheduleId}" />
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="shiftId">Shift</label>
+                                <select
+                                        id="shiftId"
+                                        name="shiftId"
+                                        th:field="*{shift.shiftId}"
+                                        required
+                                        class="form-control"
+                                >
+                                    <option
+                                            th:each="shift : ${shifts}"
+                                            th:value="${shift.shiftId}"
+                                            th:text="${shift.shiftName}"
+                                    >
+                                        Select Shift
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="accountID">Employee Name</label>
+                                <select
+                                        id="accountID"
+                                        name="accountID"
+                                        th:field="*{account.accountID}"
+                                        required
+                                        class="form-control"
+                                >
+                                    <option
+                                            th:each="account : ${accounts}"
+                                            th:value="${account.accountID}"
+                                            th:text="${account.fullName}"
+                                    >
+                                        Select Employee
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="date">Work Date</label>
+                                <input
+                                        type="date"
+                                        th:field="*{date}"
+                                        id="date"
+                                        class="form-control"
+                                        placeholder="Enter Work Date"
+                                        required
+                                />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="status">Status</label>
+                                <select
+                                        id="status"
+                                        name="status"
+                                        th:field="*{status}"
+                                        required
+                                        class="form-control"
+                                >
+                                    <option
+                                            th:each="status : ${T(com.timekeeping.timekeeping.enums.ApprovalStatus).values()}"
+                                            th:value="${status}"
+                                            th:text="${status.displayName}"
+                                    >
+                                        Select Status
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer text-right">
+                        <button type="submit" class="btn btn-outline-success">
+                            Save
+                        </button>
+                        <a th:href="@{/workSchedules}" class="btn btn-outline-danger">Back</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${title}">Profile</title>
+</head>
+<body style="background-image: url('https://imgs.search.brave.com/4nLMXgCOnsi3gGsNZT8Re-BdhQ6a7w4SHsYVE7QN0dU/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/ZnJlZXBpay5jb20v/ZnJlZS1waG90by9h/YnN0cmFjdC1uZXR3/b3JraW5nLWNvbmNl/cHQtc3RpbGwtbGlm/ZS1hcnJhbmdlbWVu/dF8yMy0yMTQ5MDM1/NzA5LmpwZz9zaXpl/PTYyNiZleHQ9anBn'); background-size: contain;">
+<div  layout:fragment="content" >
+<div class="container-fluid" style="padding-top: 220px; padding-bottom: 50px;">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <div class="row">
+        <!-- Left column containing image and navigation links -->
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <!-- Profile picture -->
+                    <p><strong>Profile Picture</strong></p>
+                    <img th:src="@{${account.imagePaths}}" alt="Profile Picture" class="rounded-circle mb-3" width="150px" height="150px" />
+                    <!-- Brief personal information -->
+                    <p><strong>Email:</strong> <span th:text="${account.email}">user@example.com</span></p>
+                    <p><strong>Name:</strong> <span th:text="${account.fullName}">Name</span></p>
+                </div>
+            </div>
+
+            <!-- Navigation links -->
+            <div class="list-group mt-4">
+                <a href="/profile?AccountId=${account.accountID}" class="list-group-item list-group-item-action active">
+                    <i class="fas fa-user mr-3 text-primary"></i>Personal Information</a>
+                <a th:href="@{/attendance/show(accountID=${account.accountID})}" class="list-group-item list-group-item-action">
+                    <i class="fas fa-calendar-check mr-3 text-success"></i>Attendance Record</a>
+                <a th:href="@{/auth/payrollEmployee(accountID=${account.accountID})}" class="list-group-item list-group-item-action">
+                    <i class="fas fa-money-bill-alt mr-3 text-warning"></i>Payroll</a>
+            </div>
+        </div>
+
+        <!-- Right column containing detailed information and password change form -->
+        <div class="col-md-8">
+            <!-- Success or error alerts -->
+            <div id="successAlert" class="alert alert-success alert-dismissible fade show" th:if="${success}" th:text="${success}" role="alert"></div>
+            <div id="errorAlert" class="alert alert-danger alert-dismissible fade show" th:if="${error}" th:text="${error}" role="alert"></div>
+
+            <!-- Account detail information -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Detailed Information</h4>
+                </div>
+                <div class="card-body">
+                    <p><strong>Role:</strong> <span th:text="${account.role.name}">User</span></p>
+                    <p><strong>Address:</strong> <span th:text="${account.address}">Address</span></p>
+                    <p><strong>Hire Date:</strong> <span th:text="${#dates.format(account.hireDate, 'yyyy-MM-dd')}">2022-01-01</span></p>
+                    <p><strong>Department:</strong>
+                        <span th:text="${account.department != null ? account.department.name : 'N/A'}">Department</span>
+                    </p>
+                    <p><strong>Position:</strong>
+                        <span th:text="${account.position != null ? account.position.name : 'N/A'}">Position</span>
+                    </p>
+                    <p><strong>Phone Number:</strong> <span th:text="${account.phoneNumber}">0123456789</span></p>
+                    <p><strong>Date of Birth:</strong> <span th:text="${#dates.format(account.birthDate, 'yyyy-MM-dd')}">1990-01-01</span></p>
+                    <p><strong>Gender:</strong> <span th:text="${account.gender}">Male</span></p>
+                    <p><strong>Bank Code:</strong> <span th:text="${account.codeBank}">123456</span></p>
+                </div>
+            </div>
+
+            <!-- Password change form -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-secondary text-white">
+                    <h4 class="mb-0">Change Password</h4>
+                </div>
+                <div class="card-body">
+                    <form action="/auth/change-password" method="post" id="form-change" onsubmit="return validatePassword()">
+                        <input type="hidden" name="accountID" th:value="${account.accountID}" />
+                        <div class="mb-3">
+                            <label for="currentPassword" class="form-label">Current Password</label>
+                            <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newPassword" class="form-label">New Password</label>
+                            <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                            <small id="passwordError" class="text-danger" style="display:none;">Passwords do not match!</small>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Change Password</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Thời gian tự động tắt thông báo (5 giây = 5000ms)
+        setTimeout(function() {
+            var successAlert = document.getElementById('successAlert');
+            if (successAlert) {
+                successAlert.classList.remove('show');
+                successAlert.classList.add('fade');
+            }
+        }, 3000); // Tự động tắt sau 5 giây
+
+        setTimeout(function() {
+            var errorAlert = document.getElementById('errorAlert');
+            if (errorAlert) {
+                errorAlert.classList.remove('show');
+                errorAlert.classList.add('fade');
+            }
+        }, 3000);
+    </script>
+    <script>
+        function validatePassword() {
+            // Lấy giá trị của hai trường mật khẩu
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            // So sánh mật khẩu mới và mật khẩu xác nhận
+            if (newPassword !== confirmPassword) {
+                // Nếu không khớp, hiển thị thông báo lỗi
+                document.getElementById('passwordError').style.display = 'block';
+                return false; // Ngăn việc submit form
+            } else {
+                // Nếu khớp, ẩn thông báo lỗi (nếu có)
+                document.getElementById('passwordError').style.display = 'none';
+                return true; // Cho phép submit form
+            }
+        }
+    </script>
+</div>
+</div>
+</body>
+</html>

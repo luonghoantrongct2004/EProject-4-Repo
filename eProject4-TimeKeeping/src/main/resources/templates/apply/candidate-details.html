@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutAdmin/main}">
+
+
+<head>
+  <meta charset="utf-8">
+  <title th:text="${pageTitle}">ADMIM</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+<div class="row g-4" layout:fragment="content">
+  <div class="col-12">
+    <div class="bg-light rounded h-100 p-4">
+      <div class="table-responsive">
+        <div class="card mb-3">
+          <h2>Candidate Details</h2>
+
+          <p><strong>ID:</strong> <span th:text="${candidate.candidateID}"></span></p>
+          <p><strong>First Name:</strong> <span th:text="${candidate.firstName}"></span></p>
+          <p><strong>Last Name:</strong> <span th:text="${candidate.lastName}"></span></p>
+          <p><strong>Email:</strong> <span th:text="${candidate.email}"></span></p>
+          <p><strong>Phone Number:</strong> <span th:text="${candidate.phoneNumber}"></span></p>
+          <p><strong>Date of Birth:</strong> <span th:text="${candidate.dateOfBirth}"></span></p>
+          <p><strong>Location:</strong> <span th:text="${candidate.location}"></span></p>
+          <p><strong>Candidate Date:</strong> <span th:text="${candidate.candidateDate}"></span></p>
+          <p><strong>Description:</strong> <span th:text="${candidate.description}"></span></p>
+          <p><strong>Gender:</strong> <span th:text="${candidate.gender}"></span></p>
+          <p><strong>Status:</strong> <span th:text="${candidate.status}"></span></p>
+          <p><strong>Requirements:</strong> <span th:text="${candidate.requirements}"></span></p>
+
+          <p><strong>Profile Picture:</strong>
+            <span th:if="${candidate.profilePicturePath != null}">
+    <div class="profile-picture-container">
+        <img th:src="@{{profilePicture}(profilePicture=${candidate.profilePicturePath})}" alt="Profile Picture"/>
+    </div>
+    </span>
+
+            <!--    <span th:unless="${candidate.profilePicturePath != null}">No profile picture uploaded</span>-->
+          </p>
+
+          <p><strong>Resume:</strong>
+            <span th:if="${candidate.resume != null}">
+        <a th:href="@{{resume}(resume=${candidate.resume})}" th:text="'Download ' + ${candidate.resume}">Download Resume</a>
+    </span>
+            <!--    <span th:unless="${candidate.resume != null}">No resume uploaded</span>-->
+          </p>
+
+          <a href="/candidates" class="btn btn-secondary">Back to List</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

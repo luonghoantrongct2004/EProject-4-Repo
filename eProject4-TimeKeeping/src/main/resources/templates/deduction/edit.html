@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutAdmin/main}">
+<head>
+    <meta charset="utf-8">
+    <title th:text="${pageTitle}">ADMIM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<div class="row g-4" layout:fragment="content">
+    <div class="col-12">
+        <div class="bg-light rounded h-100 p-4">
+            <h6 class="mb-4">Edit Deduction</h6>
+            <div class="table-responsive">
+                <form th:object="${deduction}" th:action="@{/deduction/edit}" method="post">
+                    <div class="card">
+                        <div class="card-header">
+                            Edit Deduction Information <span th:text="${deduction.deductionType}"></span>
+                        </div>
+                        <div class="card-body">
+                            <input type="hidden" th:field="*{deductionID}" />
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="deductionType">Deduction Type</label>
+                                    <input type="text" th:field="*{deductionType}" id="deductionType" class="form-control" placeholder="Enter deduction type" />
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="amount">Amount</label>
+                                    <input type="number" th:field="*{amount}" id="amount" class="form-control" placeholder="Enter amount" step="0.01" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <label for="description">Description</label>
+                                    <textarea th:field="*{description}" id="description" class="form-control" placeholder="Enter deduction description"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer text-right">
+                            <button type="submit" class="btn btn-outline-success">Save</button>
+                            <a th:href="@{/deduction}" class="btn btn-outline-danger">Go back</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

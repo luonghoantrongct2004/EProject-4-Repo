@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layoutAdmin/main}">
+<head>
+  <meta charset="utf-8" />
+  <title th:text="${pageTitle}">Edit Participation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+<body>
+<div class="row g-4" layout:fragment="content">
+  <div class="col-12">
+    <div class="bg-light rounded h-100 p-4">
+      <h6 class="mb-4">Edit Participation</h6>
+      <form th:object="${participation}" th:action="@{/participations/edit/{id}(id=${participation.participateId})}" method="post">
+        <div class="card">
+          <div class="card-body">
+            <input type="hidden" th:field="*{participateId}" />
+            <div class="mb-3">
+              <label for="account">Account</label>
+              <select id="account" th:field="*{account.accountID}" class="form-control" required>
+                <option th:each="accountOption : ${accounts}"
+                        th:value="${accountOption.accountID}"
+                        th:text="${accountOption.fullName}"
+                        th:select="${accountOption.accountID == participation.account.accountID}"
+                >
+                </option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="activityNotification">Activity Notification</label>
+              <select id="activityNotification" th:field="*{activityNotification.id}" class="form-control" required>
+                <option th:each="activityNotificationOption : ${activityNotifications}"
+                        th:value="${activityNotificationOption.id}"
+                        th:text="${activityNotificationOption.content}"
+                        th:select="${activityNotificationOption.id == participation.activityNotification.id}"
+                >
+                </option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="status">Status</label>
+              <select id="status" th:field="*{status}" class="form-control" required>
+                <option th:each="statusOption : ${T(com.timekeeping.timekeeping.enums.ParticipationStatus).values()}" th:value="${statusOption}" th:text="${statusOption}"></option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="reason">Reason</label>
+              <textarea id="reason" th:field="*{reason}" class="form-control"></textarea>
+            </div>
+          </div>
+          <div class="card-footer text-right">
+            <button type="submit" class="btn btn-outline-success">Save</button>
+            <a th:href="@{/participations}" class="btn btn-outline-danger">Back</a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+</body>
+</html>

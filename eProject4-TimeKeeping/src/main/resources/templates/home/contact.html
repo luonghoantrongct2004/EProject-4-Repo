@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${title}">Contact Us</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+  <div class="templateux-cover" style="background-image: url(/home_assets/images/slider-1.jpg);">
+    <div class="container">
+      <div class="row align-items-lg-center">
+
+        <div class="col-lg-6 order-lg-1 text-center mx-auto">
+          <h1 class="heading mb-3 text-white" data-aos="fade-up">Contact Us</h1>
+          <p class="lead mb-5 text-white" data-aos="fade-up" data-aos-delay="100">"Contact us – The bridge that helps you solve all problems, providing optimal solutions, dedicated support, ready to serve you anytime, anywhere to ensure the highest satisfaction!"</p>
+          <p data-aos="fade-up" data-aos-delay="200"><a href="#" class="btn btn-primary py-3 px-4 mr-3">Get Started</a> <a href="#" class="text-white">Learn More</a></p>
+        </div>
+
+      </div>
+    </div>
+  </div> <!-- .templateux-cover -->
+
+
+  <div class="templateux-section">
+    <div class="container">
+      <div class="row mb-5">
+        <div class="col-md-7 pr-md-7 mb-5">
+          <form action="#" method="post">
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" class="form-control" id="name">
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" class="form-control" id="email">
+            </div>
+            <div class="form-group">
+              <label for="message">Message</label>
+              <textarea name="message" id="message" cols="30" rows="10" class="form-control"></textarea>
+            </div>
+            <div class="form-group">
+              <input type="submit" class="btn btn-primary py-3 px-5" value="Send Message">
+            </div>
+          </form>
+        </div>
+        <div class="col-md-5">
+          <div class="media block-icon-1 d-block text-center">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d875.0400044445919!2d105.7793420101616!3d10.033744300665399!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31a0881f9a732075%3A0xfa43fbeb2b00ca73!2sCUSC%20-%20Cantho%20University%20Software%20Center!5e0!3m2!1svi!2s!4v1725568879329!5m2!1svi!2s"
+                    width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"></iframe>
+          </div> <!-- .block-icon-1 -->
+        </div>
+      </div> <!-- .row -->
+
+    </div>
+  </div> <!-- .templateux-section -->
+</div> <!-- .js-animsition -->
+
+
+<script src="/home_assets/js/scripts-all.js"></script>
+<script src="/home_assets/js/main.js"></script>
+
+</body>
+</html>

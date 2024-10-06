@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutAdmin/main}">
+<head>
+  <meta charset="utf-8">
+  <title>TimeKeeping</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- Waypoints library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js"></script>
+
+</head>
+<body>
+<div class="row g-4" layout:fragment="content">
+
+  <div class="alert alert-success alert-dismissible fade show" th:if="${success}" th:text="${success}" id="successAlert"></div>
+  <div class="alert alert-danger alert-dismissible fade show" th:if="${error}" th:text="${error}" id="errorAlert"></div>
+
+  <script>
+    // Auto-hide notification after 5 seconds (5000ms)
+    setTimeout(function() {
+      var successAlert = document.getElementById('successAlert');
+      if (successAlert) {
+        successAlert.classList.remove('show');
+        successAlert.classList.add('fade');
+      }
+    }, 3000); // Auto-hide after 3 seconds
+
+    setTimeout(function() {
+      var errorAlert = document.getElementById('errorAlert');
+      if (errorAlert) {
+        errorAlert.classList.remove('show');
+        errorAlert.classList.add('fade');
+      }
+    }, 3000);
+  </script>
+
+  <!-- Stats Start -->
+  <div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+      <!-- Total Employees -->
+      <div class="col-sm-6 col-xl-3">
+        <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+          <i class="fa fa-users fa-3x text-primary"></i>
+          <div class="ms-3">
+            <p class="mb-2">Total Employees</p>
+            <h6 class="mb-0" th:text="${totalEmployees}">1234</h6>
+          </div>
+        </div>
+      </div>
+
+      <!-- Total Attendance -->
+      <div class="col-sm-6 col-xl-3">
+        <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+          <i class="fa fa-clock fa-3x text-primary"></i>
+          <div class="ms-3">
+            <p class="mb-2">Total Attendance</p>
+            <h6 class="mb-0" th:text="${totalAttendances}">1234</h6>
+          </div>
+        </div>
+      </div>
+
+      <!-- Total Payrolls -->
+      <div class="col-sm-6 col-xl-3">
+        <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+          <i class="fa fa-money-bill fa-3x text-primary"></i>
+          <div class="ms-3">
+            <p class="mb-2">Total Payrolls</p>
+            <h6 class="mb-0" th:text="${totalPayrolls}">1234</h6>
+          </div>
+        </div>
+      </div>
+
+      <!-- Total Roles -->
+      <div class="col-sm-6 col-xl-3">
+        <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+          <i class="fa fa-user-shield fa-3x text-primary"></i>
+          <div class="ms-3">
+            <p class="mb-2">Total Roles</p>
+            <h6 class="mb-0" th:text="${totalRoles}">1234</h6>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Stats End -->
+
+
+  <!-- Charts Start -->
+  <div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+      <div class="col-sm-12 col-xl-6">
+        <div class="bg-light text-center rounded p-4">
+          <div class="d-flex align-items-center justify-content-between mb-4">
+            <h6 class="mb-0">Salary Chart</h6>
+            <!-- Filter for year and month -->
+            <div>
+              <select id="salaryYearSelect" class="form-select d-inline-block" style="width: auto;">
+                <!-- Year options will be filled dynamically -->
+              </select>
+              <select id="salaryMonthSelect" class="form-select d-inline-block" style="width: auto;">
+                <option value="0">All Months</option>
+                <option value="1">January</option>
+                <option value="2">February</option>
+                <option value="3">March</option>
+                <option value="4">April</option>
+                <option value="5">May</option>
+                <option value="6">June</option>
+                <option value="7">July</option>
+                <option value="8">August</option>
+                <option value="9">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+              </select>
+              <button id="filterSalary" class="btn btn-primary">Filter</button>
+            </div>
+          </div>
+          <canvas id="salary-chart"></canvas>
+        </div>
+      </div>
+
+      <div class="col-sm-12 col-xl-6">
+        <div class="bg-light text-center rounded p-4">
+          <div class="d-flex align-items-center justify-content-between mb-4">
+            <h6 class="mb-0">Employee Growth Chart</h6>
+            <!-- Filter for year -->
+            <div>
+              <select id="employeeYearSelect" class="form-select d-inline-block" style="width: auto;">
+                <!-- Year options will be filled dynamically -->
+              </select>
+              <button id="filterEmployee" class="btn btn-primary">Filter</button>
+            </div>
+          </div>
+          <canvas id="employee-chart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Charts End -->
+
+
+
+  <!-- Payroll Table Start -->
+  <div class="container-fluid pt-4 px-4">
+    <div class="bg-light text-center rounded p-4">
+      <div class="d-flex align-items-center justify-content-between mb-4">
+        <h6 class="mb-0">Payroll Table</h6>
+        <button id="downloadExcel" class="btn btn-primary btn-sm">Download Excel</button>
+      </div>
+      <div class="table-responsive">
+        <table class="table text-start align-middle table-bordered table-hover mb-0" id="payrollTable">
+          <thead>
+          <tr class="text-dark">
+            <th scope="col"><input class="form-check-input" type="checkbox" id="selectAll"></th>
+            <th scope="col">Account Name</th>
+            <th scope="col">Creation Date</th>
+            <th scope="col">Salary Template</th>
+            <th scope="col">Pay Date</th>
+            <th scope="col">Gross Salary</th>
+            <th scope="col">Net Salary</th>
+            <th scope="col">Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="payroll, iterStat : ${payrolls}">
+            <td><input class="form-check-input row-select" type="checkbox"></td>
+            <td th:text="${payroll.getAccount().getFullName()}"></td>
+            <td class="format-date" th:text="${payroll.getCreatedAt()}"></td>
+            <td th:text="${payroll.getSalaryTemplate().getGradeName()}"></td>
+            <td class="format-date" th:text="${payroll.getPayDate()}"></td>
+            <td class="grossSalary" th:text="${payroll.grossSalary}"></td>
+            <td class="netSalary" th:text="${payroll.netSalary}"></td>
+            <td>
+              <a th:href="@{/payroll/edit/{id}(id=${payroll.getPayrollID()})}" class="btn btn-primary btn-sm">Edit</a>
+              <a th:href="@{/payroll/{id}(id=${payroll.getPayrollID()})}" class="btn btn-info btn-sm">Details</a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+
+  <script>
+    document.getElementById('downloadExcel').addEventListener('click', function () {
+      let table = document.getElementById('payrollTable');
+      let rows = table.querySelectorAll('tbody tr');
+      let selectedRows = [];
+
+      rows.forEach(row => {
+        const checkbox = row.querySelector('.row-select');
+        if (checkbox.checked) {
+          const rowData = [];
+          row.querySelectorAll('td').forEach((cell, index) => {
+            if (index !== 0 && index !== 7) {  // Skip checkbox and actions column
+              rowData.push(cell.innerText);
+            }
+          });
+          selectedRows.push(rowData);
+        }
+      });
+
+      if (selectedRows.length === 0) {
+        alert('Please select at least one row to download.');
+        return;
+      }
+
+      let wb = XLSX.utils.book_new();
+      let ws = XLSX.utils.aoa_to_sheet([
+        ['Account Name', 'Creation Date', 'Salary Template', 'Pay Date', 'Gross Salary', 'Net Salary'],
+        ...selectedRows
+      ]);
+      XLSX.utils.book_append_sheet(wb, ws, 'Payroll Table');
+      XLSX.writeFile(wb, 'payroll_table.xlsx');
+    });
+
+    // Select All functionality
+    document.getElementById('selectAll').addEventListener('change', function () {
+      let checkboxes = document.querySelectorAll('.row-select');
+      checkboxes.forEach(checkbox => {
+        checkbox.checked = this.checked;
+      });
+    });
+
+    function formatDateString(dateString) {
+      if (!dateString) {
+        return "Not available";
+      }
+
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+        return "Not available";
+      }
+
+      return date.toLocaleDateString('en-GB') + ' ' + date.toLocaleTimeString('en-GB', {
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+
+    const dateElements = document.querySelectorAll('.format-date');
+    dateElements.forEach(function(element) {
+      const originalDate = element.innerText;
+      const formattedDate = formatDateString(originalDate);
+      element.innerText = formattedDate;
+    });
+
+    function formatNumber(num) {
+      return num.toLocaleString('en-GB', { style: 'currency', currency: 'VND', minimumFractionDigits: 0 });
+    }
+
+    let grossSalaries = document.querySelectorAll(".grossSalary");
+    let netSalaries = document.querySelectorAll(".netSalary");
+
+    grossSalaries.forEach(function(item) {
+      let value = parseFloat(item.innerText);
+      item.innerText = formatNumber(value);
+    });
+
+    netSalaries.forEach(function(item) {
+      let value = parseFloat(item.innerText);
+      item.innerText = formatNumber(value);
+    });
+  </script>
+  <!-- Payroll Table End --><script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempus-dominus-bootstrap-4/5.39.0/css/tempus-dominus-bootstrap-4.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tempus-dominus-bootstrap-4/5.39.0/js/tempus-dominus-bootstrap-4.min.js"></script>
+
+  <script>
+    (function ($) {
+      "use strict";
+
+      $(document).ready(function () {
+        var currentYear = new Date().getFullYear();
+        var years = [];
+        for (var i = currentYear; i <= 2030; i++) {
+          years.push(i);
+        }
+
+        // Populate year dropdowns
+        years.forEach(function (year) {
+          $('#salaryYearSelect').append(`<option value="${year}">${year}</option>`);
+          $('#employeeYearSelect').append(`<option value="${year}">${year}</option>`);
+        });
+
+        // Set the default selected year for both dropdowns to the current year
+        $('#salaryYearSelect').val(currentYear);
+        $('#employeeYearSelect').val(currentYear);
+
+        // Variables to store the chart instances
+        var salaryChartInstance = null;
+        var employeeChartInstance = null;
+
+        // Load the default charts for the current year when the page loads
+        getSalaryData(currentYear, 0);  // 0 for "All Months"
+        getEmployeeData(currentYear);
+
+        // Salary Chart Filter
+        $('#filterSalary').on('click', function () {
+          var selectedYear = $('#salaryYearSelect').val();
+          var selectedMonth = $('#salaryMonthSelect').val();
+          getSalaryData(selectedYear, selectedMonth);
+        });
+
+        // Employee Growth Chart Filter
+        $('#filterEmployee').on('click', function () {
+          var selectedYear = $('#employeeYearSelect').val();
+          getEmployeeData(selectedYear);
+        });
+
+        function getSalaryData(year, month) {
+          $.ajax({
+            url: `/api/salary/monthlyYearly?year=${year}&month=${month}`,
+            method: "GET",
+            success: function (data) {
+              var salaryData = new Array(12).fill(0); // Initialize array with 12 elements as 0
+
+              // Populate the salaryData array with the results from the API
+              data.forEach(function (item) {
+                var apiYear = item[0];
+                var apiMonth = item[1];
+                var salary = item[2];
+
+                if (apiYear == year) {
+                  salaryData[apiMonth - 1] = salary;
+                }
+              });
+
+              var labels = [];
+              for (var i = 1; i <= 12; i++) {
+                labels.push("Month " + i + " - " + year);
+              }
+
+              // Check if there is an existing chart instance and destroy it before creating a new one
+              if (salaryChartInstance !== null) {
+                salaryChartInstance.destroy();
+              }
+
+              var ctxSalary = $("#salary-chart").get(0).getContext("2d");
+              salaryChartInstance = new Chart(ctxSalary, {
+                type: "bar",
+                data: {
+                  labels: labels,
+                  datasets: [{
+                    label: "Total Salary",
+                    data: salaryData,
+                    backgroundColor: "rgba(0, 156, 255, .7)"
+                  }]
+                },
+                options: {
+                  responsive: true,
+                  scales: {
+                    y: {
+                      beginAtZero: true,
+                      title: {
+                        display: true,
+                        text: 'Amount (VND)'
+                      }
+                    },
+                    x: {
+                      title: {
+                        display: true,
+                        text: 'Month'
+                      }
+                    }
+                  }
+                }
+              });
+            }
+          });
+        }
+
+        function getEmployeeData(year) {
+          $.ajax({
+            url: `/api/employees/yearly?startYear=${year}&endYear=${year}`,
+            method: "GET",
+            success: function (data) {
+              // Check if there is an existing chart instance and destroy it before creating a new one
+              if (employeeChartInstance !== null) {
+                employeeChartInstance.destroy();
+              }
+
+              var ctxEmployee = $("#employee-chart").get(0).getContext("2d");
+              employeeChartInstance = new Chart(ctxEmployee, {
+                type: "line",
+                data: {
+                  labels: [year],
+                  datasets: [{
+                    label: "Employee Count",
+                    data: data,
+                    backgroundColor: "rgba(0, 156, 255, .5)",
+                    borderColor: "rgba(0, 156, 255, 1)",
+                    fill: true
+                  }]
+                },
+                options: {
+                  responsive: true,
+                  scales: {
+                    y: {
+                      beginAtZero: true,
+                      title: {
+                        display: true,
+                        text: 'Employee Count'
+                      }
+                    },
+                    x: {
+                      title: {
+                        display: true,
+                        text: 'Year'
+                      }
+                    }
+                  }
+                }
+              });
+            }
+          });
+        }
+      });
+
+    })(jQuery);
+  </script>
+
+</div>
+</body>
+</html>

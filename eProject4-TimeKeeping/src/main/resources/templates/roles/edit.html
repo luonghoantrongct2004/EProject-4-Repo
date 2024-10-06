@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutAdmin/main}">
+<head>
+    <meta charset="utf-8">
+    <title th:text="${pageTitle}">ADMIM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<div class="row g-4" layout:fragment="content">
+                <div class="col-12"><div class="bg-light rounded h-100 p-4">
+                    <h6 class="mb-4">Edit Role</h6>
+                    <div class="table-responsive">
+                        <form th:object="${role}" th:action="@{/role/edit}" method="post">
+                            <div class="card">
+                                <div class="card-header">
+                                    Edit Information for Role <span th:text="${role.name}"></span>
+                                </div>
+                                <div class="card-body">
+                                    <input type="hidden" th:field="*{roleID}" />
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="name">Role Name</label>
+                                            <select th:field="*{name}" id="name" class="form-control">
+                                                <option th:value="'Administrator'" th:selected="${role.name == 'Administrator'}">Administrator</option>
+                                                <option th:value="'Manager'" th:selected="${role.name == 'Manager'}">Manager</option>
+                                                <option th:value="'Finance and Accounting Department'" th:selected="${role.name == 'Finance and Accounting Department'}">Finance and Accounting Department</option>
+                                                <option th:value="'HR Department'" th:selected="${role.name == 'HR Department'}">HR Department</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="status">Status</label>
+                                            <select th:field="*{active}" id="status" class="form-control">
+                                                <option th:value="true" th:selected="${role.active == true}">Active</option>
+                                                <option th:value="false" th:selected="${role.active == false}">Inactive</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer text-right">
+                                    <button type="submit" class="btn btn-outline-success">Save</button>
+                                    <a th:href="@{/role}" class="btn btn-outline-danger">Back</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                </div>
+            </div>
+</body>
+</html>

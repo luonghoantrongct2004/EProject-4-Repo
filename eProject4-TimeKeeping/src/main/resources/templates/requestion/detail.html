@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutAdmin/main}">
+<head>
+  <meta charset="utf-8">
+  <title th:text="${pageTitle}">ADMIM</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<div class="row g-4" layout:fragment="content">
+  <div class="col-12">
+    <div class="bg-light rounded h-100 p-4">
+      <div class="table-responsive"><div class="card mb-3">
+        <form>
+          <div class="card-header">
+            Request Details <span th:text="${requestion.getAccountID()}"></span>
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">Request ID: <span th:text="${requestion.getRequestID()}"></span></h5>
+            <p class="card-text">Request Name: <span th:text="${requestion.getRequestName()}"></span></p>
+            <p class="card-text">Account ID: <span th:text="${requestion.getAccountID()}"></span></p>
+            <p class="card-text">Start Date: <span th:text="${#dates.format(requestion.getStartDate(),'yyyy-MM-dd')}"></span></p>
+            <p class="card-text">End Date: <span th:text="${#dates.format(requestion.getEndDate(),'yyyy-MM-dd')}"></span></p>
+            <p class="card-text">Reason: <span th:text="${requestion.getReason() != null ? requestion.reason.name : 'No reason'}"></span></p>
+            <p class="card-text">Request Date: <span th:text="${#dates.format(requestion.getRequestDate(),'yyyy-MM-dd')}"></span></p>
+            <p class="card-text">Approver ID: <span th:text="${requestion.getApproverID()}"></span></p>
+            <p class="card-text">Status: <span th:text="${requestion.getStatus()}"></span></p>
+          </div>
+          <div class="card-footer">
+            <a th:href="@{/requestion/confirm/{id}(id=${requestion.requestID})}"
+               class="btn btn-danger btn-sm">Confirm</a>
+            <a th:href="@{/requestion/deny/{id}(id=${requestion.requestID})}"
+               class="btn btn-danger btn-sm">Deny</a>
+            <a th:href="@{/requestion/index.html}" class="btn btn-outline-info">Back</a>
+          </div>
+        </form>
+      </div>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

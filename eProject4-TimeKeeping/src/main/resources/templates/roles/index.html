@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutAdmin/main}">
+<head>
+    <meta charset="utf-8">
+    <title th:text="${pageTitle}">ADMIM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<div class="row g-4" layout:fragment="content">
+                <div class="col-12"><div class="bg-light rounded h-100 p-4">
+                    <h6 class="mb-4">Role Table</h6>
+                    <form th:action="@{/role}" method="get" class="mb-3">
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="name" placeholder="Search by role name" aria-label="Search">
+                            <button class="btn btn-outline-secondary" type="submit">Search</button>
+                        </div>
+                    </form>
+
+                    <a href="/role/create" class="btn btn-success mb-3">Create New</a>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Role Name</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="role, iterStat : ${roles}">
+                                <td th:text="${role.getRoleID()}"></td>
+                                <td th:text="${role.getName()}"></td>
+                                <td th:text="${role.isActive() ? 'Active' : 'Inactive'}"></td>
+                                <td>
+                                    <!-- Action Links -->
+                                    <a th:href="@{/role/edit/{id}(id=${role.getRoleID()})}" class="btn btn-primary btn-sm">Edit</a>
+
+                                    <a th:if="${role.isActive()}"
+                                       th:href="@{/role/delete/{id}(id=${role.getRoleID()})}"
+                                       class="btn btn-danger btn-sm"
+                                       onclick="return confirm('Are you sure you want to deactivate this role?');">Deactivate</a>
+
+                                    <a th:if="${!role.isActive()}"
+                                       th:href="@{/role/activate/{id}(id=${role.getRoleID()})}"
+                                       class="btn btn-success btn-sm"
+                                       onclick="return confirm('Are you sure you want to activate this role?');">Activate</a>
+                                    <a th:href="@{/role/{id}(id=${role.getRoleID()})}" class="btn btn-info btn-sm">Details</a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+
+                </div>
+            </div>
+</body>
+</html>

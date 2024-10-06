@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutAdmin/main}">
+<head>
+    <meta charset="utf-8">
+    <title th:text="${pageTitle}">ADMIM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<div class="row g-4" layout:fragment="content">
+    <div class="col-12">
+        <div class="bg-light rounded h-100 p-4">
+            <div class="table-responsive">
+                <div class="card mb-3">
+                    <div class="card-header">
+                        Deduction Information <span th:text="${deduction.getDeductionType()}"></span>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Deduction ID: <span th:text="${deduction.getDeductionID()}"></span></h5>
+                        <p class="card-text">Deduction Type: <span th:text="${deduction.getDeductionType()}"></span></p>
+                        <p class="card-text">Amount: <span th:text="${deduction.getAmount()}"></span></p>
+                        <p class="card-text">Description: <span th:text="${deduction.getDescription()}"></span></p>
+                        <div class="card-footer">
+                            <a th:href="@{/deduction/edit/{id}(id=${deduction.getDeductionID()})}" class="btn btn-outline-primary">Edit</a>
+                            <a th:href="@{/deduction}" class="btn btn-outline-info">Go back</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutAdmin/main}">
+<head>
+    <meta charset="utf-8">
+    <title th:text="${pageTitle}">ADMIM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<div class="row g-4" layout:fragment="content">
+                <div class="col-12"><div class="bg-light rounded h-100 p-4">
+                    <h6 class="mb-4">Edit Salary Template</h6>
+                    <div class="table-responsive">
+                        <form th:object="${salaryTemplate}" th:action="@{/salaryTemplates/edit}" method="post">
+                            <div class="card">
+                                <div class="card-header">
+                                    Edit Information for Salary Template <span th:text="${salaryTemplate.gradeName}"></span>
+                                </div>
+                                <div class="card-body">
+                                    <input type="hidden" th:field="*{salaryID}" />
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="gradeName">Grade Name</label>
+                                            <input type="text" th:field="*{gradeName}" id="gradeName" class="form-control" />
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="baseSalary">Base Salary</label>
+                                            <input type="number" th:field="*{baseSalary}" id="baseSalary" class="form-control" min="0" step="0.01" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="effectiveDate">Effective Date</label>
+                                            <input type="date" th:field="*{effectiveDate}" id="effectiveDate" class="form-control" />
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="expiryDate">Expiry Date</label>
+                                            <input type="date" th:field="*{expiryDate}" id="expiryDate" class="form-control" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="region">Region</label>
+                                            <select th:field="*{region.regionID}" id="region" class="form-control" required>
+                                                <option th:each="region : ${regions}"
+                                                        th:value="${region.regionID}"
+                                                        th:text="${region.regionName} + ' - ' + ${region.minimumWage}"
+                                                        th:selected="${region.regionID == salaryTemplate.region.regionID}">
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer text-right">
+                                    <button type="submit" class="btn btn-outline-success">Save</button>
+                                    <a th:href="@{/salaryTemplates}" class="btn btn-outline-danger">Back</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                </div>
+            </div>
+</body>
+</html>

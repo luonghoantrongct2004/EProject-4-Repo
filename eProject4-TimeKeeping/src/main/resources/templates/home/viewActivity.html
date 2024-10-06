@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout/main}" xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <title>Thông Báo</title>
+</head>
+
+<body>
+<div layout:fragment="content">
+  <div class="templateux-cover" style="background-image: url(/home_assets/images/Internal_Activities.jpg);">
+    <div class="container">
+      <div class="row align-items-lg-center">
+        <div class="col-lg-6 order-lg-1 text-center mx-auto">
+          <h1 class="heading mb-3 text-white" data-aos="fade-up">CONFIRM PARTICIPATION IN ACTIVITIES</h1>
+          <p class="lead mb-5 text-white" data-aos="fade-up" data-aos-delay="100">"Leading the way to success through each internal activity - Connect, develop, and go further together!".</p>
+        </div>
+      </div>
+    </div>
+  </div> <!-- .templateux-cover -->
+  <div class="container my-5">
+    <h1 class="text-center my-5">Activity Details</h1>
+
+    <!-- Content -->
+    <p class="mb-3">Content: <span th:text="${activityNotification.content}"></span></p>
+
+    <!-- Activity Name -->
+    <p class="mb-3">Activity Name: <span th:text="${activityNotification.activity.activityName}"></span></p>
+
+    <!-- Description -->
+    <p class="mb-3">Description: <span th:text="${activityNotification.activity.description}"></span></p>
+
+    <!-- Location -->
+    <p class="mb-3">Location: <span th:text="${activityNotification.activity.location}"></span></p>
+
+    <!-- Date (Start Time) -->
+    <p class="mb-3">
+      Start Time: <span th:text="${#temporals.format(activityNotification.activity.startTime, 'yyyy-MM-dd')}"
+                        class="me-3"></span> -
+      <span th:text="${#temporals.format(activityNotification.activity.startTime, 'HH:mm')}"></span>
+    </p>
+
+    <!-- Activity Type -->
+    <p class="mb-3">Type: <span th:text="${activityNotification.activity.type}"></span></p>
+
+    <!-- Budget -->
+    <p class="mb-3">Budget: <span th:text="${activityNotification.activity.budget}"></span></p>
+
+    <!-- Time Ago (Notification Time) -->
+    <p class="mb-3">Time Ago: <span th:text="${activityNotification.getTimeAgo()}"></span></p>
+
+    <!-- Participation Form -->
+    <form th:action="@{/activities/participate}" method="post">
+      <input type="hidden" name="id" th:value="${activityNotification.id}">
+      <input type="hidden" name="accountID" th:value="${accountID}">
+
+      <!-- Reason for not participating -->
+      <div class="mb-3">
+        <label for="reason">Reason (for not participating):</label>
+        <textarea id="reason" name="reason" class="form-control"
+                  th:attr="required=${isMandatory ? 'required' : null}"
+        ></textarea>
+      </div>
+
+      <!-- Participation Buttons -->
+      <div th:if="${isConfirm == null}">
+        <a th:href="@{/activities/participate(id=${activityNotification.id}, accountID=${accountID})}"
+           role="button" class="btn btn-outline-success">Participate</a>
+        <button type="submit" class="btn btn-outline-danger">Decline</button>
+      </div>
+      <div th:if="${isConfirm != null}" th:text="${isConfirm.status}" class="text-success"></div>
+    </form>
+
+  </div>
+</div>
+</body>
+
+</html>

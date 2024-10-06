@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Success</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .attendance-table {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Attendance Recorded Successfully!</h1>
+
+    <!-- Display success message -->
+    <div class="alert alert-success mt-3" role="alert">
+        <strong>Attendance Recorded Successfully!</strong><br>
+        Name: <span th:text="${name}"></span><br>
+        Time: <span th:text="${time}"></span><br>
+        Date: <span th:text="${date}"></span>
+    </div>
+    <div class="attendance-form">
+<!--        <h2>Clock In</h2>-->
+        <form th:action="@{/attendance/clockIn}" method="post">
+            <input type="hidden" name="accountID" th:value="${accountID}" />
+            <button type="submit" class="btn btn-primary">Clock In</button>
+        </form>
+    </div>
+
+</div>
+</body>
+</html>

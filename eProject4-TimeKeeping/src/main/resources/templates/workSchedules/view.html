@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutAdmin/main}">
+
+<head>
+    <meta charset="utf-8" />
+    <title th:text="${pageTitle}">Work Schedule</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        th {
+            background-color: #4fba69 !important;
+            color: #fff;
+            text-align: center;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+
+<body>
+<div layout:fragment="content">
+    <div class="row g-4">
+        <div class="col-12">
+            <h1 class="text-center">
+                WORK SCHEDULE
+            </h1>
+        </div>
+    </div>
+    <form action="/workSchedules/view" method="get">
+        <div class="row g-4">
+            <div class="col-8"></div>
+            <div class="col-4">
+                <div class="input-group">
+                    <input type="week" class="form-control" id="week" name="week" value="">
+                    <button class="btn btn-outline-secondary" type="submit">
+                        Filter
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="rounded h-100 p-4">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>Shift</th>
+                            <th th:each="date : ${dateWithDayName}" style="font-weight: bolder">
+                                <div th:text="${date.key}"></div>
+                                <div th:text="${date.value}"></div>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="shift : ${shifts}">
+                            <span th:each="entry : ${scheduleMap}">
+                                <span th:if="${entry.key == shift}">
+                                    <td style="text-align: center; vertical-align: middle;">
+                                        <div th:text="${entry.key.shiftName}" style="font-weight: bolder;"></div>
+                                        <div>
+                                            (<span th:text="${entry.key.startTime}"></span> - <span th:text="${entry.key.endTime}"></span>)
+                                        </div>
+                                    </td>
+                                    <td th:each="date : ${datesInWeek}">
+                                        <ul style="font-style: italic">
+                                            <li style="margin: 16px 0;" th:each="schedule : ${entry.value.get(date)}" th:text="${schedule.account.fullName}"></li>
+                                        </ul>
+                                    </td>
+                                </span>
+                            </span>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+</body>
+
+</html>

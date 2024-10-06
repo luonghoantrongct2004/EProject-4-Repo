@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutAdmin/main}">
+<head>
+    <meta charset="utf-8">
+    <title th:text="${pageTitle}">ADMIN</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+</head>
+
+<body>
+<div class="row g-4" layout:fragment="content">
+
+    <div class="col-12">
+        <div class="bg-light rounded h-100 p-4">
+            <h1>Edit Recruitment</h1>
+            <div th:if="${error}" class="alert alert-danger">
+                <p th:text="${error}"></p>
+            </div>
+            <form th:action="@{/recruitments/update}" th:object="${recruitment}" method="post">
+                <div class="mb-3">
+                    <input type="hidden" th:field="*{recruitmentID}" />
+                </div>
+                <div class="mb-3">
+                    <label for="job" class="form-label">Select Job:</label>
+                    <select th:field="*{job}" id="job" required>
+                        <option value="" disabled selected>Select a job</option>
+                        <option th:each="job : ${jobs}" th:value="${job.jobID}" th:text="${job.title}"></option>
+                    </select>
+                    <div th:if="${#fields.hasErrors('job')}" th:errors="*{job}" class="text-danger"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="status" class="form-label">Status</label>
+                    <input type="text" class="form-control" id="status" th:field="*{status}" required placeholder="Enter status here">
+                    <div th:if="${#fields.hasErrors('status')}" th:errors="*{status}" class="text-danger"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <input type="text" class="form-control" id="description" th:field="*{description}" required placeholder="Enter description here">
+                    <div th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="text-danger"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="startDate" class="form-label">Start Date</label>
+                    <input type="date" class="form-control" id="startDate" th:field="*{startDate}" required>
+                    <div th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}" class="text-danger"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="endDate" class="form-label">End Date</label>
+                    <input type="date" class="form-control" id="endDate" th:field="*{endDate}" required>
+                    <div th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}" class="text-danger"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="interviewDate" class="form-label">Interview Date</label>
+                    <input type="datetime-local" class="form-control" id="interviewDate" th:field="*{interviewDate}" required>
+                    <div th:if="${#fields.hasErrors('interviewDate')}" th:errors="*{interviewDate}" class="text-danger"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="location" class="form-label">Location</label>
+                    <input type="text" class="form-control" id="location" th:field="*{location}" required placeholder="Enter location here">
+                    <div th:if="${#fields.hasErrors('location')}" th:errors="*{location}" class="text-danger"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="name" class="form-label">Candidate Name</label>
+                    <input type="text" class="form-control" id="name" th:field="*{name}" required placeholder="Enter candidate name here">
+                    <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="interviewType" class="form-label">Interview Type</label>
+                    <input type="text" class="form-control" id="interviewType" th:field="*{interviewType}" required placeholder="Enter interview type here">
+                    <div th:if="${#fields.hasErrors('interviewType')}" th:errors="*{interviewType}" class="text-danger"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="notes" class="form-label">Notes</label>
+                    <textarea class="form-control" id="notes" th:field="*{notes}" rows="3" placeholder="Enter any notes here..."></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="account" class="form-label">Select Account:</label>
+                    <select th:field="*{account}" id="account" required>
+                        <option value="" disabled selected>Select an account</option>
+                        <option th:each="account : ${accounts}" th:value="${account.accountID}" th:text="${account.username}"></option>
+                    </select>
+                    <div th:if="${#fields.hasErrors('account')}" th:errors="*{account}" class="text-danger"></div>
+                </div>
+                <button type="submit" class="btn btn-primary">Update</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

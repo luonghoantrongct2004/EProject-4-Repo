@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutAdmin/main}">
+<head>
+    <meta charset="utf-8">
+    <title th:text="${pageTitle}">ADMIM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<div class="row g-4" layout:fragment="content">
+                <div class="col-12">
+                    <div class="bg-light rounded h-100 p-4">
+                        <div class="table-responsive"><div class="card">
+                            <div class="card-header">
+                                Salary Template Details <span th:text="${salaryTemplate.gradeName}"></span>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="gradeName">Grade Name</label>
+                                    <p id="gradeName" th:text="${salaryTemplate.gradeName}" class="form-control-plaintext"></p>
+                                </div>
+                                <div class="form-group">
+                                    <label for="baseSalary">Base Salary</label>
+                                    <p id="baseSalary" th:text="${salaryTemplate.baseSalary}" class="form-control-plaintext"></p>
+                                </div>
+                                <div class="form-group">
+                                    <label for="expiryDate">Expiry Date</label>
+                                    <p id="expiryDate" th:text="${#dates.format(salaryTemplate.expiryDate, 'yyyy-MM-dd')}" class="form-control-plaintext"></p>
+                                </div>
+                                <div class="form-group">
+                                    <label for="effectiveDate">Effective Date</label>
+                                    <p id="effectiveDate" th:text="${#dates.format(salaryTemplate.effectiveDate, 'yyyy-MM-dd')}" class="form-control-plaintext"></p>
+                                </div>
+                                <div class="form-group">
+                                    <label for="region">Region</label>
+                                    <p id="region" th:text="${salaryTemplate.region.regionName} + ' - ' + ${salaryTemplate.region.minimumWage}" class="form-control-plaintext"></p>
+                                </div>
+                                <div class="card-footer">
+                                    <a th:href="@{/salaryTemplates/delete/{id}(id=${salaryTemplate.salaryID})}"
+                                       class="btn btn-outline-danger"
+                                       onclick="return confirm('Are you sure you want to delete this salary template?');">Delete</a>
+                                    <a th:href="@{/salaryTemplates/edit/{id}(id=${salaryTemplate.salaryID})}" class="btn btn-outline-primary">Edit</a>
+                                    <a th:href="@{/salaryTemplates}" class="btn btn-outline-info">Back</a>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+</body>
+</html>

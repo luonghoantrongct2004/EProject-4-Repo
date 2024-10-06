@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutAdmin/main}">
+
+<head>
+    <meta charset="utf-8">
+    <title th:text="${pageTitle}">ADMIM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+<div class="row g-4" layout:fragment="content">
+    <div class="col-12">
+        <div class="bg-light rounded h-100 p-4">
+            <h2>Candidate List</h2>
+
+            <!-- Uncomment if you want to add new candidates -->
+            <!-- <a href="/candidates/new" class="btn btn-primary mb-3">Add New Candidate</a> -->
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Profile Picture</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <!--      <th>Date of Birth</th>-->
+                    <th>Gender</th>
+                    <th>Email</th>
+                    <!--      <th>Description</th>-->
+                    <th>Requirements</th>
+                    <th>Phone Number</th>
+                    <th>Status</th>
+                    <th>Resume</th>
+                    <!--            <th>Edit</th>-->
+                    <th>Delete</th>
+                    <th>View Details</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="candidate : ${candidates}">
+                    <td th:text="${candidate.candidateID}"></td>
+                    <td>
+                        <img th:if="${candidate.profilePicturePath}" th:src="@{{profilePicturePath}(profilePicturePath=${candidate.profilePicturePath})}" alt="Profile Picture" style="width:100px;height:auto;" >
+                    <td th:text="${candidate.firstName}"></td>
+                    <td th:text="${candidate.lastName}"></td>
+                    <!--      <td th:text="${#dates.format(candidate.dateOfBirth, 'yyyy-MM-dd')}"></td>-->
+                    <td th:text="${candidate.gender}"></td>
+                    <td th:text="${candidate.email}"></td>
+                    <!--      <td th:text="${candidate.description}"></td>-->
+                    <td th:text="${candidate.requirements}"></td>
+                    <td th:text="${candidate.phoneNumber}"></td>
+                    <td>
+                        <form th:action="@{/candidates/updateStatus}" method="post" class="d-inline">
+                            <input type="hidden" name="candidateID" th:value="${candidate.candidateID}" />
+                            <select name="status" class="form-control form-control-sm d-inline" style="width: auto;">
+                                <option value="Pending" th:selected="${candidate.status == 'Pending'}">Pending</option>
+                                <option value="Interview Scheduled" th:selected="${candidate.status == 'Interview Scheduled'}">Interview Scheduled</option>
+                                <option value="Interview Completed" th:selected="${candidate.status == 'Interview Completed'}">Interview Completed</option>
+                                <option value="Hired" th:selected="${candidate.status == 'Hired'}">Hired</option>
+                                <option value="Rejected" th:selected="${candidate.status == 'Rejected'}">Rejected</option>
+                            </select>
+                            <button type="submit" class="btn btn-primary btn-sm mt-2">Update</button>
+                        </form>
+
+
+                    </td>
+
+                    <td>
+                        <!--                <iframe th:src="@{/images/{filename}(filename=${candidate.resume})}" style="width:150px; height:200px;" frameborder="0"></iframe>-->
+
+                        <!--                <img th:src="@{/images/{filename}(filename=${candidate.resume})}" style="width:150px; height:200px;" alt="Candidate Resume Image"/>-->
+
+<!--                        <embed th:src="@{/pdfs/{filename}(filename=${candidate.resume})}" style="width:150px; height:200px;" type="application/pdf">-->
+                        <object th:data="@{${candidate.resume}}" type="application/pdf" width="600" height="400">
+                            <p>Your browser does not support PDFs. <a th:href="@{${candidate.resume}}">Download the PDF</a>.</p>
+                        </object>
+
+
+
+                    </td>
+
+                    <!--            <td>-->
+                    <!--                <a th:href="@{/candidates/edit/{candidateID}(candidateID=${candidate.candidateID})}" class="btn btn-warning btn-sm">Edit</a>-->
+                    <!--            </td>-->
+                    <td>
+                        <a th:href="@{/candidates/delete/{candidateID}(candidateID=${candidate.candidateID})}" class="btn btn-danger btn-sm">Delete</a>
+                    </td>
+                    <td>
+                        <a th:href="@{/candidates/{candidateID}(candidateID=${candidate.candidateID})}" class="btn btn-info btn-sm">View Details</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layoutAdmin/main}"
+>
+<head>
+    <meta charset="utf-8" />
+    <title th:text="${pageTitle}">ADMIM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+<body>
+<div class="row g-4" layout:fragment="content">
+    <div class="col-12">
+        <div class="bg-light rounded h-100 p-4">
+            <h6 class="mb-4">Create Activities</h6>
+            <div class="table-responsive">
+                <form
+                        th:object="${activity}"
+                        th:action="@{/activities}"
+                        method="post"
+                >
+                    <div class="card">
+                        <div class="card-body">
+                            <input type="hidden" th:field="*{activityId}" />
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="activityName">Activity Name</label>
+                                    <input
+                                            type="text"
+                                            th:field="*{activityName}"
+                                            id="activityName"
+                                            class="form-control"
+                                            placeholder="Enter Activity Name"
+                                            required
+                                    />
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="description">Description</label>
+                                    <textarea
+                                            type="text"
+                                            th:field="*{description}"
+                                            id="description"
+                                            class="form-control"
+                                            placeholder="Enter Description"
+                                    ></textarea>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="date">Start Time</label>
+                                    <div class="d-flex">
+                                        <input type="date" id="date" name="date" class="form-control me-3" th:value="${#temporals.format(activity.startTime, 'yyyy-MM-dd')}" required>
+                                        <input type="time" id="time" name="time" class="form-control" th:value="${#temporals.format(activity.startTime, 'HH:mm')}" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="budget">Budget</label>
+                                    <input
+                                            type="number"
+                                            th:field="*{budget}"
+                                            id="budget"
+                                            class="form-control"
+                                            placeholder="Enter Budget"
+                                            required
+                                    />
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="location">Location</label>
+                                    <input
+                                            type="text"
+                                            th:field="*{location}"
+                                            id="location"
+                                            class="form-control"
+                                            placeholder="Enter Location"
+                                            required
+                                    />
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="type">Type</label>
+                                    <select
+                                            id="type"
+                                            name="type"
+                                            th:field="*{type}"
+                                            required
+                                            class="form-control"
+                                    >
+                                        <option
+                                                th:each="typeSelect : ${T(com.timekeeping.timekeeping.enums.ActivityType).values()}"
+                                                th:value="${typeSelect}"
+                                                th:text="${typeSelect}"
+                                        >
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer text-right">
+                            <button type="submit" class="btn btn-outline-success">
+                                Save
+                            </button>
+                            <a th:href="@{/activities}" class="btn btn-outline-danger"
+                            >Back</a
+                            >
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

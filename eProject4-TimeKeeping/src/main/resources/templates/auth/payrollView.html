@@ -1,0 +1,229 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${title}">Profile</title>
+</head>
+<body style="background-image: url('https://imgs.search.brave.com/4nLMXgCOnsi3gGsNZT8Re-BdhQ6a7w4SHsYVE7QN0dU/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/ZnJlZXBpay5jb20v/ZnJlZS1waG90by9h/YnN0cmFjdC1uZXR3/b3JraW5nLWNvbmNl/cHQtc3RpbGwtbGlm/ZS1hcnJhbmdlbWVu/dF8yMy0yMTQ5MDM1/NzA5LmpwZz9zaXpl/PTYyNiZleHQ9anBn'); background-size: contain;">
+<div  layout:fragment="content" >
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+    <div class="container-fluid" style="padding-top: 220px; padding-bottom: 50px;">
+        <div class="row">
+            <!-- Left column containing navigation links -->
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <!-- Profile picture -->
+                        <p><strong>Profile Picture</strong></p>
+                        <img th:src="@{${account.imagePaths}}" alt="Profile Picture" class="rounded-circle mb-3" width="150px" height="150px" />
+                        <!-- Brief personal information -->
+                        <p><strong>Email:</strong> <span th:text="${account.email}">user@example.com</span></p>
+                        <p><strong>Name:</strong> <span th:text="${account.fullName}">Name</span></p>
+                    </div>
+                </div>
+                <div class="list-group mt-4">
+                    <a id="profile-link-1" href="/profile" class="list-group-item list-group-item-action d-flex align-items-center">
+                        <i class="fas fa-user mr-3 text-primary"></i>Personal Information
+                    </a>
+                    <a id="attendance-link" href="/attendance/show" class="list-group-item list-group-item-action d-flex align-items-center">
+                        <i class="fas fa-calendar-check mr-3 text-success"></i>Attendance Record
+                    </a>
+                    <a id="payroll-link" href="/auth/payrollEmployee" class="list-group-item list-group-item-action d-flex align-items-center">
+                        <i class="fas fa-money-bill-alt mr-3 text-warning"></i>Payroll
+                    </a>
+                </div>
+            </div>
+
+            <script>
+                // Function to get cookie by name
+                function getCookie(name) {
+                    let cookieArr = document.cookie.split(";");
+                    for (let i = 0; i < cookieArr.length; i++) {
+                        let cookiePair = cookieArr[i].split("=");
+                        if (name === cookiePair[0].trim()) {
+                            return decodeURIComponent(cookiePair[1]);
+                        }
+                    }
+                    return null;
+                }
+
+                // When the page loads, check the cookie and update links
+                window.onload = function() {
+                    let accountId = getCookie("ACCOUNT-ID");
+
+                    let profileLink = document.getElementById("profile-link-1");
+                    let attendanceLink = document.getElementById("attendance-link");
+                    let payrollLink = document.getElementById("payroll-link");
+
+                    if (accountId) {
+                        // Set profile, attendance, and payroll links
+                        profileLink.href = "/auth/profile?AccountId=" + accountId;
+                        attendanceLink.href = "/attendance/show?accountID=" + accountId;
+                        payrollLink.href = "/auth/payrollEmployee?accountID=" + accountId;
+
+                        console.log("Links set for account ID: " + accountId);
+                    } else {
+                        // Default to login page if no account ID is found
+                        profileLink.href = "/auth/login";
+                        attendanceLink.href = "/auth/login";
+                        payrollLink.href = "/auth/login";
+
+                        console.log("Links set to login page.");
+                    }
+                };
+            </script>
+
+            <div class="col-md-8">
+                <div class="table-responsive">
+                    <style>
+                        .bg-info.text-black td {
+                            color: black !important;
+                        }
+                    </style>
+                    <table class="table table-bordered table-hover">
+                        <thead class="thead-light">
+                        <tr>
+                            <th>#</th>
+                            <th>
+                                Account Name
+                                <i class="fas fa-sort" onclick="sortTable(1)"></i>
+                            </th>
+                            <th>
+                                Creation Date
+                                <i class="fas fa-sort" onclick="sortTable(2)"></i>
+                            </th>
+                            <th>
+                                Payroll Date
+                                <i class="fas fa-sort" onclick="sortTable(3)"></i>
+                            </th>
+                            <th>
+                                Gross Salary
+                                <i class="fas fa-sort" onclick="sortTable(4)"></i>
+                            </th>
+                            <th>
+                                Net Salary
+                                <i class="fas fa-sort" onclick="sortTable(5)"></i>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody class="bg-info text-black">
+                        <tr th:each="payroll, iterStat : ${payrolls}">
+                            <td th:text="${iterStat.index + 1}"></td>
+                            <td th:text="${payroll.account.fullName}"></td>
+                            <td class="format-date" th:text="${payroll.createdAt}"></td>
+                            <td class="format-date" th:text="${payroll.payDate}"></td>
+                            <td class="grossSalary" th:text="${payroll.grossSalary}"></td>
+                            <td class="netSalary" th:text="${payroll.netSalary}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <script>
+                        function sortTable(columnIndex) {
+                            var table = document.querySelector(".table");
+                            var rows = Array.from(table.rows).slice(1); // Get all rows except the header
+                            var ascending = table.getAttribute("data-order") === "asc";
+
+                            rows.sort(function (rowA, rowB) {
+                                var cellA = rowA.cells[columnIndex].innerText;
+                                var cellB = rowB.cells[columnIndex].innerText;
+
+                                if (!isNaN(cellA) && !isNaN(cellB)) {
+                                    // Compare numbers
+                                    cellA = parseFloat(cellA);
+                                    cellB = parseFloat(cellB);
+                                }
+                                return ascending ? cellA > cellB ? 1 : -1 : cellA < cellB ? 1 : -1;
+                            });
+
+                            rows.forEach(function (row) {
+                                table.tBodies[0].appendChild(row);
+                            });
+
+                            // Update sort state
+                            table.setAttribute("data-order", ascending ? "desc" : "asc");
+
+                            // Update icon
+                            updateSortIcons(columnIndex, ascending);
+                        }
+
+                        function updateSortIcons(columnIndex, ascending) {
+                            // Reset all icons to default state
+                            var icons = document.querySelectorAll("th i");
+                            icons.forEach(function (icon) {
+                                icon.classList.remove("fa-sort-up", "fa-sort-down");
+                                icon.classList.add("fa-sort");
+                            });
+
+                            // Get the specific icon in the clicked column
+                            var targetTh = document.querySelectorAll("th")[columnIndex];
+                            var targetIcon = targetTh.querySelector("i");
+
+                            // Update the icon in the clicked column
+                            if (ascending) {
+                                targetIcon.classList.remove("fa-sort");
+                                targetIcon.classList.add("fa-sort-up");
+                            } else {
+                                targetIcon.classList.remove("fa-sort");
+                                targetIcon.classList.add("fa-sort-down");
+                            }
+                        }
+                    </script>
+                    <script>
+                        function formatNumber(num) {
+                            return num.toLocaleString('vi-VN', { style: 'currency', currency: 'VND', minimumFractionDigits: 0 });
+                        }
+
+                        // Get all elements with class "grossSalary" and "netSalary"
+                        let grossSalaries = document.querySelectorAll(".grossSalary");
+                        let netSalaries = document.querySelectorAll(".netSalary");
+
+                        // Format each gross salary element
+                        grossSalaries.forEach(function(item) {
+                            let value = parseFloat(item.innerText);
+                            item.innerText = formatNumber(value);
+                        });
+
+                        // Format each net salary element
+                        netSalaries.forEach(function(item) {
+                            let value = parseFloat(item.innerText);
+                            item.innerText = formatNumber(value);
+                        });
+
+                        function formatDateString(dateString) {
+                            if (!dateString) { // Check if null or undefined
+                                return "Not available";
+                            }
+
+                            const date = new Date(dateString);
+                            if (isNaN(date.getTime())) { // Check if date is invalid
+                                return "Not available";
+                            }
+
+                            return date.toLocaleDateString('vi-VN') + ' ' + date.toLocaleTimeString('vi-VN', {
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            });
+                        }
+
+                        // Select all elements with the class "format-date"
+                        const dateElements = document.querySelectorAll('.format-date');
+
+                        // Loop through each element and format the text
+                        dateElements.forEach(function(element) {
+                            const originalDate = element.innerText; // Get original date string
+                            const formattedDate = formatDateString(originalDate); // Format the date or show "Not available"
+                            element.innerText = formattedDate; // Replace the original text with formatted date
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+</body>
+</html>

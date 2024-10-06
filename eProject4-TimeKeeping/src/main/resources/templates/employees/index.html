@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutAdmin/main}">
+<head>
+    <meta charset="utf-8">
+    <title th:text="${pageTitle}">ADMIM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+            <div class="row g-4" layout:fragment="content">
+                <div class="alert alert-success alert-dismissible fade show" th:if="${success}" th:text="${success}" id="successAlert"></div>
+                <div class="alert alert-danger alert-dismissible fade show" th:if="${error}" th:text="${error}" id="errorAlert"></div>
+
+                <script>
+                    // Thời gian tự động tắt thông báo (5 giây = 5000ms)
+                    setTimeout(function() {
+                        var successAlert = document.getElementById('successAlert');
+                        if (successAlert) {
+                            successAlert.classList.remove('show');
+                            successAlert.classList.add('fade');
+                        }
+                    }, 3000); // Tự động tắt sau 5 giây
+
+                    setTimeout(function() {
+                        var errorAlert = document.getElementById('errorAlert');
+                        if (errorAlert) {
+                            errorAlert.classList.remove('show');
+                            errorAlert.classList.add('fade');
+                        }
+                    }, 3000);
+                </script>
+
+                <div class="col-12"><div class="bg-light rounded h-100 p-4">
+                    <h6 class="mb-4">Employee Table</h6>
+                    <form th:action="@{/employee}" method="get" class="mb-3">
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="name" placeholder="Search by employee name" aria-label="Search">
+                            <button class="btn btn-outline-secondary" type="submit">Search</button>
+                        </div>
+                    </form>
+
+                    <a href="/employee/create" class="btn btn-success mb-3">Create New</a>
+
+                    <!-- Form for exporting selected accounts -->
+                    <form th:action="@{/employee/export}" method="post" id="exportForm">
+
+                        <!-- Export button -->
+                        <button type="submit" class="btn btn-info">Export to Excel</button>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th scope="col">
+                                        <input type="checkbox" id="selectAll" onclick="toggleCheckboxes(this)">
+                                    </th>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Full Name</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Gender</th>
+                                    <th scope="col">Position</th>
+                                    <th scope="col">Department</th>
+                                    <th scope="col">Role</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="account, iterStat : ${accounts}">
+                                    <td>
+                                        <input type="checkbox" name="selectedAccounts" th:value="${account.getAccountID()}">
+                                    </td>
+                                    <td th:text="${account.getAccountID()}"></td>
+                                    <td th:text="${account.getFullName()}"></td>
+                                    <td th:text="${account.getEmail()}"></td>
+                                    <td th:text="${account.getGender()}"></td>
+                                    <td th:text="${account.position != null ? account.position.name : 'N/A'}"></td>
+                                    <td th:text="${account.department != null ? account.department.name : 'N/A'}"></td>
+                                    <td th:text="${account.role != null ? account.role.name : 'N/A'}"></td>
+                                    <td th:text="${account.getStatus()}"></td>
+                                    <td>
+                                        <!-- Action Links -->
+                                        <a th:href="@{/employee/edit/{id}(id=${account.getAccountID()})}" class="btn btn-primary btn-sm">Edit</a>
+
+                                        <a th:if="${account.getStatus() == 'Active'}"
+                                           th:href="@{/employee/delete/{id}(id=${account.getAccountID()})}"
+                                           class="btn btn-danger btn-sm"
+                                           onclick="return confirm('Are you sure you want to deactivate this account?');">InActivate</a>
+
+                                        <a th:if="${account.getStatus() == 'InActive'}"
+                                           th:href="@{/employee/activate/{id}(id=${account.getAccountID()})}"
+                                           class="btn btn-success btn-sm"
+                                           onclick="return confirm('Are you sure you want to activate this account?');">Activate</a>
+                                        <a th:href="@{/employee/{id}(id=${account.getAccountID()})}" class="btn btn-info btn-sm">Details</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </form>
+                </div>
+
+
+                    <script>
+                        function toggleCheckboxes(source) {
+                            checkboxes = document.getElementsByName('selectedAccounts');
+                            for (var i = 0; i < checkboxes.length; i++) {
+                                checkboxes[i].checked = source.checked;
+                            }
+                        }
+                    </script>
+
+                </div>
+            </div>
+
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutAdmin/main}">
+<head>
+    <meta charset="utf-8">
+    <title th:text="${pageTitle}">Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<div class="row g-4" layout:fragment="content">
+    <div class="col-12">
+        <div class="bg-light rounded h-100 p-4">
+            <div class="table-responsive">
+                <div class="card mb-3">
+                    <div class="card-header">
+                        Department Information: <span th:text="${department.getName()}"></span>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Department ID: <span th:text="${department.getId()}"></span></h5>
+                        <p class="card-text">Department Name: <span th:text="${department.getName()}"></span></p>
+                    </div>
+                    <div class="card-footer">
+                        <a th:href="@{/department/edit/{id}(id=${department.getId()})}" class="btn btn-outline-primary">Edit</a>
+                        <a th:href="@{/department}" class="btn btn-outline-info">Back</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
