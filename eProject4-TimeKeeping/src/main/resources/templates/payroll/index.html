@@ -15,16 +15,15 @@
                     <form class="mb-3">
                         <div class="input-group">
                             <input type="text" class="form-control" id="searchInput" placeholder="Search by employee name" aria-label="Search">
-                            <button class="btn btn-outline-secondary" type="button" onclick="searchPayroll()">Search</button>
                         </div>
                     </form>
 
                     <div class="table-responsive">
-                        <table class="table">
+                        <table class="table" >
                             <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Account Name</th>
+                                <th scope="col">FullName</th>
                                 <th scope="col">Creation Date</th>
                                 <th scope="col">Salary Template Name</th>
                                 <th scope="col">Payment Date</th>
@@ -50,75 +49,49 @@
                             </tr>
                             </tbody>
 
+                            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
                             <script>
-                                function formatDateString(dateString) {
-                                    if (!dateString) { // Check if null or undefined
-                                        return "N/A";
+                                $(document).ready(function() {
+                                    // Number formatting function
+                                    function formatNumber(num) {
+                                        return num.toLocaleString('vi-VN', { style: 'currency', currency: 'VND', minimumFractionDigits: 0 });
                                     }
 
-                                    const date = new Date(dateString);
-                                    if (isNaN(date.getTime())) { // Check if the date is invalid
-                                        return "N/A";
-                                    }
+                                    // Get all elements with class "grossSalary" and "netSalary"
+                                    let grossSalaries = document.querySelectorAll(".grossSalary");
+                                    let netSalaries = document.querySelectorAll(".netSalary");
 
-                                    return date.toLocaleDateString('vi-VN') + ' ' + date.toLocaleTimeString('vi-VN', {
-                                        hour: '2-digit',
-                                        minute: '2-digit'
+                                    // Format each gross salary element
+                                    grossSalaries.forEach(function(item) {
+                                        let value = parseFloat(item.innerText);
+                                        item.innerText = formatNumber(value);
                                     });
-                                }
 
-                                // Select all elements with the class "format-date"
-                                const dateElements = document.querySelectorAll('.format-date');
-
-                                // Loop through each element and format the text
-                                dateElements.forEach(function(element) {
-                                    const originalDate = element.innerText; // Get original date string
-                                    const formattedDate = formatDateString(originalDate); // Format the date or show "N/A"
-                                    element.innerText = formattedDate; // Replace the original text with formatted date
-                                });
-
-                                // Number formatting function
-                                function formatNumber(num) {
-                                    return num.toLocaleString('vi-VN', { style: 'currency', currency: 'VND', minimumFractionDigits: 0 });
-                                }
-
-                                // Get all elements with class "grossSalary" and "netSalary"
-                                let grossSalaries = document.querySelectorAll(".grossSalary");
-                                let netSalaries = document.querySelectorAll(".netSalary");
-
-                                // Format each gross salary element
-                                grossSalaries.forEach(function(item) {
-                                    let value = parseFloat(item.innerText);
-                                    item.innerText = formatNumber(value);
-                                });
-
-                                // Format each net salary element
-                                netSalaries.forEach(function(item) {
-                                    let value = parseFloat(item.innerText);
-                                    item.innerText = formatNumber(value);
-                                });
-                            </script>
-                            <script>
-                                // Search function
-                                function searchPayroll() {
-                                    // Get the search value
-                                    const searchValue = document.getElementById("searchInput").value.toLowerCase();
-
-                                    // Get all rows in the table
-                                    const rows = document.querySelectorAll("#payrollTableBody tr");
-
-                                    rows.forEach(row => {
-                                        // Get the account name from the second column (Account Name)
-                                        const fullName = row.querySelector("td:nth-child(2)").innerText.toLowerCase();
-
-                                        // Check if the account name contains the search value
-                                        if (fullName.includes(searchValue)) {
-                                            row.style.display = ""; // Show the row
-                                        } else {
-                                            row.style.display = "none"; // Hide the row if not matching
-                                        }
+                                    // Format each net salary element
+                                    netSalaries.forEach(function(item) {
+                                        let value = parseFloat(item.innerText);
+                                        item.innerText = formatNumber(value);
                                     });
-                                }
+
+                                    // Search function that filters rows as user types
+                                    $('#searchInput').on('input', function() {
+                                        // Get the search value and trim any extra spaces
+                                        const searchValue = $.trim($(this).val()).toLowerCase();
+
+                                        // Get all rows in the table
+                                        $("#payrollTableBody tr").each(function() {
+                                            // Get the full name from the second column (FullName) and trim it to avoid whitespace issues
+                                            const fullName = $.trim($(this).find("td:nth-child(2)").text()).toLowerCase();
+
+                                            // Check if the full name contains the search value
+                                            if (fullName.includes(searchValue)) {
+                                                $(this).show(); // Show the row
+                                            } else {
+                                                $(this).hide(); // Hide the row if it doesn't match
+                                            }
+                                        });
+                                    });
+                                });
                             </script>
                         </table>
                     </div>

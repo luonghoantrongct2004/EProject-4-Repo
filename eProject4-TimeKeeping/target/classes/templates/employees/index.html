@@ -86,7 +86,7 @@
                                         <a th:if="${account.getStatus() == 'Active'}"
                                            th:href="@{/employee/delete/{id}(id=${account.getAccountID()})}"
                                            class="btn btn-danger btn-sm"
-                                           onclick="return confirm('Are you sure you want to deactivate this account?');">Deactivate</a>
+                                           onclick="return confirm('Are you sure you want to deactivate this account?');">InActivate</a>
 
                                         <a th:if="${account.getStatus() == 'InActive'}"
                                            th:href="@{/employee/activate/{id}(id=${account.getAccountID()})}"

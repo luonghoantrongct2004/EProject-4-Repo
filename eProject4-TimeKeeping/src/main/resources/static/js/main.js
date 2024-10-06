@@ -56,110 +56,153 @@
         dots: true,
         loop: true,
         nav : false
-    });// Salary Chart (using real data from API)
-    $.ajax({
-        url: "/api/salary/monthlyYearly",
-        method: "GET",
-        success: function (data) {
-            var currentYear = new Date().getFullYear();
-            var labels = [];
-            var salaryData = new Array(12).fill(0); // Initialize array with 12 elements as 0
+    });
+    $(document).ready(function () {
+        var currentYear = new Date().getFullYear();
+        var years = [];
+        for (var i = currentYear; i <= 2030; i++) {
+            years.push(i);
+        }
 
-            // Create labels for 12 months of the current year
-            for (var i = 1; i <= 12; i++) {
-                labels.push("Month " + i + " - " + currentYear);
-            }
+        // Populate year dropdowns
+        years.forEach(function (year) {
+            $('#salaryYearSelect').append(`<option value="${year}">${year}</option>`);
+            $('#employeeYearSelect').append(`<option value="${year}">${year}</option>`);
+        });
 
-            // Loop through the data returned from the API and fill the salaryData array
-            data.forEach(function (item) {
-                var year = item[0];
-                var month = item[1];
-                var salary = item[2];
+        // Set the default selected year for both dropdowns to the current year
+        $('#salaryYearSelect').val(currentYear);
+        $('#employeeYearSelect').val(currentYear);
 
-                // If the year from the API matches the current year, update the salary data
-                if (year === currentYear) {
-                    salaryData[month - 1] = salary; // Update the correct month (index starts at 0)
-                }
-            });
+        // Variables to store the chart instances
+        var salaryChartInstance = null;
+        var employeeChartInstance = null;
 
-            // Initialize the chart with 12 months
-            var ctxSalary = $("#salary-chart").get(0).getContext("2d");
-            var salaryChart = new Chart(ctxSalary, {
-                type: "bar",
-                data: {
-                    labels: labels,  // Month labels
-                    datasets: [{
-                        label: "Total Salary",
-                        data: salaryData,  // Salary data from API
-                        backgroundColor: "rgba(0, 156, 255, .7)"
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Amount (VND)'
-                            }
+        // Load the default charts for the current year when the page loads
+        getSalaryData(currentYear, 0);  // 0 for "All Months"
+        getEmployeeData(currentYear);
+
+        // Salary Chart Filter
+        $('#filterSalary').on('click', function () {
+            var selectedYear = $('#salaryYearSelect').val();
+            var selectedMonth = $('#salaryMonthSelect').val();
+            getSalaryData(selectedYear, selectedMonth);
+        });
+
+        // Employee Growth Chart Filter
+        $('#filterEmployee').on('click', function () {
+            var selectedYear = $('#employeeYearSelect').val();
+            getEmployeeData(selectedYear);
+        });
+
+        function getSalaryData(year, month) {
+            $.ajax({
+                url: `/api/salary/monthlyYearly?year=${year}&month=${month}`,
+                method: "GET",
+                success: function (data) {
+                    var salaryData = new Array(12).fill(0); // Initialize array with 12 elements as 0
+
+                    // Populate the salaryData array with the results from the API
+                    data.forEach(function (item) {
+                        var apiYear = item[0];
+                        var apiMonth = item[1];
+                        var salary = item[2];
+
+                        if (apiYear == year) {
+                            salaryData[apiMonth - 1] = salary;
+                        }
+                    });
+
+                    var labels = [];
+                    for (var i = 1; i <= 12; i++) {
+                        labels.push("Month " + i + " - " + year);
+                    }
+
+                    // Check if there is an existing chart instance and destroy it before creating a new one
+                    if (salaryChartInstance !== null) {
+                        salaryChartInstance.destroy();
+                    }
+
+                    var ctxSalary = $("#salary-chart").get(0).getContext("2d");
+                    salaryChartInstance = new Chart(ctxSalary, {
+                        type: "bar",
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: "Total Salary",
+                                data: salaryData,
+                                backgroundColor: "rgba(0, 156, 255, .7)"
+                            }]
                         },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Month'
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    title: {
+                                        display: true,
+                                        text: 'Amount (VND)'
+                                    }
+                                },
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Month'
+                                    }
+                                }
                             }
                         }
+                    });
+                }
+            });
+        }
+
+        function getEmployeeData(year) {
+            $.ajax({
+                url: `/api/employees/yearly?startYear=${year}&endYear=${year}`,
+                method: "GET",
+                success: function (data) {
+                    // Check if there is an existing chart instance and destroy it before creating a new one
+                    if (employeeChartInstance !== null) {
+                        employeeChartInstance.destroy();
                     }
+
+                    var ctxEmployee = $("#employee-chart").get(0).getContext("2d");
+                    employeeChartInstance = new Chart(ctxEmployee, {
+                        type: "line",
+                        data: {
+                            labels: [year],
+                            datasets: [{
+                                label: "Employee Count",
+                                data: data,
+                                backgroundColor: "rgba(0, 156, 255, .5)",
+                                borderColor: "rgba(0, 156, 255, 1)",
+                                fill: true
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    title: {
+                                        display: true,
+                                        text: 'Employee Count'
+                                    }
+                                },
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Year'
+                                    }
+                                }
+                            }
+                        }
+                    });
                 }
             });
         }
     });
 
-    var currentYear = new Date().getFullYear();
-    var years = [];
-    for (var i = currentYear; i <= 2030; i++) {
-        years.push(i);
-    }
-
-// Employee Growth Chart (using real data from API)
-    $.ajax({
-        url: "/api/employees/yearly",
-        method: "GET",
-        success: function (data) {
-            var ctxEmployee = $("#employee-chart").get(0).getContext("2d");
-            var employeeChart = new Chart(ctxEmployee, {
-                type: "line",
-                data: {
-                    labels: years, // Years from the current year to 2030
-                    datasets: [{
-                        label: "Employee Count",
-                        data: data, // Employee count data from API
-                        backgroundColor: "rgba(0, 156, 255, .5)",
-                        borderColor: "rgba(0, 156, 255, 1)",
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Employee Count'
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Year'
-                            }
-                        }
-                    }
-                }
-            });
-        }
-    });
 
 })(jQuery);

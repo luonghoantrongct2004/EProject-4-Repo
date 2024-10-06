@@ -29,54 +29,60 @@ public class PayrollService {
 //    }
     //@Scheduled(cron = "0 0 0 1/30 * ?") @Scheduled(cron = "0 0 0 1/30 * ?")
     @Transactional
-//    @Scheduled(cron = "*/15 * * * * *") // Run every 30 seconds
+   // @Scheduled(cron = "*/15 * * * * *") // Run every 30 seconds
     @Scheduled(cron = "0 0 0 1/30 * ?")
 
 
     public void scheduledGeneratePayroll() {
         List<Account> accounts = getAllAccounts();
-        LocalDate today = LocalDate.now();  // Ngày hiện tại
+        LocalDate today = LocalDate.now();  // Get the current date
 
         for (Account account : accounts) {
-            List<AttendanceRecord> attendances = findAttendancesByAccountAndDate(account, today);
+            // Find attendance records by account and month
+            List<AttendanceRecord> attendances = findAttendancesByAccountAndMonth(account, today);
 
             if (!attendances.isEmpty()) {
                 generatePayroll(account, attendances);
             } else {
-                System.out.println("No attendance found for account: " + account.getFullName());
+                System.out.println("No attendance found for account: " + account.getFullName() + " in the current month.");
             }
         }
     }
+
     @Transactional
     public void generatePayroll(Account account, List<AttendanceRecord> attendances) {
         if (attendances.isEmpty()) {
             throw new RuntimeException("No attendance records found for the account on the specified date.");
         }
 
-        // Tổng số giờ làm việc của nhân viên
+        // Total work hours for the employee based on attendance records
         double totalWorkHours = attendances.stream()
                 .mapToDouble(AttendanceRecord::calculateWorkHours)
                 .sum();
 
-        // Tính lương gộp (gross salary) dựa trên số giờ làm việc và lương cơ bản
-        double grossSalary = account.getSalaryTemplate().getBaseSalary() * totalWorkHours;
+        // Expected monthly work hours (173.33 hours based on 8-hour workdays, 5 days a week)
+        double expectedMonthlyHours = 173.33;  // Adjusted for 8 hours/day, 5 days/week, no work on weekends
 
-        // Tạo đối tượng Payroll mới
+        // Calculate hourly rate from monthly base salary
+        double hourlyRate = account.getSalaryTemplate().getBaseSalary() / expectedMonthlyHours;
+
+        // Calculate gross salary based on actual work hours
+        double grossSalary = hourlyRate * totalWorkHours;
+
+        // Create new Payroll object
         Payroll payroll = new Payroll();
         payroll.setAccount(account);
         payroll.setSalaryTemplate(account.getSalaryTemplate());
         payroll.setGrossSalary(grossSalary);
 
-        // Tính lương thực nhận (net salary), truyền các tham số cần thiết
+        // Calculate net salary, passing necessary parameters
         payroll.calculateNetSalary(payroll, attendances, account.getSalaryTemplate());
 
         System.out.println("Generated Payroll for account: " + account.getFullName() + " with grossSalary: " + grossSalary);
 
-
+        // Persist payroll record
         entityManager.persist(payroll);
     }
-
-
 
     public void calculateNetSalary(Payroll payroll, List<AttendanceRecord> attendanceRecords, SalaryTemplate salaryTemplate) {
         double baseSalary = salaryTemplate.getBaseSalary(); // Lương cơ bản theo tháng
@@ -177,6 +183,22 @@ public class PayrollService {
                 .setParameter("name", "%" + name + "%")
                 .getResultList();
     }
+    public List<AttendanceRecord> findAttendancesByAccountAndMonth(Account account, LocalDate date) {
+        int year = date.getYear();   // Extract year from the provided date
+        int month = date.getMonthValue();  // Extract month from the provided date
+
+        // Query to find attendance records by year and month
+        List<AttendanceRecord> attendances = entityManager.createQuery(
+                        "SELECT a FROM AttendanceRecord a WHERE a.account = :account AND YEAR(a.date) = :year AND MONTH(a.date) = :month", AttendanceRecord.class)
+                .setParameter("account", account)
+                .setParameter("year", year)
+                .setParameter("month", month)
+                .getResultList();
+
+        System.out.println("Found " + attendances.size() + " attendance records for account: " + account.getFullName() + " in month: " + month + "/" + year);
+        return attendances;
+    }
+
     public List<AttendanceRecord> findAttendancesByAccountAndDate(Account account, LocalDate date) {
         List<AttendanceRecord> attendances = entityManager.createQuery(
                         "SELECT a FROM AttendanceRecord a WHERE a.account = :account AND a.date = :date", AttendanceRecord.class)
@@ -187,7 +209,6 @@ public class PayrollService {
         System.out.println("Found " + attendances.size() + " attendance records for account: " + account.getFullName());
         return attendances;
     }
-
     @Transactional
     public Payroll updatePayroll(Payroll payroll) {
         entityManager.merge(payroll);

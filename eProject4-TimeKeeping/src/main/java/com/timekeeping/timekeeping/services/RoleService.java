@@ -28,7 +28,7 @@ public class RoleService {
                 .getResultList();
     }
     public List<Role> findByActive() {
-        return entityManager.createQuery("FROM Role WHERE active == true", Role.class)
+        return entityManager.createQuery("FROM Role WHERE active = true", Role.class)
                 .getResultList();
     }
     public Role findById(int id) {

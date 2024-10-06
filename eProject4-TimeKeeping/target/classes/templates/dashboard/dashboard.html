@@ -95,6 +95,28 @@
         <div class="bg-light text-center rounded p-4">
           <div class="d-flex align-items-center justify-content-between mb-4">
             <h6 class="mb-0">Salary Chart</h6>
+            <!-- Filter for year and month -->
+            <div>
+              <select id="salaryYearSelect" class="form-select d-inline-block" style="width: auto;">
+                <!-- Year options will be filled dynamically -->
+              </select>
+              <select id="salaryMonthSelect" class="form-select d-inline-block" style="width: auto;">
+                <option value="0">All Months</option>
+                <option value="1">January</option>
+                <option value="2">February</option>
+                <option value="3">March</option>
+                <option value="4">April</option>
+                <option value="5">May</option>
+                <option value="6">June</option>
+                <option value="7">July</option>
+                <option value="8">August</option>
+                <option value="9">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+              </select>
+              <button id="filterSalary" class="btn btn-primary">Filter</button>
+            </div>
           </div>
           <canvas id="salary-chart"></canvas>
         </div>
@@ -104,6 +126,13 @@
         <div class="bg-light text-center rounded p-4">
           <div class="d-flex align-items-center justify-content-between mb-4">
             <h6 class="mb-0">Employee Growth Chart</h6>
+            <!-- Filter for year -->
+            <div>
+              <select id="employeeYearSelect" class="form-select d-inline-block" style="width: auto;">
+                <!-- Year options will be filled dynamically -->
+              </select>
+              <button id="filterEmployee" class="btn btn-primary">Filter</button>
+            </div>
           </div>
           <canvas id="employee-chart"></canvas>
         </div>
@@ -111,6 +140,7 @@
     </div>
   </div>
   <!-- Charts End -->
+
 
 
   <!-- Payroll Table Start -->
