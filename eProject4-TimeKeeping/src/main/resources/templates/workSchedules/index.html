@@ -28,8 +28,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            opacity: 0;
-            display: none;
+            opacity: 1;
             transition: opacity 0.3s ease, display 0.3s ease;
         }
 
@@ -99,8 +98,7 @@
                                                  th:if="${entry.value.get(date) != null}"
                                                  th:id="'ws-' + ${entry.value.get(date).scheduleId}"
                                                  draggable="true"
-                                                 ondragstart="drag(event, 1006)"
-                                                 ondrop="drop(event, 1007)"
+                                                 th:attr="ondragstart=|drag(event, ${entry.value.get(date).scheduleId})|, ondrop=|drop(event, ${entry.value.get(date).scheduleId})|"
                                                  ondragover="allowDrop(event)">
                                                 <form th:action="@{/workSchedules/updateShift}" method="get">
                                                     <input type="hidden" name="scheduleId" th:value="${entry.value.get(date).scheduleId}"/>
@@ -143,7 +141,9 @@
 
                                             <div class="work-schedule-container"
                                                  th:if="${entry.value.get(date) == null}"
-                                                 ondragover="allowDrop(event)">
+                                                 th:attr="ondrop=|dropToNew(event, '${#temporals.format(date, 'yyyy-MM-dd')}', ${entry.key.accountID})|"
+                                                 ondragover="allowDrop(event)"
+                                            >
                                                 <!-- Display form to create new work shift -->
                                                 <form th:action="@{/workSchedules/create}" method="post">
                                                     <input type="hidden" name="scheduleId"/>
@@ -187,11 +187,87 @@
             var draggedElement = document.getElementById(data);
             var scheduleIdFrom = ev.dataTransfer.getData("scheduleIdFrom");
 
-            event.target.appendChild(draggedElement);
-            ev.target.classList.remove('dragging'); // Xóa lớp dragging khi thả
+            // Lấy phần tử nơi thả
+            var targetElement = ev.currentTarget;
 
             console.log(data);
-            //updateSchedule(scheduleIdFrom, scheduleIdTo); // Cập nhật lịch sau khi thả
+            console.log(ev.target.id);
+
+            // Đảm bảo rằng phần tử thả không phải là phần tử con của phần tử cha
+            if (targetElement !== draggedElement && draggedElement.closest(".work-schedule-container") && targetElement.closest(".work-schedule-container")) {
+                // Lưu vị trí của phần tử đích và nguồn
+                var sourceParent = draggedElement.parentNode;
+                var targetParent = targetElement.parentNode;
+
+                // Hoán đổi vị trí giữa phần tử nguồn và phần tử đích
+                targetParent.replaceChild(draggedElement, targetElement);
+                sourceParent.appendChild(targetElement);
+
+                // Loại bỏ lớp dragging
+                draggedElement.classList.remove('dragging');
+
+                // Cập nhật lịch sau khi hoán đổi (gửi yêu cầu cập nhật lịch làm việc nếu cần)
+                updateSchedule(scheduleIdFrom, scheduleIdTo); // Cập nhật lịch sau khi thả
+            }
+        }
+
+        function dropToNew(ev, date, accountID) {
+            ev.preventDefault();
+            var data = ev.dataTransfer.getData("text");
+            var draggedElement = document.getElementById(data);
+            var scheduleIdFrom = ev.dataTransfer.getData("scheduleIdFrom");
+
+            // Lấy phần tử nơi thả
+            var targetElement = ev.currentTarget;
+
+            console.log(data);
+            console.log(ev.target.id);
+
+            // Đảm bảo rằng phần tử thả không phải là phần tử con của phần tử cha
+            if (targetElement !== draggedElement && draggedElement.closest(".work-schedule-container") && targetElement.closest(".work-schedule-container")) {
+                // Lưu vị trí của phần tử đích và nguồn
+                var sourceParent = draggedElement.parentNode;
+                var targetParent = targetElement.parentNode;
+
+                // Hoán đổi vị trí giữa phần tử nguồn và phần tử đích
+                targetParent.replaceChild(draggedElement, targetElement);
+                sourceParent.appendChild(targetElement);
+
+                // Loại bỏ lớp dragging
+                draggedElement.classList.remove('dragging');
+
+                // Cập nhật lịch sau khi hoán đổi (gửi yêu cầu cập nhật lịch làm việc nếu cần)
+                updateScheduleToNew(scheduleIdFrom, date, accountID); // Cập nhật lịch sau khi thả
+            }
+        }
+
+        function updateScheduleToNew(scheduleIdFrom, date, accountID) {
+            // Gửi yêu cầu AJAX hoặc Fetch API để cập nhật lịch làm việc sau khi kéo thả
+            var url = "/workSchedules/dragDropWS"; // URL backend xử lý yêu cầu
+            var data = {
+                "scheduleIdFrom": scheduleIdFrom,
+                "scheduleToDate": date,
+                "scheduleToAccountID": accountID
+            };
+
+            // Sử dụng Fetch API để gửi dữ liệu
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Success:", data);
+                // Cập nhật giao diện người dùng nếu cần
+                //alert("Work schedule has been updated!");
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+                alert("An error occurred while updating the work schedule.");
+            });
         }
 
         function updateSchedule(scheduleIdFrom, scheduleIdTo) {
@@ -214,7 +290,7 @@
             .then(data => {
                 console.log("Success:", data);
                 // Cập nhật giao diện người dùng nếu cần
-                alert("Work schedule has been updated!");
+                //alert("Work schedule has been updated!");
             })
             .catch((error) => {
                 console.error("Error:", error);

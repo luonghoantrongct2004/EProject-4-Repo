@@ -231,12 +231,25 @@ public class WorkScheduleController {
     @PostMapping("/dragDropWS")
     @ResponseBody
     public ResponseEntity<?> dragDropWS(@RequestBody Map<String, Object> payload) {
-//    public String dragDropWS(@RequestBody Map<String, Object> payload) {
         int scheduleIdFrom = Integer.parseInt(payload.get("scheduleIdFrom").toString());
-        int scheduleIdTo = Integer.parseInt(payload.get("scheduleIdTo").toString());
+        Object scheduleIdToObj = payload.get("scheduleIdTo");
+        Object scheduleToDateObj = payload.get("scheduleToDate");
+        Object scheduleToAccountIDObj = payload.get("scheduleToAccountID");
+        LocalDate scheduleToNewDate = null;
+        Account scheduleToNewAccount = null;
+        WorkSchedule scheduleTo = null;
+
+        if (scheduleToDateObj != null && scheduleToAccountIDObj != null) {
+            int accountID = Integer.parseInt(scheduleToAccountIDObj.toString());
+            scheduleToNewAccount = accountService.findById(accountID).orElseThrow();
+            scheduleToNewDate = LocalDate.parse(scheduleToDateObj.toString());
+        }
 
         WorkSchedule scheduleFrom = workScheduleService.findById(scheduleIdFrom);
-        WorkSchedule scheduleTo = workScheduleService.findById(scheduleIdTo);
+        if (scheduleIdToObj != null) {
+            int scheduleIdTo = Integer.parseInt(scheduleIdToObj.toString());
+            scheduleTo = workScheduleService.findById(scheduleIdTo);
+        }
 
         if (scheduleFrom == null) {
             return ResponseEntity.badRequest().body("Invalid schedule ID from.");
@@ -250,21 +263,19 @@ public class WorkScheduleController {
 
             scheduleTo.setAccount(scheduleFrom.getAccount());
             scheduleTo.setStatus(scheduleFrom.getStatus());
-            scheduleTo.setDate(scheduleFrom.getDate());
             scheduleTo.setShift(scheduleFrom.getShift());
 
             scheduleFrom.setAccount(accountToTemp);
             scheduleFrom.setStatus(statusToTemp);
-            scheduleFrom.setDate(dateToTemp);
             scheduleFrom.setShift(shiftToTemp);
 
             workScheduleService.saveSchedule(scheduleFrom);
             workScheduleService.saveSchedule(scheduleTo);
         } else {
             scheduleTo = new WorkSchedule();
-            scheduleTo.setAccount(scheduleFrom.getAccount());
+            scheduleTo.setAccount(scheduleToNewAccount);
             scheduleTo.setStatus(scheduleFrom.getStatus());
-            scheduleTo.setDate(scheduleFrom.getDate());
+            scheduleTo.setDate(scheduleToNewDate);
             scheduleTo.setShift(scheduleFrom.getShift());
 
             workScheduleService.saveSchedule(scheduleTo);
@@ -272,7 +283,5 @@ public class WorkScheduleController {
         }
 
         return ResponseEntity.ok().body(Collections.singletonMap("message", "Work schedule updated successfully!"));
-
-//        return "redirect:/workSchedules";
     }
 }
