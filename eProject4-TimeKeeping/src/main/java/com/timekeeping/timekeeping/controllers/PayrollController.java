@@ -24,7 +24,7 @@ public class PayrollController {
     public String generatePayroll() {
         List<Account> accounts = payrollService.getAllAccounts();
         for (Account account : accounts) {
-            List<AttendanceRecord> attendances = payrollService.findAttendancesByAccountAndDate(account, LocalDate.now());
+            List<AttendanceRecord> attendances = payrollService.findAttendancesByAccountAndMonth(account, LocalDate.now());
             payrollService.generatePayroll(account, attendances);
         }
         return "payroll/index";

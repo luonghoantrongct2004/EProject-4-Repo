@@ -56,5 +56,157 @@
         dots: true,
         loop: true,
         nav : false
+<<<<<<< HEAD
     });
+    $(document).ready(function () {
+        var currentYear = new Date().getFullYear();
+        var years = [];
+        for (var i = currentYear; i <= 2030; i++) {
+            years.push(i);
+        }
+
+        // Populate year dropdowns
+        years.forEach(function (year) {
+            $('#salaryYearSelect').append(`<option value="${year}">${year}</option>`);
+            $('#employeeYearSelect').append(`<option value="${year}">${year}</option>`);
+        });
+
+        // Set the default selected year for both dropdowns to the current year
+        $('#salaryYearSelect').val(currentYear);
+        $('#employeeYearSelect').val(currentYear);
+
+        // Variables to store the chart instances
+        var salaryChartInstance = null;
+        var employeeChartInstance = null;
+
+        // Load the default charts for the current year when the page loads
+        getSalaryData(currentYear, 0);  // 0 for "All Months"
+        getEmployeeData(currentYear);
+
+        // Salary Chart Filter
+        $('#filterSalary').on('click', function () {
+            var selectedYear = $('#salaryYearSelect').val();
+            var selectedMonth = $('#salaryMonthSelect').val();
+            getSalaryData(selectedYear, selectedMonth);
+        });
+
+        // Employee Growth Chart Filter
+        $('#filterEmployee').on('click', function () {
+            var selectedYear = $('#employeeYearSelect').val();
+            getEmployeeData(selectedYear);
+        });
+
+        function getSalaryData(year, month) {
+            $.ajax({
+                url: `/api/salary/monthlyYearly?year=${year}&month=${month}`,
+                method: "GET",
+                success: function (data) {
+                    var salaryData = new Array(12).fill(0); // Initialize array with 12 elements as 0
+
+                    // Populate the salaryData array with the results from the API
+                    data.forEach(function (item) {
+                        var apiYear = item[0];
+                        var apiMonth = item[1];
+                        var salary = item[2];
+
+                        if (apiYear == year) {
+                            salaryData[apiMonth - 1] = salary;
+                        }
+                    });
+
+                    var labels = [];
+                    for (var i = 1; i <= 12; i++) {
+                        labels.push("Month " + i + " - " + year);
+                    }
+
+                    // Check if there is an existing chart instance and destroy it before creating a new one
+                    if (salaryChartInstance !== null) {
+                        salaryChartInstance.destroy();
+                    }
+
+                    var ctxSalary = $("#salary-chart").get(0).getContext("2d");
+                    salaryChartInstance = new Chart(ctxSalary, {
+                        type: "bar",
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: "Total Salary",
+                                data: salaryData,
+                                backgroundColor: "rgba(0, 156, 255, .7)"
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    title: {
+                                        display: true,
+                                        text: 'Amount (VND)'
+                                    }
+                                },
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Month'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
+        function getEmployeeData(year) {
+            $.ajax({
+                url: `/api/employees/yearly?startYear=${year}&endYear=${year}`,
+                method: "GET",
+                success: function (data) {
+                    // Check if there is an existing chart instance and destroy it before creating a new one
+                    if (employeeChartInstance !== null) {
+                        employeeChartInstance.destroy();
+                    }
+
+                    var ctxEmployee = $("#employee-chart").get(0).getContext("2d");
+                    employeeChartInstance = new Chart(ctxEmployee, {
+                        type: "line",
+                        data: {
+                            labels: [year],
+                            datasets: [{
+                                label: "Employee Count",
+                                data: data,
+                                backgroundColor: "rgba(0, 156, 255, .5)",
+                                borderColor: "rgba(0, 156, 255, 1)",
+                                fill: true
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    title: {
+                                        display: true,
+                                        text: 'Employee Count'
+                                    }
+                                },
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Year'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    });
+
+
+=======
+    });
+>>>>>>> 7314a1d6f2391f93f37d0530ab6c016d8c678f66
 })(jQuery);
