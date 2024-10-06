@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layoutAdmin/main}"
+>
+<head>
+    <meta charset="utf-8" />
+    <title th:text="${pageTitle}">Lịch Làm Việc</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+
+<body>
+<div class="row g-4" layout:fragment="content">
+    <div class="col-12">
+        <div class="bg-light rounded h-100 p-4">
+            <h6 class="mb-4">Lịch Làm Việc</h6>
+            <div class="table-responsive">
+                <form
+                        th:object="${workSchedule}"
+                        th:action="@{/workSchedules}"
+                        method="post"
+                >
+                    <div class="card">
+                        <div class="card-body">
+                            <input type="hidden" th:field="*{scheduleId}" />
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="shiftId">Ca Làm</label>
+                                    <select
+                                            id="shiftId"
+                                            name="shiftId"
+                                            th:field="*{shift.shiftId}"
+                                            required
+                                            class="form-control"
+                                    >
+                                        <option
+                                                th:each="shiftOption : ${shifts}"
+                                                th:value="${shiftOption.shiftId}"
+                                                th:text="${shiftOption.shiftName}"
+                                                th:selected="${shiftOption.shiftId} == ${shift.shiftId}"
+                                        >
+                                            Chọn ca làm
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="accountID">Tên Nhân Viên</label>
+                                    <select
+                                            id="accountID"
+                                            name="accountID"
+                                            th:field="*{account.accountID}"
+                                            required
+                                            class="form-control"
+                                    >
+                                        <option
+                                                th:each="accountOption : ${accounts}"
+                                                th:value="${accountOption.accountID}"
+                                                th:text="${accountOption.fullName}"
+                                                th:selected="${accountOption.accountID} == ${account.accountID}"
+                                        >
+                                            Tên Nhân Viên
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="date">Ngày Làm</label>
+                                    <input
+                                            type="date"
+                                            th:field="*{date}"
+                                            id="date"
+                                            class="form-control"
+                                            required
+                                            placeholder="Nhập Ngày Làm"
+                                    />
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="status">Trạng Thái</label>
+                                    <select
+                                            id="status"
+                                            name="status"
+                                            th:field="*{status}"
+                                            required
+                                            class="form-control"
+                                    >
+                                        <option
+                                                th:each="statusOption : ${T(com.timekeeping.timekeeping.enums.ApprovalStatus).values()}"
+                                                th:value="${statusOption}"
+                                                th:text="${statusOption.displayName}"
+                                                th:selected="${statusOption} == ${status}"
+                                        >
+                                            Status
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer text-right">
+                            <button type="submit" class="btn btn-outline-success">
+                                Lưu
+                            </button>
+                            <a th:href="@{/workSchedules}" class="btn btn-outline-secondary"
+                            >Quay về</a>
+                            <a
+                                    th:href="@{'/workSchedules/delete/' + *{scheduleId}}"
+                                    class="btn btn-outline-danger"
+                                    onclick="return confirm('Quản lý có chắc chắn muốn xóa ngày này này?');"
+                            >Xóa</a>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

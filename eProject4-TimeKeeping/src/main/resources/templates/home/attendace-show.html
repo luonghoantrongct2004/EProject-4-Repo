@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Attendance Records</title>
+    <!-- Include Bootstrap CSS and JS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+        <link rel="icon" href="data:;base64," type="image/x-icon">
+
+
+</head>
+<body>
+<div class="container mt-5">
+    <h2>Your Attendance Records</h2>
+
+    <!-- Display message if no records are found -->
+    <div th:if="${message}" class="alert alert-info" role="alert">
+        <span th:text="${message}">No attendance records available.</span>
+    </div>
+
+    <!-- Display the attendance table only if records exist -->
+    <div th:if="${attendance != null and !attendance.isEmpty()}">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover mt-3">
+                <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Account ID</th>
+                    <th>Shift ID</th>
+                    <th>Date</th>
+                    <th>Clock In Time</th>
+                    <th>Clock Out Time</th>
+                    <th>Working Hours</th>
+                    <th>Status</th>
+                    <th>Notes</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="record : ${attendance}">
+                    <td th:text="${record.recordID}">1</td>
+                    <td th:text="${record.account != null ? record.account.fullName : 'N/A'}">101</td>
+                    <td th:text="${record.shift != null ? record.shift.shiftName : 'N/A'}">5</td>
+                    <td th:text="${record.date}">2024-01-01</td>
+                    <td th:text="${record.clockInTime != null ? #temporals.format(record.clockInTime, 'hh:mm a', T(java.util.Locale).US) : 'N/A'}">08:00 AM</td>
+                    <td th:text="${record.clockOutTime != null ? #temporals.format(record.clockOutTime, 'hh:mm a', T(java.util.Locale).US) : 'N/A'}">05:00 PM</td>
+                    <td th:text="${record.formattedWorkingHours}">8.00 hours</td>
+                    <td th:text="${record.status}">Present</td>
+                    <td th:text="${record.notes}">On time</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div th:if="${attendance != null and attendance.isEmpty()}" class="alert alert-warning" role="alert">
+        <p>No attendance records found for the selected date.</p>
+    </div>
+</div>
+
+
+
+</body>
+</html>

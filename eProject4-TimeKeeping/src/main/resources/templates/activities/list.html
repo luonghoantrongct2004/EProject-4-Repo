@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Activity Notifications</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container mt-5">
+  <h2 class="text-center mb-4">Activity Notifications</h2>
+
+  <div class="list-group">
+    <!-- Lặp qua danh sách thông báo -->
+    <div th:each="notification : ${notifications}" class="list-group-item list-group-item-action">
+      <div class="d-flex w-100 justify-content-between">
+        <a th:href="@{/activities/view/{id}(id=${notification.activityId})}">
+          <h5 class="mb-1" th:text="${notification.activityName}">Activity Title</h5>
+          <small th:text="${notification.date}">Date</small>
+        </a>
+      </div>
+      <p class="mb-1" th:text="${notification.description}">Activity description goes here.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap JS và các phụ thuộc khác -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutAdmin/main}">
+<head>
+    <meta charset="utf-8">
+    <title th:text="${pageTitle}">ADMIN</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+<div class="row g-4" layout:fragment="content">
+    <div class="col-12">
+        <div class="bg-light rounded h-100 p-4">
+            <h2>Add New Job</h2>
+            <div th:if="${error}" class="alert alert-danger" role="alert">
+                <p th:text="${error}"></p>
+            </div>
+            <form th:action="@{/jobs/save}" th:object="${job}" method="post" enctype="multipart/form-data">
+                <div class="row mb-3">
+                    <div class="col-md-12 form-group">
+                        <label for="title">Title</label>
+                        <input type="text" class="form-control" id="title" th:field="*{title}" placeholder="Enter job title" required>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-12 form-group">
+                        <label for="image">Image</label>
+                        <input type="file" class="form-control-file" id="image" name="image" accept="image/*">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-12 form-group">
+                        <label for="description">Description</label>
+                        <textarea class="form-control" id="description" th:field="*{description}" placeholder="Enter job description" rows="4" required></textarea>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-12 form-group">
+                        <label for="requirements">Requirements</label>
+                        <textarea class="form-control" id="requirements" th:field="*{requirements}" placeholder="Enter job requirements" rows="4" required></textarea>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-12 form-group">
+                        <label for="location">Location</label>
+                        <input type="text" class="form-control" id="location" th:field="*{location}" placeholder="Enter job location" required>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-12 form-group">
+                        <label for="salaryRange">Salary Range</label>
+                        <input type="text" class="form-control" id="salaryRange" th:field="*{salaryRange}" placeholder="Enter salary range" required pattern="\d+(?:-\d+)?" title="Please enter a valid salary range (e.g., 1000-2000)">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-12 form-group">
+                        <label for="postingDate">Posting Date</label>
+                        <input type="date" class="form-control" id="postingDate" th:field="*{postingDate}" required min="${#dates.format(new java.util.Date(), 'yyyy-MM-dd')}">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-12 form-group">
+                        <label for="closingDate">Closing Date</label>
+                        <input type="date" class="form-control" id="closingDate" th:field="*{closingDate}" required>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-12 form-group">
+                        <label for="status">Status</label>
+                        <select class="form-control" id="status" th:field="*{status}" required>
+                            <option value="" disabled selected>Select status</option>
+                            <option value="Open">Open</option>
+                            <option value="Closed">Closed</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-12 form-group">
+                        <label for="experienceYears">Experience Years</label>
+                        <input type="number" class="form-control" id="experienceYears" th:field="*{experienceYears}" placeholder="Enter required years of experience" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelector('form').addEventListener('submit', function(event) {
+        var salaryRange = document.getElementById('salaryRange').value;
+        var regex = /^\d+(-\d+)?$/;
+
+        if (!regex.test(salaryRange)) {
+            alert('Please enter a valid salary range (e.g., 1000-2000)');
+            event.preventDefault(); // Prevent form submission
+        }
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

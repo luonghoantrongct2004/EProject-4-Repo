@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Application Success</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+  <style>
+    /* styles.css */
+    .container {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .success-message {
+      color: green;
+      font-size: 1.5em;
+    }
+
+    .home-link {
+      display: block;
+      margin-top: 20px;
+      font-size: 1.2em;
+      color: blue;
+      text-decoration: none;
+    }
+
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2 class="success-message" th:text="${message}">Application Successful!</h2>
+  <a href="/" class="home-link">Return to Homepage</a>
+</div>
+</body>
+</html>

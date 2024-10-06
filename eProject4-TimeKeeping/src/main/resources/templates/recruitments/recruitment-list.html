@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutAdmin/main}">
+<head>
+    <meta charset="utf-8">
+    <title th:text="${pageTitle}">ADMIM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<div class="row g-4" layout:fragment="content">
+    <div class="col-12">
+        <div class="bg-light rounded h-100 p-4">
+            <h2>Recruitment Schedule List</h2>
+
+            <a th:href="@{/recruitments/new}" class="btn btn-primary mb-3">New Recruitments</a>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Job ID</th>
+                    <th>Status</th>
+                    <th>Description</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Interview Date</th>
+                    <th>Location</th>
+                    <th>Name</th>
+                    <th>Interview Type</th>
+                    <th>Notes</th>
+                    <th>AccountID</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="recruitment : ${recruitments}">
+                    <td th:text="${recruitment.recruitmentID}"></td>
+                    <td th:text="${recruitment.job.jobID}"></td>
+                    <td th:text="${recruitment.status}"></td>
+                    <td th:text="${recruitment.description}"></td>
+                    <td th:text="${#dates.format(recruitment.startDate, 'yyyy-MM-dd')}"></td>
+                    <td th:text="${#dates.format(recruitment.endDate, 'yyyy-MM-dd')}"></td>
+                    <td th:text="${recruitment.interviewDate}"></td>
+                    <td th:text="${recruitment.location}"></td>
+                    <td th:text="${recruitment.name}"></td>
+                    <td th:text="${recruitment.interviewType}"></td>
+                    <td th:text="${recruitment.notes}"></td>
+                    <td th:text="${recruitment.account.accountID}"></td>
+                    <td>
+                        <a th:href="@{/recruitments/edit/{recruitmentID}(recruitmentID=${recruitment.recruitmentID})}" class="btn btn-warning btn-sm">Edit</a>
+                    </td>
+                    <td>
+                        <a th:href="@{/recruitments/delete/{recruitmentID}(recruitmentID=${recruitment.recruitmentID})}" class="btn btn-danger btn-sm">Delete</a>
+                    </td>
+
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

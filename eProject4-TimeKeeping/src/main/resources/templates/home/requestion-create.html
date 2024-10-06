@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${title}">Gửi Yêu Cầu</title>
+</head>
+<body style="background-image: url('https://imgs.search.brave.com/4nLMXgCOnsi3gGsNZT8Re-BdhQ6a7w4SHsYVE7QN0dU/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/ZnJlZXBpay5jb20v/ZnJlZS1waG90by9h/YnN0cmFjdC1uZXR3/b3JraW5nLWNvbmNl/cHQtc3RpbGwtbGlm/ZS1hcnJhbmdlbWVu/dF8yMy0yMTQ5MDM1/NzA5LmpwZz9zaXpl/PTYyNiZleHQ9anBn'); background-size: contain;">
+<div layout:fragment="content">
+    <div class="row justify-content-center" style="padding-top: 150px; margin-bottom: 40px;">
+        <div class="col-lg-7 col-md-12 col-sm-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4>Gửi Yêu Cầu</h4>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/requestion-create}" th:object="${requestion}" method="post">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="requestID" class="custom-control-label">ID yêu cầu</label>
+                                <input type="hidden" id="requestID" th:field="${requestion.requestID}"
+                                       class="form-control"/>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="requestName" class="custom-control-label">Tên yêu cầu</label>
+                                <select id="requestName" name="requestName" class="form-control"
+                                        th:field="${requestion.requestName}">
+                                    <option value="Yêu cầu làm thêm giờ">Yêu cầu làm thêm giờ</option>
+                                    <option value="Yêu cầu xin nghỉ phép">Yêu cầu xin nghỉ phép</option>
+                                    <option value="Yêu cầu xin thôi việc">Yêu cầu xin thôi việc</option>
+                                    <option value="Yêu cầu xin vắng hoạt động">Yêu cầu xin vắng hoạt động</option>
+                                    <option value="Yêu cầu sửa bảng chấm công">Yêu cầu sửa bảng chấm công</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="startDate" class="form-label">Ngày bắt đầu</label>
+                                <input type="datetime-local" id="startDate" name="startDate" th:field="${requestion.startDate}"
+                                       required class="form-control"/>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="endDate" class="form-label">Ngày kết thúc</label>
+                                <input type="datetime-local" id="endDate" name="endDate" th:field="${requestion.endDate}"
+                                       required class="form-control"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="reason" class="form-label">Lý do</label>
+                            <textarea id="reason" name="reason" cols="10" rows="5" class="form-control"
+                                      th:field="${requestion.reason}"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block">Gửi Yêu Cầu</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Display success message if available -->
+    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+</div>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
