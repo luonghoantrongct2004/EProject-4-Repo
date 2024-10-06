@@ -15,8 +15,8 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     List<Account> findAllWithRoles();
     Optional<Account> findByEmail(String email);
 
-    @Query("SELECT a FROM Account a WHERE a.role.roleID > 3")
+    @Query("SELECT a FROM Account a WHERE a.role.name = 'Employee'")
     List<Account> findAllEmployees();
-    @Query("SELECT a FROM Account a WHERE a.fullName = :fullName AND a.role.roleID > 3")
+    @Query("SELECT a FROM Account a WHERE a.fullName LIKE :fullName AND a.role.name = 'Employee'")
     List<Account> findByNameEmployee(@Param("fullName") String fullName);
 }

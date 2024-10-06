@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layoutAdmin/main}"
+>
+<head>
+  <meta charset="utf-8" />
+  <title th:text="${pageTitle}">Create Notification</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+<body>
+<div class="row g-4" layout:fragment="content">
+  <div class="col-12">
+    <div class="bg-light rounded h-100 p-4">
+      <h6 class="mb-4">Create Notification</h6>
+      <div class="table-responsive">
+        <form
+                th:object="${notification}"
+                th:action="@{/activityNotifications/create}"
+                method="post"
+        >
+          <div class="card">
+            <div class="card-body">
+              <input type="hidden" th:field="*{id}" />
+
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="content">Content</label>
+                  <textarea
+                          type="text"
+                          th:field="*{content}"
+                          id="content"
+                          class="form-control"
+                          placeholder="Enter Content"
+                          required
+                  ></textarea>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                  <label for="activityId">Activity</label>
+                  <select id="activityId" th:field="*{activity.activityId}" class="form-control" required>
+                    <option th:each="activityOption : ${activities}"
+                            th:value="${activityOption.activityId}"
+                            th:text="${activityOption.activityName}">
+                    </option>
+                  </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                  <label for="accountID">Account</label>
+                  <select id="accountID" th:field="*{account.accountID}" class="form-control" required>
+                    <option th:each="accountOption : ${accounts}"
+                            th:value="${accountOption.accountID}"
+                            th:text="${accountOption.fullName}">
+                    </option>
+                  </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                  <label for="date">Notification Time</label>
+                  <div class="d-flex">
+                    <input type="date" id="date" name="date" class="form-control me-3" required>
+                    <input type="time" id="time" name="time" class="form-control" required>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer text-right">
+              <button type="submit" class="btn btn-outline-success">Save</button>
+              <a th:href="@{/activityNotifications}" class="btn btn-outline-danger">Back</a>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

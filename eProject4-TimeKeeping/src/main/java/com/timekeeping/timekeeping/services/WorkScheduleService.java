@@ -71,6 +71,10 @@ public class WorkScheduleService {
         return null;
     }
 
+    public WorkSchedule findById(int id) {
+        return workScheduleRepository.findById(id).orElse(null);
+    }
+
     public List<WorkSchedule> findScheduleForShiftAndDate(int shiftId, LocalDate date) {
         List<WorkSchedule> schedules = workScheduleRepository.findScheduleForShiftAndDate(shiftId, date);
 

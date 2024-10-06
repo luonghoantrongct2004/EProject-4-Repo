@@ -1,48 +1,41 @@
 package com.timekeeping.timekeeping.models;
 
+import com.timekeeping.timekeeping.enums.ActivityType;
 import jakarta.persistence.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 public class Activity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int activityId;
 
-    @Column(columnDefinition = "NVARCHAR(255)")
     private String activityName;
-
     @Column(columnDefinition = "NTEXT")
     private String description;
-
-    @Column(columnDefinition = "NVARCHAR(255)")
-    private String purpose;
-
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate date;
-
-    @Column(name = "mandatory")
-    private boolean mandatory;
-
+    private LocalDateTime startTime;
     private double budget;
+    private String location;
 
-    // Constructors
-    public Activity() {}
+    @Enumerated(EnumType.STRING)
+    private ActivityType type;
 
-    public Activity(int activityId, String activityName, String description, String purpose, LocalDate date, boolean mandatory, double budget) {
+    public Activity() {
+    }
+
+    public Activity(int activityId, String activityName, String description, LocalDateTime startTime, double budget, String location, ActivityType type) {
         this.activityId = activityId;
         this.activityName = activityName;
         this.description = description;
-        this.purpose = purpose;
-        this.date = date;
-        this.mandatory = mandatory;
+        this.startTime = startTime;
         this.budget = budget;
+        this.location = location;
+        this.type = type;
     }
 
-    // Getters and Setters
     public int getActivityId() {
         return activityId;
     }
@@ -67,28 +60,12 @@ public class Activity {
         this.description = description;
     }
 
-    public String getPurpose() {
-        return purpose;
+    public LocalDateTime getStartTime() {
+        return startTime;
     }
 
-    public void setPurpose(String purpose) {
-        this.purpose = purpose;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public boolean isMandatory() {
-        return mandatory;
-    }
-
-    public void setMandatory(boolean mandatory) {
-        this.mandatory = mandatory;
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
     }
 
     public double getBudget() {
@@ -98,4 +75,21 @@ public class Activity {
     public void setBudget(double budget) {
         this.budget = budget;
     }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public ActivityType getType() {
+        return type;
+    }
+
+    public void setType(ActivityType type) {
+        this.type = type;
+    }
 }
+

@@ -10,6 +10,54 @@
 
 <body>
 <div layout:fragment="content">
+    <style>
+        .work-schedule-container {
+            position: relative;
+        }
+
+        .cache-overlay-buttons {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        .overlay-buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            display: none;
+            transition: opacity 0.3s ease, display 0.3s ease;
+        }
+
+        .work-schedule-container:hover .overlay-buttons {
+            opacity: 1;
+            display: flex;
+        }
+
+        .overlay-buttons a {
+            margin: 0 6px;
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .overlay-buttons a:hover {
+            transform: scale(1.2);
+        }
+
+        /* Hiệu ứng khi đang kéo thả */
+        .work-schedule-container.dragging {
+            background-color: #f0f0f0;
+            border: 2px dashed #ccc;
+        }
+    </style>
+    <div class="alert alert-success alert-dismissible fade show" role="alert" th:if="${successMessage}">
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
     <div class="row g-4">
         <div class="col-12">
             <h1 class="text-center">
@@ -47,32 +95,55 @@
                                     <span th:if="${entry.key == acc}">
                                         <td th:text="${entry.key.fullName}"></td>
                                         <td th:each="date : ${datesInWeek}">
-                                            <div th:if="${entry.value.get(date) != null}">
-                                                <!-- Display work shift information -->
+                                            <div class="work-schedule-container"
+                                                 th:if="${entry.value.get(date) != null}"
+                                                 th:id="'ws-' + ${entry.value.get(date).scheduleId}"
+                                                 draggable="true"
+                                                 ondragstart="drag(event, 1006)"
+                                                 ondrop="drop(event, 1007)"
+                                                 ondragover="allowDrop(event)">
                                                 <form th:action="@{/workSchedules/updateShift}" method="get">
                                                     <input type="hidden" name="scheduleId" th:value="${entry.value.get(date).scheduleId}"/>
                                                     <div class="input-group">
                                                         <select name="shiftId" required class="form-control">
                                                             <option th:each="shiftOption : ${shifts}" th:value="${shiftOption.shiftId}" th:text="${shiftOption.shiftName}" th:selected="${shiftOption.shiftId} == ${entry.value.get(date).shift.shiftId}">Select Shift</option>
                                                         </select>
-                                                        <button type="submit" class="btn btn-outline-success">
-                                                            <i class="far fa-check-square"></i>
+                                                        <button type="submit" class="btn btn-outline-primary">
+                                                            <i class="fa-solid fa-pen"></i>
                                                         </button>
                                                     </div>
                                                 </form>
+
                                                 <div>Status: <span th:text="${entry.value.get(date).status.displayName}"></span></div>
 
-                                                <a th:href="@{/workSchedules/approval?id={id}&status={status}(id=${entry.value.get(date).scheduleId},status=${T(com.timekeeping.timekeeping.enums.ApprovalStatus).APPROVED})}" class="text-decoration-none text-primary">
-                                                    <span th:if="${entry.value.get(date).status == T(com.timekeeping.timekeeping.enums.ApprovalStatus).APPROVED}"><i class="fas fa-thumbs-up fs-4"></i></span>
-                                                    <span th:if="${entry.value.get(date).status != T(com.timekeeping.timekeeping.enums.ApprovalStatus).APPROVED}"><i class="far fa-thumbs-up fs-4"></i></span>
-                                                </a>
-                                                <a th:href="@{/workSchedules/approval?id={id}&status={status}(id=${entry.value.get(date).scheduleId},status=${T(com.timekeeping.timekeeping.enums.ApprovalStatus).REJECTED})}" class="text-decoration-none text-primary">
-                                                    <span th:if="${entry.value.get(date).status == T(com.timekeeping.timekeeping.enums.ApprovalStatus).REJECTED}"><i style="transform: scaleX(-1);" class="fas fa-thumbs-down mx-1 fs-4"></i></span>
-                                                    <span th:if="${entry.value.get(date).status != T(com.timekeeping.timekeeping.enums.ApprovalStatus).REJECTED}"><i style="transform: scaleX(-1);" class="far fa-thumbs-down mx-1 fs-4"></i></span>
-                                                </a>
-                                                <a th:href="@{/workSchedules/edit/{id}(id=${entry.value.get(date).scheduleId})}" class="text-decoration-none text-primary"><i class="fas fa-info-circle fs-4"></i></a>
+                                                <div class="overlay-buttons">
+                                                    <a th:href="@{/workSchedules/approval?id={id}&status={status}(id=${entry.value.get(date).scheduleId},status=${T(com.timekeeping.timekeeping.enums.ApprovalStatus).APPROVED})}" class="btn-approve text-decoration-none text-primary">
+                                                        <span th:if="${entry.value.get(date).status == T(com.timekeeping.timekeeping.enums.ApprovalStatus).APPROVED}">
+                                                            <i class="fas fa-thumbs-up fs-4"></i>
+                                                        </span>
+                                                        <span th:if="${entry.value.get(date).status != T(com.timekeeping.timekeeping.enums.ApprovalStatus).APPROVED}">
+                                                            <i class="far fa-thumbs-up fs-4"></i>
+                                                        </span>
+                                                    </a>
+
+                                                    <a th:href="@{/workSchedules/approval?id={id}&status={status}(id=${entry.value.get(date).scheduleId},status=${T(com.timekeeping.timekeeping.enums.ApprovalStatus).REJECTED})}" class="btn-reject text-decoration-none text-primary">
+                                                        <span th:if="${entry.value.get(date).status == T(com.timekeeping.timekeeping.enums.ApprovalStatus).REJECTED}">
+                                                            <i style="transform: scaleX(-1);" class="fas fa-thumbs-down mx-1 fs-4"></i>
+                                                        </span>
+                                                        <span th:if="${entry.value.get(date).status != T(com.timekeeping.timekeeping.enums.ApprovalStatus).REJECTED}">
+                                                            <i style="transform: scaleX(-1);" class="far fa-thumbs-down mx-1 fs-4"></i>
+                                                        </span>
+                                                    </a>
+
+                                                    <a th:href="@{/workSchedules/edit/{id}(id=${entry.value.get(date).scheduleId})}" class="btn-edit text-decoration-none text-primary">
+                                                        <i class="fas fa-info-circle fs-4"></i>
+                                                    </a>
+                                                </div>
                                             </div>
-                                            <div th:if="${entry.value.get(date) == null}">
+
+                                            <div class="work-schedule-container"
+                                                 th:if="${entry.value.get(date) == null}"
+                                                 ondragover="allowDrop(event)">
                                                 <!-- Display form to create new work shift -->
                                                 <form th:action="@{/workSchedules/create}" method="post">
                                                     <input type="hidden" name="scheduleId"/>
@@ -84,7 +155,7 @@
                                                             <option th:each="shiftOption : ${shifts}" th:value="${shiftOption.shiftId}" th:text="${shiftOption.shiftName}">Select Shift</option>
                                                         </select>
                                                         <button type="submit" class="btn btn-outline-success">
-                                                            <i class="far fa-plus-square"></i>
+                                                            <i class="fa-solid fa-plus"></i>
                                                         </button>
                                                     </div>
                                                 </form>
@@ -99,6 +170,59 @@
             </div>
         </div>
     </div>
+    <script>
+        function allowDrop(ev) {
+            ev.preventDefault(); // Cho phép thả phần tử
+        }
+
+        function drag(ev, scheduleIdFrom) {
+            ev.dataTransfer.setData("text", ev.target.id);
+            ev.target.classList.add('dragging'); // Thêm lớp dragging khi kéo
+            ev.dataTransfer.setData("scheduleIdFrom", scheduleIdFrom);
+        }
+
+        function drop(ev, scheduleIdTo) {
+            ev.preventDefault();
+            var data = ev.dataTransfer.getData("text");
+            var draggedElement = document.getElementById(data);
+            var scheduleIdFrom = ev.dataTransfer.getData("scheduleIdFrom");
+
+            event.target.appendChild(draggedElement);
+            ev.target.classList.remove('dragging'); // Xóa lớp dragging khi thả
+
+            console.log(data);
+            //updateSchedule(scheduleIdFrom, scheduleIdTo); // Cập nhật lịch sau khi thả
+        }
+
+        function updateSchedule(scheduleIdFrom, scheduleIdTo) {
+            // Gửi yêu cầu AJAX hoặc Fetch API để cập nhật lịch làm việc sau khi kéo thả
+            var url = "/workSchedules/dragDropWS"; // URL backend xử lý yêu cầu
+            var data = {
+                "scheduleIdFrom": scheduleIdFrom,
+                "scheduleIdTo": scheduleIdTo
+            };
+
+            // Sử dụng Fetch API để gửi dữ liệu
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Success:", data);
+                // Cập nhật giao diện người dùng nếu cần
+                alert("Work schedule has been updated!");
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+                alert("An error occurred while updating the work schedule.");
+            });
+        }
+
+    </script>
 </div>
 
 

@@ -45,7 +45,7 @@ public class AccountService implements UserDetailsService, ApplicationContextAwa
     }
 
     public List<Account> findByNameEmployee(String fullName) {
-        return accountRepository.findByNameEmployee(fullName);
+        return accountRepository.findByNameEmployee("%" + fullName + "%");
     }
     public boolean checkPassword(String rawPassword, String encodedPassword) {
         return passwordEncoder.matches(rawPassword, encodedPassword);
