@@ -10,7 +10,6 @@
         }, 1);
     };
     spinner();
-    
 
     // Back to top button
     $(window).scroll(function () {
@@ -25,13 +24,11 @@
         return false;
     });
 
-
     // Sidebar Toggler
     $('.sidebar-toggler').click(function () {
         $('.sidebar, .content').toggleClass("open");
         return false;
     });
-
 
     // Progress Bar
     $('.pg-bar').waypoint(function () {
@@ -40,13 +37,11 @@
         });
     }, {offset: '80%'});
 
-
-    // Calender
+    // Calendar
     $('#calender').datetimepicker({
         inline: true,
         format: 'L'
     });
-
 
     // Testimonials carousel
     $(".testimonial-carousel").owlCarousel({
@@ -55,9 +50,10 @@
         items: 1,
         dots: true,
         loop: true,
-        nav : false
-<<<<<<< HEAD
+        nav: false
     });
+
+    // Code related to salary and employee data charts starts here
     $(document).ready(function () {
         var currentYear = new Date().getFullYear();
         var years = [];
@@ -205,8 +201,4 @@
         }
     });
 
-
-=======
-    });
->>>>>>> 7314a1d6f2391f93f37d0530ab6c016d8c678f66
 })(jQuery);
