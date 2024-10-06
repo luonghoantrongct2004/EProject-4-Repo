@@ -13,7 +13,7 @@
 <div class="row g-4" layout:fragment="content">
     <div class="col-12">
         <div class="bg-light rounded h-100 p-4">
-            <h6 class="mb-4">Thêm Hoạt Động</h6>
+            <h6 class="mb-4">Create Activities</h6>
             <div class="table-responsive">
                 <form
                         th:object="${activity}"
@@ -25,70 +25,80 @@
                             <input type="hidden" th:field="*{activityId}" />
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="activityName">Tên Hoạt Động</label>
+                                    <label for="activityName">Activity Name</label>
                                     <input
                                             type="text"
                                             th:field="*{activityName}"
                                             id="activityName"
                                             class="form-control"
-                                            placeholder="Nhập tên hoạt động"
+                                            placeholder="Enter Activity Name"
                                             required
                                     />
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="description">Mô Tả</label>
+                                    <label for="description">Description</label>
                                     <textarea
                                             type="text"
                                             th:field="*{description}"
                                             id="description"
                                             class="form-control"
-                                            placeholder="Nhập mô tả"
+                                            placeholder="Enter Description"
                                     ></textarea>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="date">Ngày Tổ Chức</label>
-                                    <input
-                                            type="date"
-                                            th:field="*{date}"
-                                            id="date"
-                                            class="form-control"
-                                            required
-                                    />
+                                    <label for="date">Start Time</label>
+                                    <div class="d-flex">
+                                        <input type="date" id="date" name="date" class="form-control me-3" required>
+                                        <input type="time" id="time" name="time" class="form-control" required>
+                                    </div>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="purpose">Mục Đích</label>
-                                    <input
-                                            type="text"
-                                            th:field="*{purpose}"
-                                            id="purpose"
-                                            class="form-control"
-                                            placeholder="Nhập mục đích"
-                                            required
-                                    />
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="budget">Tổng Chi Phí</label>
+                                    <label for="budget">Budget</label>
                                     <input
                                             type="number"
                                             th:field="*{budget}"
                                             id="budget"
                                             class="form-control"
-                                            placeholder="Nhập vào tổng chi phí"
+                                            placeholder="Enter Budget"
                                             required
                                     />
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="mandatory">Bắt Buộc</label>
-                                    <input type="checkbox" id="mandatory" th:field="*{mandatory}"/>
+                                    <label for="location">Location</label>
+                                    <input
+                                            type="text"
+                                            th:field="*{location}"
+                                            id="location"
+                                            class="form-control"
+                                            placeholder="Enter Location"
+                                            required
+                                    />
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="type">Type</label>
+                                    <select
+                                            id="type"
+                                            name="type"
+                                            th:field="*{type}"
+                                            required
+                                            class="form-control"
+                                    >
+                                        <option
+                                                th:each="typeSelect : ${T(com.timekeeping.timekeeping.enums.ActivityType).values()}"
+                                                th:value="${typeSelect}"
+                                                th:text="${typeSelect}"
+                                        >
+                                        </option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
                         <div class="card-footer text-right">
                             <button type="submit" class="btn btn-outline-success">
-                                Tạo
+                                Save
                             </button>
                             <a th:href="@{/activities}" class="btn btn-outline-danger"
-                            >Quay về</a
+                            >Back</a
                             >
                         </div>
                     </div>

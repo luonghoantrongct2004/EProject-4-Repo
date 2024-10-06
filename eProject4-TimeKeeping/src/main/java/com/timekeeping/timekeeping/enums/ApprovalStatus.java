@@ -1,9 +1,9 @@
 package com.timekeeping.timekeeping.enums;
 
 public enum ApprovalStatus {
-    PENDING("Đang Chờ Duyệt"),
-    APPROVED("Đã Chấp Nhận"),
-    REJECTED("Bị Từ Chối");
+    PENDING("Pending"),
+    APPROVED("Approved"),
+    REJECTED("Denied");
 
     private String displayName;
 

@@ -1,11 +1,10 @@
-
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:sec="http://www.thymeleaf.org/extras/springsecurity5"
       layout:decorate="~{layout/main}">
 <head>
   <meta charset="UTF-8">
-  <title th:text="${title}">Trang Chủ</title>
+  <title th:text="${title}">Home Page</title>
 </head>
 <body>
 
@@ -17,14 +16,14 @@
       <div class="alert alert-danger alert-dismissible fade show" th:if="${error}" th:text="${error}" id="errorAlert"></div>
 
       <script>
-        // Thời gian tự động tắt thông báo (5 giây = 5000ms)
+        // Auto-hide notification (5 seconds = 5000ms)
         setTimeout(function() {
           var successAlert = document.getElementById('successAlert');
           if (successAlert) {
             successAlert.classList.remove('show');
             successAlert.classList.add('fade');
           }
-        }, 3000); // Tự động tắt sau 5 giây
+        }, 3000); // Auto-hide after 5 seconds
 
         setTimeout(function() {
           var errorAlert = document.getElementById('errorAlert');
@@ -37,9 +36,9 @@
       <div class="row align-items-lg-center">
 
         <div class="col-lg-6 order-lg-1">
-          <h1 class="heading mb-3 text-white" data-aos="fade-up">Chúng tôi là đối tác của bạn trong <strong>TimeKeeping</strong></h1>
-          <p class="lead mb-5 text-white" data-aos="fade-up"  data-aos-delay="100">Số hóa thời gian, tối ưu hiệu suất – TimeKeeping làm chủ mọi khoảnh khắc.</p>
-          <p data-aos="fade-up" data-aos-delay="200"><a href="#" class="btn btn-primary py-3 px-4 mr-3">Bắt Đầu</a> <a href="#" class="text-white">Tìm Hiểu Thêm</a></p>
+          <h1 class="heading mb-3 text-white" data-aos="fade-up">We are your partner in <strong>TimeKeeping</strong></h1>
+          <p class="lead mb-5 text-white" data-aos="fade-up"  data-aos-delay="100">Digitize time, optimize efficiency – TimeKeeping masters every moment.</p>
+          <p data-aos="fade-up" data-aos-delay="200"><a href="#" class="btn btn-primary py-3 px-4 mr-3">Get Started</a> <a href="#" class="text-white">Learn More</a></p>
         </div>
 
       </div>
@@ -65,19 +64,18 @@
           </div> <!-- .owl-carousel -->
         </div>
         <div class="col-lg-5 pl-lg-5">
-          <h2 class="mb-5">Tại sao lại là chúng tôi?</h2>
+          <h2 class="mb-5">Why Us?</h2>
           <div class="accordion" id="accordionExample">
             <div class="accordion-item">
               <h2 class="mb-0 rounded mb-2">
                 <a href="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"
                    aria-controls="collapseOne">
-                  Chính xác và tin cậy</a>
+                  Accurate and Reliable</a>
               </h2>
               <div id="collapseOne" class="collapse show" aria-labelledby="headingOne"
                    data-parent="#accordionExample">
                 <div class="accordion-body">
-                  <p>Hệ thống quản lý thời gian của chúng tôi đảm bảo độ chính xác tuyệt đối, giúp
-                    theo dõi giờ làm việc một cách hiệu quả và không để sót bất kỳ chi tiết nào.</p>
+                  <p>Our time management system ensures absolute accuracy, helping you track work hours effectively without missing any detail.</p>
                 </div>
               </div>
             </div>
@@ -86,14 +84,13 @@
               <h2 class="mb-0 rounded mb-2">
                 <a href="#" class="collapsed" data-toggle="collapse" data-target="#collapseTwo"
                    aria-expanded="false" aria-controls="collapseTwo">
-                  Tự động hóa thông minh
+                  Intelligent Automation
                 </a>
               </h2>
               <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"
                    data-parent="#accordionExample">
                 <div class="accordion-body">
-                  <p> Với tính năng tự động hóa tiên tiến, hệ thống giúp giảm thiểu công việc thủ
-                    công, tiết kiệm thời gian và tăng năng suất cho doanh nghiệp.</p>
+                  <p>With advanced automation features, the system helps minimize manual work, save time, and boost productivity for your business.</p>
                 </div>
               </div>
             </div>
@@ -102,14 +99,13 @@
               <h2 class="mb-0 rounded mb-2">
                 <a href="#" class="collapsed" data-toggle="collapse" data-target="#collapseThree"
                    aria-expanded="false" aria-controls="collapseThree">
-                  Báo cáo minh bạch
+                  Transparent Reporting
                 </a>
               </h2>
               <div id="collapseThree" class="collapse" aria-labelledby="headingThree"
                    data-parent="#accordionExample">
                 <div class="accordion-body">
-                  <p>Chúng tôi cung cấp các báo cáo chi tiết, dễ hiểu, giúp bạn kiểm soát và phân tích
-                    dữ liệu thời gian làm việc một cách rõ ràng và minh bạch.</p>
+                  <p>We provide detailed, easy-to-understand reports, helping you control and analyze work time data in a clear and transparent manner.</p>
                 </div>
               </div>
             </div>
@@ -118,14 +114,13 @@
               <h2 class="mb-0 rounded mb-2">
                 <a href="#" class="collapsed" data-toggle="collapse" data-target="#collapseFour"
                    aria-expanded="false" aria-controls="collapseFour">
-                  Dễ dàng tích hợp
+                  Easy Integration
                 </a>
               </h2>
               <div id="collapseFour" class="collapse" aria-labelledby="headingFour"
                    data-parent="#accordionExample">
                 <div class="accordion-body">
-                  <p>Hệ thống của chúng tôi tương thích và dễ dàng tích hợp với nhiều nền tảng, giúp
-                    bạn quản lý thời gian thuận tiện mà không gặp trở ngại kỹ thuật.</p>
+                  <p>Our system is compatible and easily integrates with various platforms, helping you manage time conveniently without technical hurdles.</p>
                 </div>
               </div>
             </div>

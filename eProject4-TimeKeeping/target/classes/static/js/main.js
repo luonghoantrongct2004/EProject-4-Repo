@@ -11,7 +11,7 @@
     };
     spinner();
     
-    
+
     // Back to top button
     $(window).scroll(function () {
         if ($(this).scrollTop() > 300) {
@@ -56,6 +56,7 @@
         dots: true,
         loop: true,
         nav : false
+<<<<<<< HEAD
     });
     $(document).ready(function () {
         var currentYear = new Date().getFullYear();
@@ -205,4 +206,7 @@
     });
 
 
+=======
+    });
+>>>>>>> 7314a1d6f2391f93f37d0530ab6c016d8c678f66
 })(jQuery);

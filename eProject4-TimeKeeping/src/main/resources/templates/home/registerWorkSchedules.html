@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+
+<head>
+    <meta charset="utf-8" />
+    <title th:text="${pageTitle}">Work Schedule</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+
+<body>
+<div layout:fragment="content">
+
+    <div class="templateux-cover" style="background-image: url(/home_assets/images/work_schedules.jpg);">
+        <div class="container">
+            <div class="row align-items-lg-center">
+                <div class="col-lg-6 order-lg-1 text-center mx-auto">
+                    <h1 class="heading mb-3 text-white" data-aos="fade-up">WORK SCHEDULES</h1>
+                    <p class="lead mb-5 text-white" data-aos="fade-up" data-aos-delay="100">How do you maintain a good work life balance</p>
+                </div>
+            </div>
+        </div>
+    </div> <!-- .templateux-cover -->
+    <div class="container my-5">
+        <div class="row g-4">
+            <div class="col-12">
+                <h1 class="text-center">
+                    WORK SCHEDULE REGISTRATION
+                </h1>
+            </div>
+        </div>
+        <form action="/workSchedules/register" method="get">
+            <div class="row g-4">
+                <div class="col-8"></div>
+                <div class="col-4">
+                    <div class="input-group">
+                        <input type="week" class="form-control" id="week" name="week" value="">
+                        <button class="btn btn-outline-secondary" type="submit">
+                            Filter
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="row g-4">
+            <div class="col-12">
+                <div class="rounded h-100 my-4">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th style="vertical-align: middle;">Name</th>
+                                <th th:each="date : ${dateWithDayName}" style="font-weight: bolder">
+                                    <div th:text="${date.key}"></div>
+                                    <div th:text="${date.value}"></div>
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td th:text="${acc.fullName}"
+                                    style="text-align: center; vertical-align: middle;"></td>
+                                <td th:each="entry : ${scheduleMap}"
+                                    style="text-align: center; vertical-align: middle;">
+                                    <div th:if="${entry.value != null && (entry.value.status == T(com.timekeeping.timekeeping.enums.ApprovalStatus).APPROVED || entry.value.status == T(com.timekeeping.timekeeping.enums.ApprovalStatus).REJECTED)}"
+                                         th:text="${entry.value.shift.shiftName}"></div>
+                                    <div
+                                            th:if="${entry.value != null && (entry.value.status != T(com.timekeeping.timekeeping.enums.ApprovalStatus).APPROVED && entry.value.status != T(com.timekeeping.timekeeping.enums.ApprovalStatus).REJECTED)}">
+                                        <!-- Display work shift information -->
+                                        <form th:action="@{/workSchedules/updateShift}" method="get">
+                                            <input type="hidden" name="register" th:value="yes" />
+                                            <input type="hidden" name="scheduleId"
+                                                   th:value="${entry.value.scheduleId}" />
+                                            <div class="input-group">
+                                                <select name="shiftId" required class="form-control">
+                                                    <option th:each="shiftOption : ${shifts}"
+                                                            th:value="${shiftOption.shiftId}"
+                                                            th:text="${shiftOption.shiftName}"
+                                                            th:selected="${shiftOption.shiftId} == ${entry.value.shift.shiftId}">
+                                                        Select Shift</option>
+                                                </select>
+                                                <button type="submit" class="btn btn-outline-primary">
+                                                    <i class="fa-solid fa-pen"></i>
+                                                </button>
+                                            </div>
+                                        </form>
+                                        <div>Status: <span th:text="${entry.value.status.displayName}"></span>
+                                        </div>
+                                    </div>
+                                    <div th:if="${entry.value == null}">
+                                        <!-- Display form to create a new work shift -->
+                                        <form th:action="@{/workSchedules/create}" method="post">
+                                            <input type="hidden" name="register" th:value="yes" />
+                                            <input type="hidden" name="scheduleId" />
+                                            <input type="hidden" name="date" th:value="${entry.key}" />
+                                            <input type="hidden" name="accountId" th:value="${acc.accountID}" />
+                                            <div class="input-group">
+                                                <select name="shiftId" required class="form-control">
+                                                    <option value="" disabled selected>Select Shift</option>
+                                                    <option th:each="shiftOption : ${shifts}"
+                                                            th:value="${shiftOption.shiftId}"
+                                                            th:text="${shiftOption.shiftName}">Select Shift</option>
+                                                </select>
+                                                <button type="submit" class="btn btn-outline-success">
+                                                    <i class="fa-solid fa-plus"></i>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>

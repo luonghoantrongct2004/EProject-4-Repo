@@ -67,10 +67,22 @@
                 <a th:href="@{/region}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Regions</a>
                 <a th:href="@{/deduction}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Deductions</a>
                 <a th:href="@{/bonus}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Bonuses</a>
-                <a th:href="@{/shifts}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Work Shifts</a>
-                <a th:href="@{/workSchedules}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Work Schedules</a>
-                <a th:href="@{/activities}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Internal Activities</a>
-                <a th:href="@{/financialReports}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Financial Reports</a>
+                <a th:href="@{/shifts}" class="nav-item nav-link"><i class="fa-solid fa-clock me-2"></i>Shifts</a>
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa-solid fa-calendar-day me-2"></i>Work Schedules</a>
+                    <div class="dropdown-menu bg-transparent border-0 p-0">
+                        <a th:href="@{/workSchedules}" class="dropdown-item"><i class="fa-solid fa-bars-progress me-2"></i> General</a>
+                        <a th:href="@{/workSchedules/view}" class="dropdown-item"><i class="fa-solid fa-eye me-2"></i>View WorkSchedules</a>
+                    </div>
+                </div>
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa-solid fa-people-group me-2"></i></i>Internal Activities</a>
+                    <div class="dropdown-menu bg-transparent border-0 p-0">
+                        <a th:href="@{/activities}" class="dropdown-item"><i class="fa-solid fa-bars-progress me-2"></i> General</a>
+                        <a th:href="@{/activityNotifications}" class="dropdown-item"><i class="fa-solid fa-comments me-2"></i>Notifications</a>
+                        <a th:href="@{/participations}" class="dropdown-item"><i class="fa-solid fa-person-chalkboard me-2"></i>Participations</a>
+                    </div>
+                </div>
             </div>
         </nav>
     </div>
@@ -88,43 +100,9 @@
                 <i class="fa fa-bars"></i>
             </a>
             <div class="navbar-nav align-items-center ms-auto">
-<!--                <div class="nav-item dropdown">-->
-<!--                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">-->
-<!--                        <i class="fa fa-envelope me-lg-2"></i>-->
-<!--                        <span class="d-none d-lg-inline-flex">Tin Nhắn</span>-->
-<!--                    </a>-->
-<!--                    <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">-->
-<!--                        <a href="#" class="dropdown-item">-->
-<!--                            <div class="d-flex align-items-center">-->
-<!--                                <img class="rounded-circle" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">-->
-<!--                                <div class="ms-2">-->
-<!--                                    <h6 class="fw-normal mb-0">Jhon gửi tin nhắn cho bạn</h6>-->
-<!--                                    <small>15 phút trước</small>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </a>-->
-<!--                        <hr class="dropdown-divider">-->
-<!--                        <a href="#" class="dropdown-item text-center">Xem tất cả tin nhắn</a>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="nav-item dropdown">-->
-<!--                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">-->
-<!--                        <i class="fa fa-bell me-lg-2"></i>-->
-<!--                        <span class="d-none d-lg-inline-flex">Thông Báo</span>-->
-<!--                    </a>-->
-<!--                    <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">-->
-<!--                        <a href="#" class="dropdown-item">-->
-<!--                            <h6 class="fw-normal mb-0">Cập nhật hồ sơ</h6>-->
-<!--                            <small>15 phút trước</small>-->
-<!--                        </a>-->
-<!--                        <hr class="dropdown-divider">-->
-<!--                        <a href="#" class="dropdown-item text-center">Xem tất cả thông báo</a>-->
-<!--                    </div>-->
-<!--                </div>-->
                 <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                         <img class="rounded-circle me-lg-2" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
-                        <!--                        <span class="d-none d-lg-inline-flex" th:text="${#authentication.principal.fullName}"></span>-->
                     </a>
                     <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
                         <a href="" class="dropdown-item" id="email-display-self"></a>
