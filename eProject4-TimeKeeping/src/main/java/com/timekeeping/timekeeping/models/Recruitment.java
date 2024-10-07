@@ -19,14 +19,12 @@ public class Recruitment {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "job_id", nullable = false)
     @NotNull
-    @Positive
     private Job job;  // Foreign key to Job entity
 
     // Establishing a Many-to-One relationship with the Account entity
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "account_id", nullable = false)
     @NotNull
-    @Positive
     private Account account;  // Foreign key to Account entity
 
     @NotNull
