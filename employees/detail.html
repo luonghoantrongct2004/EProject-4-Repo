@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutAdmin/main}">
+<head>
+    <meta charset="utf-8">
+    <title th:text="${pageTitle}">ADMIM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<div class="row g-4" layout:fragment="content">
+                <div class="col-12">
+                    <div class="bg-light rounded h-100 p-4">
+                        <div class="table-responsive"><div class="card mb-3">
+                            <div class="card-header">
+                                Account Information <span th:text="${account.getFullName()}"></span>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text d-flex">Image:
+                                    <span class="d-flex" th:each="imagePath : ${account.imagePaths}">
+    <img th:src="${imagePath}" width="50px" height="50px"/><br/>
+  </span>
+                                </p>
+
+                                <h5 class="card-title">Full Name: <span th:text="${account.getFullName()}"></span></h5>
+                                <p class="card-text">Email: <span th:text="${account.getEmail()}"></span></p>
+                                <p class="card-text">Phone Number: <span th:text="${account.getPhoneNumber()}"></span></p>
+                                <p class="card-text">Gender: <span th:text="${account.getGender()}"></span></p>
+                                <p class="card-text">Address: <span th:text="${account.getAddress()}"></span></p>
+                                <p class="card-text">Hire Date: <span th:text="${#dates.format(account.getHireDate(),'yyyy-MM-dd')}"></span></p>
+                                <p class="card-text">Position: <span th:text="${account.position != null ? account.position.name : 'N/A'}"></span></p>
+                                <p class="card-text">Department: <span th:text="${account.department != null ? account.department.name : 'N/A'}"></span></p>
+                                <p class="card-text">Role: <span th:text="${account.role != null ? account.role.name : 'N/A'}"></span></p>
+                                <p class="card-text">Status: <span th:text="${account.getStatus()}"></span></p>
+                                <p class="card-text">Bank Code: <span th:text="${account.getCodeBank()}"></span></p>
+                            </div>
+                            <div class="card-footer">
+                                <a th:if="${account.getStatus() == 'Active'}"
+                                   th:href="@{/employee/delete/{id}(id=${account.getAccountID()})}"
+                                   class="btn btn-outline-danger"
+                                   onclick="return confirm('Are you sure you want to deactivate this account?');">Deactivate</a>
+                                <a th:if="${account.getStatus() == 'InActive'}"
+                                   th:href="@{/employee/activate/{id}(id=${account.getAccountID()})}"
+                                   class="btn btn-outline-success"
+                                   onclick="return confirm('Are you sure you want to activate this account?');">Activate</a>
+
+                                <a th:href="@{/employee/edit/{id}(id=${account.getAccountID()})}"
+                                   class="btn btn-outline-primary">Edit</a>
+                                <a th:href="@{/employee}" class="btn btn-outline-info">Back</a>
+                            </div>
+                        </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+</body>
+</html>
