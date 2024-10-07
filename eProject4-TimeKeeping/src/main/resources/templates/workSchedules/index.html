@@ -98,7 +98,7 @@
                                                  th:if="${entry.value.get(date) != null}"
                                                  th:id="'ws-' + ${entry.value.get(date).scheduleId}"
                                                  draggable="true"
-                                                 th:attr="ondragstart=|drag(event, ${entry.value.get(date).scheduleId})|, ondrop=|drop(event, ${entry.value.get(date).scheduleId})|"
+                                                 th:attr="ondragstart=|drag(event, ${entry.value.get(date).scheduleId}, '${#temporals.format(date, 'yyyy-MM-dd')}', ${entry.key.accountID})|, ondrop=|drop(event, ${entry.value.get(date).scheduleId})|"
                                                  ondragover="allowDrop(event)">
                                                 <form th:action="@{/workSchedules/updateShift}" method="get">
                                                     <input type="hidden" name="scheduleId" th:value="${entry.value.get(date).scheduleId}"/>
@@ -175,8 +175,10 @@
             ev.preventDefault(); // Cho phép thả phần tử
         }
 
-        function drag(ev, scheduleIdFrom) {
+        function drag(ev, scheduleIdFrom, date, accountID) {
             ev.dataTransfer.setData("text", ev.target.id);
+            ev.dataTransfer.setData("date", date);
+            ev.dataTransfer.setData("accountID", accountID);
             ev.target.classList.add('dragging'); // Thêm lớp dragging khi kéo
             ev.dataTransfer.setData("scheduleIdFrom", scheduleIdFrom);
         }
@@ -189,9 +191,6 @@
 
             // Lấy phần tử nơi thả
             var targetElement = ev.currentTarget;
-
-            console.log(data);
-            console.log(ev.target.id);
 
             // Đảm bảo rằng phần tử thả không phải là phần tử con của phần tử cha
             if (targetElement !== draggedElement && draggedElement.closest(".work-schedule-container") && targetElement.closest(".work-schedule-container")) {
@@ -220,9 +219,6 @@
             // Lấy phần tử nơi thả
             var targetElement = ev.currentTarget;
 
-            console.log(data);
-            console.log(ev.target.id);
-
             // Đảm bảo rằng phần tử thả không phải là phần tử con của phần tử cha
             if (targetElement !== draggedElement && draggedElement.closest(".work-schedule-container") && targetElement.closest(".work-schedule-container")) {
                 // Lưu vị trí của phần tử đích và nguồn
@@ -232,6 +228,7 @@
                 // Hoán đổi vị trí giữa phần tử nguồn và phần tử đích
                 targetParent.replaceChild(draggedElement, targetElement);
                 sourceParent.appendChild(targetElement);
+
 
                 // Loại bỏ lớp dragging
                 draggedElement.classList.remove('dragging');
@@ -261,6 +258,7 @@
             .then(response => response.json())
             .then(data => {
                 console.log("Success:", data);
+                location.reload();
                 // Cập nhật giao diện người dùng nếu cần
                 //alert("Work schedule has been updated!");
             })
