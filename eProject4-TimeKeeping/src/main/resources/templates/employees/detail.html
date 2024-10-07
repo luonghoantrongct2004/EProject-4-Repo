@@ -17,6 +17,12 @@
                                 Account Information <span th:text="${account.getFullName()}"></span>
                             </div>
                             <div class="card-body">
+                                <p class="card-text d-flex">Image:
+                                    <span class="d-flex" th:each="imagePath : ${account.imagePaths}">
+    <img th:src="${imagePath}" width="50px" height="50px"/><br/>
+  </span>
+                                </p>
+
                                 <h5 class="card-title">Full Name: <span th:text="${account.getFullName()}"></span></h5>
                                 <p class="card-text">Email: <span th:text="${account.getEmail()}"></span></p>
                                 <p class="card-text">Phone Number: <span th:text="${account.getPhoneNumber()}"></span></p>

@@ -55,14 +55,26 @@
                                     Account
                                 </a>
 
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                    <div id="logout-section" style="display:none;">
-                                        <a id="profile-link" class="dropdown-item text-dark" href="#">Profile</a>
-
-                                        <a href="#" onclick="deleteAuthToken()" class="dropdown-item text-danger">Logout</a>
+                                <div class="dropdown-menu dropdown-menu-right shadow-sm" aria-labelledby="dropdownMenuLink">
+                                    <!-- Logout Section (Hidden by default) -->
+                                    <div id="logout-section" style="display: none;">
+                                        <a id="profile-link" class="dropdown-item text-dark" href="#">
+                                            <i class="fas fa-user-circle mr-2 text-dark"></i> Profile
+                                        </a>
+                                        <a id="dashboard-view" href="/dashboard" class="dropdown-item text-dark">
+                                            <i class="fas fa-tachometer-alt mr-2 "></i> Dashboard
+                                        </a>
+                                        <a href="#" onclick="deleteAuthToken()" class="dropdown-item text-danger">
+                                            <i class="fas fa-sign-out-alt mr-2 text-danger"></i> Logout
+                                        </a>
                                     </div>
-                                    <a id="login-section" class="dropdown-item text-dark" th:href="@{/auth/login}">Login</a>
+
+                                    <!-- Login Section -->
+                                    <a id="login-section" class="dropdown-item" th:href="@{/auth/login}">
+                                        <i class="fas fa-sign-in-alt mr-2"></i> Login
+                                    </a>
                                 </div>
+
                             </div>
 
                         </li>
@@ -129,18 +141,24 @@
         window.onload = function() {
             let authToken = getCookie("AUTH-TOKEN");
             let accountId = getCookie("ACCOUNT-ID");
+            let roleId = getCookie("ROLE-ID");
 
             let logoutSection = document.getElementById("logout-section");
             let loginSection = document.getElementById("login-section");
             let profileLink = document.getElementById("profile-link");
+            let dashboard = document.getElementById("dashboard-view");
 
 
             if (authToken && accountId) {
+                if(roleId >= 1 || roleId <= 3){
+                    dashboard.style.display = "block";
+                }
                 profileLink.href = "/auth/profile?AccountId=" + accountId; // Set profile link
                 console.log("Profile link set to: " + profileLink.href);
                 logoutSection.style.display = "block"; // Show logout section
                 loginSection.style.display = "none";  // Hide login section
             } else {
+                dashboard.style.display = "none";
                 logoutSection.style.display = "none"; // Hide logout section
                 loginSection.style.display = "block"; // Show login section
                 profileLink.href = "/auth/login"; // Set default login link
