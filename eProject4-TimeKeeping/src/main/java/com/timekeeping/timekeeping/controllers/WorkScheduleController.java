@@ -64,7 +64,7 @@ public class WorkScheduleController {
         List<WorkSchedule> weeklySchedules = workScheduleService.getSchedulesForWeek(startOfWeek, endOfWeek);
 
         List<String> dayNamesInWeek = startOfWeek.datesUntil(endOfWeek.plusDays(1))
-                .map(date -> date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.forLanguageTag("vi"))
+                .map(date -> date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.forLanguageTag("en"))
                         + "   \n   " + date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
                 .collect(Collectors.toList());
 
@@ -122,7 +122,7 @@ public class WorkScheduleController {
         List<WorkSchedule> weeklySchedules = workScheduleService.getSchedulesForWeek(startOfWeek, endOfWeek);
 
         List<String> dayNamesInWeek = startOfWeek.datesUntil(endOfWeek.plusDays(1))
-                .map(date -> date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.forLanguageTag("vi"))
+                .map(date -> date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.forLanguageTag("en"))
                         + "   \n   " + date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
                 .collect(Collectors.toList());
 
@@ -130,7 +130,7 @@ public class WorkScheduleController {
 
         Map<String, String> dateWithDayName = new LinkedHashMap<>();
         for (LocalDate date : datesInWeek) {
-            dateWithDayName.put(date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.forLanguageTag("vi")) , date.format(DateTimeFormatter.ofPattern("dd-MM")));
+            dateWithDayName.put(date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.forLanguageTag("en")) , date.format(DateTimeFormatter.ofPattern("dd-MM")));
         }
 
         model.addAttribute("dateWithDayName", dateWithDayName);
@@ -163,7 +163,7 @@ public class WorkScheduleController {
                          @RequestParam(value = "register", required = false) String register,
                          RedirectAttributes redirectAttributes) {
         if (accountId == null || date == null || shiftId == null) {
-            throw new IllegalArgumentException("Một hoặc nhiều tham số không hợp lệ");
+            throw new IllegalArgumentException("One or more parameters are invalid");
         }
         WorkSchedule newSchedule = new WorkSchedule();
         Account account = accountService.findById(accountId).orElseThrow();

@@ -29,7 +29,7 @@
                 </h1>
             </div>
         </div>
-        <form action="/workSchedules/register" method="get">
+        <form action="/registerWorkSchedules" method="get">
             <div class="row g-4">
                 <div class="col-8"></div>
                 <div class="col-4">
@@ -67,7 +67,7 @@
                                     <div
                                             th:if="${entry.value != null && (entry.value.status != T(com.timekeeping.timekeeping.enums.ApprovalStatus).APPROVED && entry.value.status != T(com.timekeeping.timekeeping.enums.ApprovalStatus).REJECTED)}">
                                         <!-- Display work shift information -->
-                                        <form th:action="@{/workSchedules/updateShift}" method="get">
+                                        <form th:action="@{/registerWorkSchedules/updateShift}" method="get">
                                             <input type="hidden" name="register" th:value="yes" />
                                             <input type="hidden" name="scheduleId"
                                                    th:value="${entry.value.scheduleId}" />
@@ -89,7 +89,7 @@
                                     </div>
                                     <div th:if="${entry.value == null}">
                                         <!-- Display form to create a new work shift -->
-                                        <form th:action="@{/workSchedules/create}" method="post">
+                                        <form th:action="@{/registerWorkSchedules/create}" method="post">
                                             <input type="hidden" name="register" th:value="yes" />
                                             <input type="hidden" name="scheduleId" />
                                             <input type="hidden" name="date" th:value="${entry.key}" />

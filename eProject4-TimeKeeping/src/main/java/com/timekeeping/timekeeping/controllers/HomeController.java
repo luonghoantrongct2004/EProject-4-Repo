@@ -1,13 +1,16 @@
 package com.timekeeping.timekeeping.controllers;
 
 import com.timekeeping.timekeeping.enums.ActivityType;
+import com.timekeeping.timekeeping.enums.ApprovalStatus;
 import com.timekeeping.timekeeping.enums.ParticipationStatus;
 import com.timekeeping.timekeeping.models.*;
 import com.timekeeping.timekeeping.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.DayOfWeek;
 import java.time.Duration;
@@ -40,6 +43,13 @@ public class HomeController {
 
     @Autowired
     private WorkScheduleService workScheduleService;
+
+    @GetMapping("/")
+    public String index(Model model) {
+        model.addAttribute("activityNotifications", activityNotificationService.getAllNotifications());
+        model.addAttribute("activityUnreadNotifications", activityNotificationService.getUnreadNotifications());
+        return "home/index";
+    }
 
     @GetMapping("/home")
     public String home(Model model) {
@@ -204,7 +214,7 @@ public class HomeController {
         List<WorkSchedule> weeklySchedules = workScheduleService.getSchedulesForWeek(startOfWeek, endOfWeek);
 
         List<String> dayNamesInWeek = startOfWeek.datesUntil(endOfWeek.plusDays(1))
-                .map(date -> date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.forLanguageTag("vi"))
+                .map(date -> date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.forLanguageTag("en"))
                         + "   \n   " + date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
                 .collect(Collectors.toList());
 
@@ -212,7 +222,7 @@ public class HomeController {
 
         Map<String, String> dateWithDayName = new LinkedHashMap<>();
         for (LocalDate date : datesInWeek) {
-            dateWithDayName.put(date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.forLanguageTag("vi")) , date.format(DateTimeFormatter.ofPattern("dd-MM")));
+            dateWithDayName.put(date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.forLanguageTag("en")) , date.format(DateTimeFormatter.ofPattern("dd-MM")));
         }
 
         model.addAttribute("dateWithDayName", dateWithDayName);
@@ -260,7 +270,7 @@ public class HomeController {
         List<WorkSchedule> weeklySchedules = workScheduleService.getSchedulesForWeek(startOfWeek, endOfWeek);
 
         List<String> dayNamesInWeek = startOfWeek.datesUntil(endOfWeek.plusDays(1))
-                .map(date -> date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.forLanguageTag("vi"))
+                .map(date -> date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.forLanguageTag("en"))
                         + "   \n   " + date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
                 .collect(Collectors.toList());
 
@@ -268,7 +278,7 @@ public class HomeController {
 
         Map<String, String> dateWithDayName = new LinkedHashMap<>();
         for (LocalDate date : datesInWeek) {
-            dateWithDayName.put(date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.forLanguageTag("vi")) , date.format(DateTimeFormatter.ofPattern("dd-MM")));
+            dateWithDayName.put(date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.forLanguageTag("en")) , date.format(DateTimeFormatter.ofPattern("dd-MM")));
         }
 
         model.addAttribute("dateWithDayName", dateWithDayName);
@@ -292,5 +302,41 @@ public class HomeController {
         model.addAttribute("scheduleMap", scheduleMap);
         model.addAttribute("acc", account);
         return "home/registerWorkSchedules";
+    }
+
+    @GetMapping("/registerWorkSchedules/updateShift")
+    public String updateShiftSchedule(@RequestParam("scheduleId") int scheduleId, @RequestParam("shiftId") int shiftId, @RequestParam(value = "register", required = false) String register) {
+        workScheduleService.updateShiftSchedule(scheduleId, shiftId);
+        if (register != null && !register.isEmpty()) {
+            return "redirect:/registerWorkSchedules";
+        }
+        return "redirect:/registerWorkSchedules";
+    }
+
+    @PostMapping("/registerWorkSchedules/create")
+    public String create(@RequestParam("accountId") Integer accountId,
+                         @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+                         @RequestParam("shiftId") Integer shiftId,
+                         @RequestParam(value = "register", required = false) String register,
+                         RedirectAttributes redirectAttributes) {
+        if (accountId == null || date == null || shiftId == null) {
+            throw new IllegalArgumentException("One or more parameters are invalid");
+        }
+        WorkSchedule newSchedule = new WorkSchedule();
+        Account account = accountService.findById(accountId).orElseThrow();
+        Shift shift = shiftService.getShiftById(shiftId).orElseThrow();
+
+        newSchedule.setAccount(account);
+        newSchedule.setDate(date);
+        newSchedule.setShift(shift);
+        newSchedule.setStatus(ApprovalStatus.PENDING);
+
+        workScheduleService.saveSchedule(newSchedule);
+        redirectAttributes.addFlashAttribute("successMessage", "Work Schedule saved successfully!");
+
+        if (register != null && !register.isEmpty()) {
+            return "redirect:/registerWorkSchedules";
+        }
+        return "redirect:/registerWorkSchedules";
     }
 }
